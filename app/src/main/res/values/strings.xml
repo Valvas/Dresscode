@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Dresscode</string>
+    <string name="menu_button">Menu</string>
+    <string name="menu_close">Fermer</string>
+    <string name="menu_exit">Quitter</string>
+    <string name="menu_home">Accueil</string>
+    <string name="menu_wardrobe">Mon Dressing</string>
+    <string name="wardrobe_no_entries">Votre dressing est vide pour le moment, comme c\'est triste...</string>
+    <string name="wardrobe_view_return">Retour au dressing</string>
+    <string name="wardrobe_view_name">Nom</string>
+    <string name="wardrobe_view_type">Type</string>
+    <string name="wardrobe_view_material">Matériau</string>
+    <string name="wardrobe_view_color">Couleur</string>
+
+    <string name="WARDROBE_ELEMENT">WARDROBE_ELEMENT</string>
+</resources>
