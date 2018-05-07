@@ -46,12 +46,12 @@ public class WardrobeActivity extends ListActivity
                 wardrobeElementsCursor.moveToNext();
             }*/
 
-            wardrobeElements.add(new WardrobeElement(1, 1, 1, 1, "T-shirt bleu"));
-            wardrobeElements.add(new WardrobeElement(2, 1, 1, 1, "T-shirt vert"));
-            wardrobeElements.add(new WardrobeElement(3, 1, 1, 1, "T-shirt rouge"));
-            wardrobeElements.add(new WardrobeElement(4, 1, 1, 1, "T-shirt jaune"));
-            wardrobeElements.add(new WardrobeElement(5, 1, 1, 1, "T-shirt noir"));
-            wardrobeElements.add(new WardrobeElement(6, 1, 1, 1, "T-shirt blanc"));
+            wardrobeElements.add(new WardrobeElement(1, 1, 1, 1, "T-shirt bleu", "/DCIM/Camera/1430291780386.jpg"));
+            wardrobeElements.add(new WardrobeElement(2, 1, 1, 1, "T-shirt vert", "/02.png"));
+            wardrobeElements.add(new WardrobeElement(3, 1, 1, 1, "T-shirt rouge", "/03.png"));
+            wardrobeElements.add(new WardrobeElement(4, 1, 1, 1, "T-shirt jaune", "/04.png"));
+            wardrobeElements.add(new WardrobeElement(5, 1, 1, 1, "T-shirt noir", "/05.png"));
+            wardrobeElements.add(new WardrobeElement(6, 1, 1, 1, "T-shirt blanc", "/06.png"));
 
             WardrobeElementAdapter wardrobeElementAdapter = new WardrobeElementAdapter(this, wardrobeElements);
             setListAdapter(wardrobeElementAdapter);

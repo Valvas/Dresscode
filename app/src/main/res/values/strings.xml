@@ -11,6 +11,8 @@
     <string name="wardrobe_view_type">Type</string>
     <string name="wardrobe_view_material">Matériau</string>
     <string name="wardrobe_view_color">Couleur</string>
+    <string name="wardrobe_view_image_could_not_be_loaded">L\'image n\'a pas pu être chargée</string>
 
     <string name="WARDROBE_ELEMENT">WARDROBE_ELEMENT</string>
+    <string name="could_no_create_app_directory">Le dossier de l\'application n\'a pas pu être créé</string>
 </resources>
