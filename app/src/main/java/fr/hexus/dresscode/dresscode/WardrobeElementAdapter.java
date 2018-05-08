@@ -1,12 +1,16 @@
 package fr.hexus.dresscode.dresscode;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -29,6 +33,14 @@ public class WardrobeElementAdapter extends ArrayAdapter<WardrobeElement>
 
         TextView wardrobeElementName = row.findViewById(R.id.wardrobeElementName);
         TextView wardrobeElementType = row.findViewById(R.id.wardrobeElementType);
+
+        ImageView wardrobeElementPicture = row.findViewById(R.id.wardrobeElementPicture);
+
+        GlideApp.with(row)
+                .load(Environment.getExternalStorageDirectory() + String.valueOf(currentWardrobeElement.getPath()))
+                .placeholder(R.drawable.ic_launcher_background)
+                .fitCenter()
+                .into(wardrobeElementPicture);
 
         wardrobeElementName.setText(String.valueOf(currentWardrobeElement.getName()));
         wardrobeElementType.setText(String.valueOf(currentWardrobeElement.getType()));
