@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="wardrobe_element_colors">
+        <item></item>
+        <item>Noir</item>
+        <item>Blanc</item>
+        <item>Bleu</item>
+        <item>Rouge</item>
+        <item>Rose</item>
+        <item>Vert</item>
+        <item>Marron</item>
+        <item>Orange</item>
+        <item>Jaune</item>
+        <item>Violet</item>
+        <item>Motifs</item>
+    </string-array>
+</resources>

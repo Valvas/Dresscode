@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="wardrobe_element_types">
+        <item></item>
+        <item>T-shirt/Top</item>
+        <item>Chemise</item>
+        <item>Pantalon</item>
+        <item>Jupe</item>
+        <item>Short</item>
+        <item>Robe</item>
+        <item>Swimwear</item>
+        <item>Sportswear</item>
+        <item>Chaussettes</item>
+        <item>Collant</item>
+        <item>Manteau/Veste</item>
+        <item>Chaussures</item>
+        <item>Ceinture</item>
+        <item>Sac</item>
+    </string-array>
+</resources>

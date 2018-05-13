@@ -17,7 +17,7 @@ public class AppDatabaseCreation extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        String wardrobeTable = "CREATE TABLE wardrobe (id INTEGER PRIMARY KEY, name TEXT NOT NULL, type INTEGER NOT NULL, material INTEGER NOT NULL, color INTEGER NOT NULL, picture TEXT NOT NULL)";
+        String wardrobeTable = "CREATE TABLE wardrobe (id INTEGER PRIMARY KEY, name TEXT NOT NULL, type INTEGER NOT NULL, color INTEGER NOT NULL, picture TEXT NOT NULL)";
 
         db.execSQL(wardrobeTable);
     }

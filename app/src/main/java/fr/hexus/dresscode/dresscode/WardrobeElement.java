@@ -8,17 +8,15 @@ public class WardrobeElement implements Serializable
     private String path;
     private int id;
     private int type;
-    private int material;
     private int color;
 
-    public WardrobeElement(int id, int type, int material, int color, String name, String path)
+    public WardrobeElement(int id, int type, int color, String name, String path)
     {
         this.id         = id;
         this.type       = type;
         this.name       = name;
         this.path       = path;
         this.color      = color;
-        this.material   = material;
     }
 
     public int getId()
@@ -36,11 +34,6 @@ public class WardrobeElement implements Serializable
         return this.color;
     }
 
-    public int getMaterial()
-    {
-        return this.material;
-    }
-
     public String getName()
     {
         return this.name;
@@ -53,6 +46,6 @@ public class WardrobeElement implements Serializable
 
     public String toString()
     {
-        return "Name : " + this.name + "\nType : " + this.type + "\nMaterial : " + this.material + "\nColor : " + this.color + "\nPicture path : " + this.path;
+        return "Name : " + this.name + "\nType : " + this.type + "\nColor : " + this.color + "\nPicture path : " + this.path;
     }
 }

@@ -26,7 +26,7 @@ public class WardrobeActivity extends ListActivity
 
         Cursor wardrobeElementsCursor = database.rawQuery("SELECT * FROM wardrobe", null);
 
-        if(wardrobeElementsCursor.getCount() > 0)
+        if(wardrobeElementsCursor.getCount() == 0)
         {
             TextView emptyWardrobe = findViewById(R.id.emptyWardrobe);
             emptyWardrobe.setText(R.string.wardrobe_no_entries);
@@ -38,19 +38,19 @@ public class WardrobeActivity extends ListActivity
 
             wardrobeElementsCursor.moveToFirst();
 
-            /*for(int i = 0; i < wardrobeElementsCursor.getCount(); i++)
+            for(int i = 0; i < wardrobeElementsCursor.getCount(); i++)
             {
-                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")),wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("material")),wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("color")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("name"))));
+                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")),wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("color")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("name")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
 
                 wardrobeElementsCursor.moveToNext();
-            }*/
+            }
 
-            wardrobeElements.add(new WardrobeElement(1, 1, 1, 1, "T-shirt bleu", "/DCIM/Camera/1430291780386.jpg"));
-            wardrobeElements.add(new WardrobeElement(2, 1, 1, 1, "T-shirt vert", "/02.png"));
-            wardrobeElements.add(new WardrobeElement(3, 1, 1, 1, "T-shirt rouge", "/03.png"));
-            wardrobeElements.add(new WardrobeElement(4, 1, 1, 1, "T-shirt jaune", "/04.png"));
-            wardrobeElements.add(new WardrobeElement(5, 1, 1, 1, "T-shirt noir", "/05.png"));
-            wardrobeElements.add(new WardrobeElement(6, 1, 1, 1, "T-shirt blanc", "/06.png"));
+            /*wardrobeElements.add(new WardrobeElement(1, 1, 1, "T-shirt bleu", "/Dresscode/blue.jpg"));
+            wardrobeElements.add(new WardrobeElement(2, 1, 1, "T-shirt vert", "/Dresscode/green.jpg"));
+            wardrobeElements.add(new WardrobeElement(3, 1, 1, "T-shirt rouge", "/Dresscode/red.jpg"));
+            wardrobeElements.add(new WardrobeElement(4, 1, 1, "T-shirt jaune", "/Dresscode/yellow.jpg"));
+            wardrobeElements.add(new WardrobeElement(5, 1, 1, "T-shirt noir", "/Dresscode/black.jpg"));
+            wardrobeElements.add(new WardrobeElement(6, 1, 1, "T-shirt blanc", "/Dresscode/white.jpg"));*/
 
             WardrobeElementAdapter wardrobeElementAdapter = new WardrobeElementAdapter(this, wardrobeElements);
             setListAdapter(wardrobeElementAdapter);
@@ -73,5 +73,10 @@ public class WardrobeActivity extends ListActivity
         intent.putExtra(getResources().getString(R.string.WARDROBE_ELEMENT), clicked);
 
         startActivity(intent);
+    }
+
+    public void openWardrobeForm(View view)
+    {
+        startActivity(new Intent(this, WardrobeAddElement.class));
     }
 }

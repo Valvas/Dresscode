@@ -1,17 +1,32 @@
 <resources>
     <string name="app_name">Dresscode</string>
     <string name="menu_button">Menu</string>
+    <string name="return_button">Retour</string>
     <string name="menu_close">Fermer</string>
     <string name="menu_exit">Quitter</string>
     <string name="menu_home">Accueil</string>
     <string name="menu_wardrobe">Mon Dressing</string>
     <string name="wardrobe_no_entries">Votre dressing est vide pour le moment, comme c\'est triste...</string>
+    <string name="wardrobe_new_element">Ajouter un élément</string>
     <string name="wardrobe_view_return">Retour au dressing</string>
     <string name="wardrobe_view_name">Nom</string>
     <string name="wardrobe_view_type">Type</string>
     <string name="wardrobe_view_material">Matériau</string>
     <string name="wardrobe_view_color">Couleur</string>
     <string name="wardrobe_view_image_could_not_be_loaded">L\'image n\'a pas pu être chargée</string>
+
+    <string name="wardrobe_add_form_info">Ajouter un élément à votre dressing</string>
+    <string name="wardrobe_add_form_type_label">Type de vêtement :</string>
+    <string name="wardrobe_add_form_color_label">Couleur :</string>
+    <string name="wardrobe_add_form_name_label">Nom du vêtement :</string>
+    <string name="wardrobe_add_form_name_hint">Nom</string>
+    <string name="wardrobe_add_form_picture_label">Photo :</string>
+    <string name="wardrobe_add_form_picture_button">Ajouter une photo</string>
+    <string name="wardrobe_add_form_picture_change">Choisir une autre photo</string>
+    <string name="wardrobe_add_form_save">Enregistrer</string>
+    <string name="wardrobe_add_form_picture_prompt_title">Choisissez :</string>
+    <string name="wardrobe_add_form_picture_prompt_camera">Prendre une photo</string>
+    <string name="wardrobe_add_form_picture_prompt_gallery">Prendre une photo de la gallerie</string>
 
     <string name="WARDROBE_ELEMENT">WARDROBE_ELEMENT</string>
     <string name="could_no_create_app_directory">Le dossier de l\'application n\'a pas pu être créé</string>
