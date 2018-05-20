@@ -42,7 +42,7 @@ public class WardrobeElementAdapter extends ArrayAdapter<WardrobeElement>
                 .into(wardrobeElementPicture);
 
         wardrobeElementName.setText(String.valueOf(currentWardrobeElement.getName()));
-        wardrobeElementType.setText(String.valueOf(currentWardrobeElement.getType()));
+        wardrobeElementType.setText(parent.getResources().getString(parent.getResources().getIdentifier(Types.getKey(currentWardrobeElement.getType()), "string", getContext().getPackageName())));
 
         return row;
     }

@@ -22,9 +22,9 @@ public class MenuActivity extends AppCompatActivity
     public void onExitApp(View view)
     {
         finish();
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
+        Intent intent = new Intent(this, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
         startActivity(intent);
     }
 

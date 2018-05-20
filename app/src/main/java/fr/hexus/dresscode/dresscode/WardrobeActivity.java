@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,11 +15,30 @@ import java.util.List;
 
 public class WardrobeActivity extends ListActivity
 {
+    private TextView emptyWardrobe;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wardrobe);
+
+        FloatingActionButton addNewWardrobeElement = findViewById(R.id.addNewWardrobeElement);
+
+        addNewWardrobeElement.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                startActivity(new Intent(getApplicationContext(), WardrobeAddElement.class));
+            }
+        });
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
 
         AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(this);
 
@@ -28,12 +48,15 @@ public class WardrobeActivity extends ListActivity
 
         if(wardrobeElementsCursor.getCount() == 0)
         {
-            TextView emptyWardrobe = findViewById(R.id.emptyWardrobe);
+            emptyWardrobe = findViewById(R.id.emptyWardrobe);
             emptyWardrobe.setText(R.string.wardrobe_no_entries);
         }
 
         else
         {
+            emptyWardrobe = findViewById(R.id.emptyWardrobe);
+            emptyWardrobe.setText("");
+
             List<WardrobeElement> wardrobeElements = new ArrayList<>();
 
             wardrobeElementsCursor.moveToFirst();
@@ -45,16 +68,11 @@ public class WardrobeActivity extends ListActivity
                 wardrobeElementsCursor.moveToNext();
             }
 
-            /*wardrobeElements.add(new WardrobeElement(1, 1, 1, "T-shirt bleu", "/Dresscode/blue.jpg"));
-            wardrobeElements.add(new WardrobeElement(2, 1, 1, "T-shirt vert", "/Dresscode/green.jpg"));
-            wardrobeElements.add(new WardrobeElement(3, 1, 1, "T-shirt rouge", "/Dresscode/red.jpg"));
-            wardrobeElements.add(new WardrobeElement(4, 1, 1, "T-shirt jaune", "/Dresscode/yellow.jpg"));
-            wardrobeElements.add(new WardrobeElement(5, 1, 1, "T-shirt noir", "/Dresscode/black.jpg"));
-            wardrobeElements.add(new WardrobeElement(6, 1, 1, "T-shirt blanc", "/Dresscode/white.jpg"));*/
-
             WardrobeElementAdapter wardrobeElementAdapter = new WardrobeElementAdapter(this, wardrobeElements);
             setListAdapter(wardrobeElementAdapter);
         }
+
+        appDatabaseCreation.close();
     }
 
     public void onOpenMenu(View view)

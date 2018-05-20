@@ -26,8 +26,8 @@ public class WardrobeElementView extends AppCompatActivity
         elementPicture.setScaleType(ImageView.ScaleType.CENTER);
 
         elementName.setText(elementName.getText() + " : " + String.valueOf(wardrobeElement.getName()));
-        elementType.setText(elementType.getText() + " : " + String.valueOf(wardrobeElement.getType()));
-        elementColor.setText(elementColor.getText() + " : " + String.valueOf(wardrobeElement.getColor()));
+        elementType.setText(elementType.getText() + " : " + getResources().getString(getResources().getIdentifier(Types.getKey(wardrobeElement.getType()), "string", getPackageName())));
+        elementColor.setText(elementColor.getText() + " : " + getResources().getString(getResources().getIdentifier(Colors.getKey(wardrobeElement.getColor()), "string", getPackageName())));
 
         GlideApp.with(this)
                 .load(Environment.getExternalStorageDirectory() + String.valueOf(wardrobeElement.getPath()))

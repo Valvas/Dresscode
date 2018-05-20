@@ -4,7 +4,10 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -24,7 +27,8 @@
         <activity android:name=".MenuActivity" />
         <activity android:name=".WardrobeElementAdapter" />
         <activity android:name=".WardrobeElementView" />
-        <activity android:name=".WardrobeAddElement"></activity>
+        <activity android:name=".WardrobeAddElement" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.example.android.fileprovider"
@@ -32,8 +36,10 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/pictures_path"></meta-data>
+                android:resource="@xml/pictures_path" />
         </provider>
+
+        <activity android:name=".WardrobeAddElementConfirmation"></activity>
     </application>
 
 </manifest>

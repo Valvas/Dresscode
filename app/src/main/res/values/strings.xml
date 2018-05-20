@@ -14,8 +14,11 @@
     <string name="wardrobe_view_material">Matériau</string>
     <string name="wardrobe_view_color">Couleur</string>
     <string name="wardrobe_view_image_could_not_be_loaded">L\'image n\'a pas pu être chargée</string>
+    <string name="wardrobe_view_image_could_not_be_save">L\'image n\'a pas pu être enregistrée</string>
+    <string name="could_not_save_wardrobe_element">Le nouvel élément n\a pas pu être enregistré</string>
+    <string name="new_wardrobe_element_saved">Ajouté au dressing</string>
 
-    <string name="wardrobe_add_form_info">Ajouter un élément à votre dressing</string>
+    <string name="wardrobe_add_form_info">Ajoutez un élément à votre dressing</string>
     <string name="wardrobe_add_form_type_label">Type de vêtement :</string>
     <string name="wardrobe_add_form_color_label">Couleur :</string>
     <string name="wardrobe_add_form_name_label">Nom du vêtement :</string>
@@ -30,4 +33,31 @@
 
     <string name="WARDROBE_ELEMENT">WARDROBE_ELEMENT</string>
     <string name="could_no_create_app_directory">Le dossier de l\'application n\'a pas pu être créé</string>
+
+    <string name="BLACK">Noir</string>
+    <string name="WHITE">Blanc</string>
+    <string name="BLUE">Bleu</string>
+    <string name="RED">Rouge</string>
+    <string name="PINK">Rose</string>
+    <string name="GREEN">Vert</string>
+    <string name="BROWN">Marron</string>
+    <string name="ORANGE">Orange</string>
+    <string name="YELLOW">Jaune</string>
+    <string name="PURPLE">Violet</string>
+    <string name="PATTERNED">Motifs</string>
+
+    <string name="TOP">T-shirt/Top</string>
+    <string name="SHIRT">Chemise</string>
+    <string name="TROUSERS">Pantalon</string>
+    <string name="SKIRT">Jupe</string>
+    <string name="SHORT">Short</string>
+    <string name="DRESS">Robe</string>
+    <string name="SWIMWEAR">Swimwear</string>
+    <string name="SPORTSWEAR">Sportswear</string>
+    <string name="SOCKS">Chaussettes</string>
+    <string name="TIGHTS">Collant</string>
+    <string name="COAT">Manteau/Veste</string>
+    <string name="SHOES">Chaussures</string>
+    <string name="BELT">Ceinture</string>
+    <string name="BAG">Sac</string>
 </resources>

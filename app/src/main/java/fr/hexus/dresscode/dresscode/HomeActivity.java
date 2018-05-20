@@ -1,6 +1,7 @@
 package fr.hexus.dresscode.dresscode;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -15,10 +16,17 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        if (getIntent().getBooleanExtra("EXIT", false))
+        {
+            finish();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(this);
+
+        SQLiteDatabase db = appDatabaseCreation.getReadableDatabase();
 
         File dresscodeDirectory = new File(Environment.getExternalStorageDirectory() + "/Dresscode");
 
