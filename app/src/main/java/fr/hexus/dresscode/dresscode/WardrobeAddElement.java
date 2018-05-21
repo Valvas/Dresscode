@@ -91,6 +91,19 @@ public class WardrobeAddElement extends AppCompatActivity
         fillColorsSpinner();
     }
 
+    protected void onResume()
+    {
+        super.onResume();
+
+        if(wardrobeElementPicturePath.length() > 0)
+        {Toast.makeText(this, wardrobeElementPicturePath, Toast.LENGTH_LONG).show();
+            GlideApp.with(this)
+                    .load(wardrobeElementPicturePath)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .into(picture);
+        }
+    }
+
     public void onReturn(View view)
     {
         finish();
