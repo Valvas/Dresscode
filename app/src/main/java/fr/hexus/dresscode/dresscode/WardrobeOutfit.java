@@ -1,11 +1,14 @@
 package fr.hexus.dresscode.dresscode;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +17,6 @@ import android.widget.ImageView;
 public class WardrobeOutfit extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private DrawerLayout myDrawer;
-    private ImageView menuButton;
     private NavigationView dresscodeMenu;
 
     @Override
@@ -29,16 +31,14 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
 
         dresscodeMenu.setNavigationItemSelectedListener(this);
 
-        menuButton = findViewById(R.id.openMenu);
-
-        menuButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                myDrawer.openDrawer(Gravity.START);
-            }
-        });
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white);
+        getSupportActionBar().setTitle(getResources().getString(R.string.menu_outfit));
+        getSupportActionBar().setIcon(R.drawable.ic_dress);
 
         FloatingActionButton addNewWardrobeElement = findViewById(R.id.addNewWardrobeOutfit);
 
@@ -52,40 +52,50 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+                myDrawer.openDrawer(Gravity.START);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item)
     {
-        int id = item.getItemId();
-
         myDrawer.closeDrawer(Gravity.START);
 
-        if(id == R.id.menuHome)
-        {
-            finish();
-        }
+        switch(item.getItemId()) {
+            case R.id.menuHome:
+                finish();
+                return true;
 
-        else if(id == R.id.menuWardrobe)
-        {
-            finish();
-            startActivity(new Intent(this, WardrobeActivity.class));
-        }
+            case R.id.menuWardrobe:
+                finish();
+                startActivity(new Intent(this, WardrobeActivity.class));
+                return true;
 
-        else if(id == R.id.menuOutfits)
-        {
-            myDrawer.closeDrawer(Gravity.START);
-        }
+            case R.id.menuOutfits:
+                myDrawer.closeDrawer(Gravity.START);
+                return true;
 
-        else if(id == R.id.menuExit)
-        {
-            finish();
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
+            case R.id.menuExit:
+                finish();
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
 
-        return true;
+            default:
+                return true;
+        }
     }
 }

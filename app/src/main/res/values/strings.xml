@@ -7,6 +7,7 @@
     <string name="menu_home">Accueil</string>
     <string name="menu_outfit">Mes tenues</string>
     <string name="menu_wardrobe">Mon Dressing</string>
+    <string name="header_title_add_wardrobe_element">Nouvel élément</string>
     <string name="wardrobe_no_entries">Votre dressing est vide pour le moment, comme c\'est triste...</string>
     <string name="wardrobe_new_element">Ajouter un élément</string>
     <string name="wardrobe_view_return">Retour au dressing</string>

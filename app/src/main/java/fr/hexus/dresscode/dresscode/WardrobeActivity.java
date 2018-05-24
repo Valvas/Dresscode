@@ -46,8 +46,8 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white);
-        getSupportActionBar().setTitle(getResources().getString(R.string.menu_home));
-        getSupportActionBar().setIcon(R.drawable.ic_home_white);
+        getSupportActionBar().setTitle(getResources().getString(R.string.menu_wardrobe));
+        getSupportActionBar().setIcon(R.drawable.ic_baseline_all_inbox);
 
         FloatingActionButton addNewWardrobeElement = findViewById(R.id.addNewWardrobeElement);
 

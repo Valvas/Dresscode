@@ -25,39 +25,25 @@
             android:src="@drawable/ic_round_add"
             android:layout_margin="16dp" />
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/content_frame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/header"
-            style="@style/HeaderBackground">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/openMenu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_menu_larger"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                style="@style/HeaderBackground"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-            <TextView
-                android:layout_width="0dp"
+            <ListView
+                android:id="@+id/myList"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/menu_outfit"
-                style="@style/HeaderTitle"
-                android:layout_weight="1"
-                android:textAlignment="textEnd"
-                android:drawableRight="@drawable/ic_dress"
-                android:drawableTint="#FFFFFF"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-        </LinearLayout>
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>
 
