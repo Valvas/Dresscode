@@ -19,13 +19,17 @@ import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.FileProvider;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -45,7 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class WardrobeAddElement extends AppCompatActivity
+public class WardrobeAddElement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private static final int STORAGE = 0;
     private static final int CAMERA = 1;
@@ -54,6 +58,9 @@ public class WardrobeAddElement extends AppCompatActivity
     private EditText wardrobeElementName;
     private Button addPicture;
     private String wardrobeElementPicturePath;
+    private DrawerLayout myDrawer;
+    private ImageView menuButton;
+    private NavigationView dresscodeMenu;
 
     private Spinner wardrobeElementType;
     private Spinner wardrobeElementColor;
@@ -66,14 +73,45 @@ public class WardrobeAddElement extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wardrobe_add_element);
 
+        myDrawer = findViewById(R.id.myDrawer);
+
+        dresscodeMenu = findViewById(R.id.dresscodeMenu);
+
+        dresscodeMenu.setNavigationItemSelectedListener(this);
+
+        menuButton = findViewById(R.id.openMenu);
+
+        menuButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                myDrawer.openDrawer(Gravity.START);
+            }
+        });
+
         picture = findViewById(R.id.wardrobeAddFormPicture);
         addPicture = findViewById(R.id.wardrobeAddFormPictureButton);
         wardrobeElementName = findViewById(R.id.wardrobeAddFormName);
         wardrobeElementSave = findViewById(R.id.wardrobeAddFormSave);
 
-        wardrobeElementSave.setVisibility(View.GONE);
+        //picture.setScaleType(ImageView.ScaleType.FIT_XY);
 
-        picture.setScaleType(ImageView.ScaleType.FIT_XY);
+        if(savedInstanceState != null)
+        {
+            if(savedInstanceState.getString("picturePath") != null)
+            {
+                wardrobeElementPicturePath = savedInstanceState.getString("picturePath");
+
+                GlideApp.with(this)
+                        .load(wardrobeElementPicturePath)
+                        .centerInside()
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .into(picture);
+            }
+        }
+
+        wardrobeElementSave.setVisibility(View.GONE);
 
         wardrobeElementName.addTextChangedListener(new TextWatcher()
         {
@@ -91,17 +129,11 @@ public class WardrobeAddElement extends AppCompatActivity
         fillColorsSpinner();
     }
 
-    protected void onResume()
+    @Override
+    public void onSaveInstanceState(Bundle outState)
     {
-        super.onResume();
-
-        if(wardrobeElementPicturePath.length() > 0)
-        {Toast.makeText(this, wardrobeElementPicturePath, Toast.LENGTH_LONG).show();
-            GlideApp.with(this)
-                    .load(wardrobeElementPicturePath)
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .into(picture);
-        }
+        super.onSaveInstanceState(outState);
+        outState.putString("picturePath", wardrobeElementPicturePath);
     }
 
     public void onReturn(View view)
@@ -256,6 +288,7 @@ public class WardrobeAddElement extends AppCompatActivity
 
             GlideApp.with(this)
                     .load(wardrobeElementPicturePath)
+                    .centerInside()
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(picture);
         }
@@ -264,6 +297,7 @@ public class WardrobeAddElement extends AppCompatActivity
         {
             GlideApp.with(this)
                     .load(wardrobeElementPicturePath)
+                    .centerInside()
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(picture);
 
@@ -318,8 +352,8 @@ public class WardrobeAddElement extends AppCompatActivity
 
     public void onSubmitForm(View view)
     {
-        int type = wardrobeElementType.getSelectedItemPosition();
-        int color = wardrobeElementColor.getSelectedItemPosition();
+        int type = wardrobeElementType.getSelectedItemPosition() + 1;
+        int color = wardrobeElementColor.getSelectedItemPosition() + 1;
         String name = String.valueOf(wardrobeElementName.getText());
 
         BitmapDrawable draw = (BitmapDrawable) picture.getDrawable();
@@ -392,5 +426,47 @@ public class WardrobeAddElement extends AppCompatActivity
         }
 
         return "";
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        myDrawer.closeDrawer(Gravity.START);
+
+        if(id == R.id.menuHome)
+        {
+            finish();
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+
+        else if(id == R.id.menuWardrobe)
+        {
+            finish();
+        }
+
+        else if(id == R.id.menuOutfits)
+        {
+            finish();
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("OUTFITS", true);
+            startActivity(intent);
+        }
+
+        else if(id == R.id.menuExit)
+        {
+            finish();
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("EXIT", true);
+            startActivity(intent);
+        }
+
+        return true;
     }
 }

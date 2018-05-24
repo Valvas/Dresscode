@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/menuHome"
+            android:icon="@drawable/ic_baseline_home"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/menuWardrobe"
+            android:icon="@drawable/ic_baseline_all_inbox"
+            android:title="@string/menu_wardrobe" />
+        <item
+            android:id="@+id/menuOutfits"
+            android:icon="@drawable/ic_dress"
+            android:title="@string/menu_outfit" />
+        <item
+            android:id="@+id/menuExit"
+            android:icon="@drawable/ic_baseline_close"
+            android:title="@string/menu_exit" />
+    </group>
+</menu>

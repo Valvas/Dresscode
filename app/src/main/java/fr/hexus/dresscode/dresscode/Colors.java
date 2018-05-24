@@ -5,7 +5,7 @@ import java.util.Map;
 
 public enum Colors
 {
-    BLACK (0), WHITE (1), BLUE (2), RED (3), PINK (4), GREEN (5), BROWN (6), ORANGE (7), YELLOW (8), PURPLE (9), PATTERNED (10);
+    BLACK (1), WHITE (2), BLUE (3), RED (4), PINK (5), GREEN (6), BROWN (7), ORANGE (8), YELLOW (9), PURPLE (10), PATTERNED (11);
 
     private int id;
 

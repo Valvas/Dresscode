@@ -5,7 +5,7 @@ import java.util.Map;
 
 public enum Types
 {
-    TOP (0), SHIRT (1), TROUSERS (2), SKIRT (3), SHORT (4), DRESS (5), SWIMWEAR (6), SPORTSWEAR (7), SOCKS (8), TIGHTS (9), COAT (10), SHOES (11), BELT (12), BAG (13);
+    TOP (1), SHIRT (2), TROUSERS (3), SKIRT (4), SHORT (5), DRESS (6), SWIMWEAR (7), SPORTSWEAR (8), SOCKS (9), TIGHTS (10), COAT (11), SHOES (12), BELT (13), BAG (14);
 
     private int id;
 
@@ -13,7 +13,7 @@ public enum Types
 
     static
     {
-        for (Types types : values())
+        for(Types types : values())
         {
             MY_MAP.put(types.getId(), String.valueOf(types));
         }

@@ -5,6 +5,7 @@
     <string name="menu_close">Fermer</string>
     <string name="menu_exit">Quitter</string>
     <string name="menu_home">Accueil</string>
+    <string name="menu_outfit">Mes tenues</string>
     <string name="menu_wardrobe">Mon Dressing</string>
     <string name="wardrobe_no_entries">Votre dressing est vide pour le moment, comme c\'est triste...</string>
     <string name="wardrobe_new_element">Ajouter un élément</string>
@@ -60,4 +61,11 @@
     <string name="SHOES">Chaussures</string>
     <string name="BELT">Ceinture</string>
     <string name="BAG">Sac</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
 </resources>

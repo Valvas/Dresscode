@@ -39,7 +39,8 @@
                 android:resource="@xml/pictures_path" />
         </provider>
 
-        <activity android:name=".WardrobeAddElementConfirmation"></activity>
+        <activity android:name=".WardrobeAddElementConfirmation" />
+        <activity android:name=".WardrobeOutfit"></activity>
     </application>
 
 </manifest>
