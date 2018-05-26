@@ -40,7 +40,8 @@
         </provider>
 
         <activity android:name=".WardrobeAddElementConfirmation" />
-        <activity android:name=".WardrobeOutfit"></activity>
+        <activity android:name=".WardrobeOutfit" />
+        <activity android:name=".WardrobeElementEdit"></activity>
     </application>
 
 </manifest>

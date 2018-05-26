@@ -7,7 +7,10 @@
     <string name="menu_home">Accueil</string>
     <string name="menu_outfit">Mes tenues</string>
     <string name="menu_wardrobe">Mon Dressing</string>
+    <string name="menu_detail">Détail</string>
     <string name="header_title_add_wardrobe_element">Nouvel élément</string>
+    <string name="header_title_edit_wardrobe_element">Modifier un élément</string>
+    <string name="header_title_edit_wardrobe_element_confirmation">Element ajouté</string>
     <string name="wardrobe_no_entries">Votre dressing est vide pour le moment, comme c\'est triste...</string>
     <string name="wardrobe_new_element">Ajouter un élément</string>
     <string name="wardrobe_view_return">Retour au dressing</string>
@@ -19,6 +22,9 @@
     <string name="wardrobe_view_image_could_not_be_save">L\'image n\'a pas pu être enregistrée</string>
     <string name="could_not_save_wardrobe_element">Le nouvel élément n\a pas pu être enregistré</string>
     <string name="new_wardrobe_element_saved">Ajouté au dressing</string>
+
+    <string name="wardrobe_element_detail_remove_alert_title">Supprimer un élément</string>
+    <string name="wardrobe_element_detail_remove_alert_message">Êtes-vous sûr(e) ?</string>
 
     <string name="wardrobe_add_form_info">Ajoutez un élément à votre dressing</string>
     <string name="wardrobe_add_form_type_label">Type de vêtement :</string>

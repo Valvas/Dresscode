@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class WardrobeElementAdapter extends ArrayAdapter<WardrobeElement>
 {
     public WardrobeElementAdapter(@NonNull Context context, List<WardrobeElement> wardrobeElements)
@@ -32,7 +34,7 @@ public class WardrobeElementAdapter extends ArrayAdapter<WardrobeElement>
         TextView wardrobeElementName = row.findViewById(R.id.wardrobeElementName);
         TextView wardrobeElementType = row.findViewById(R.id.wardrobeElementType);
 
-        ImageView wardrobeElementPicture = row.findViewById(R.id.wardrobeElementPicture);
+        CircleImageView wardrobeElementPicture = row.findViewById(R.id.wardrobeElementPicture);
 
         wardrobeElementPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
 

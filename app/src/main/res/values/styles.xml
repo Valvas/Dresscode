@@ -81,4 +81,52 @@
 
     <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="WardrobeListName">
+        <item name="android:textColor">#428BCA</item>
+        <item name="android:fontFamily">@font/tajawal_light</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="WardrobeListType">
+        <item name="android:textColor">#5CB85C</item>
+        <item name="android:fontFamily">@font/tajawal_light</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+    </style>
+
+    <style name="WardrobeListColor">
+        <item name="android:textColor">#5CB85C</item>
+        <item name="android:fontFamily">@font/tajawal_light</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+    </style>
+
+    <style name="WardrobeElementViewName">
+        <item name="android:textColor">#428BCA</item>
+        <item name="android:fontFamily">@font/tajawal_light</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+    </style>
+
+    <style name="WardrobeElementViewType">
+        <item name="android:textColor">#5CB85C</item>
+        <item name="android:fontFamily">@font/tajawal_light</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+    </style>
+
+    <style name="WardrobeElementViewColor">
+        <item name="android:textColor">#EEA2A9</item>
+        <item name="android:fontFamily">@font/tajawal_light</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+    </style>
+
 </resources>

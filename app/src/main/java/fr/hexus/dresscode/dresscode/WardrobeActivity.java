@@ -27,6 +27,7 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
     private TextView emptyWardrobe;
     private DrawerLayout myDrawer;
     private NavigationView dresscodeMenu;
+    private ListView myList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -72,6 +73,10 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
         Cursor wardrobeElementsCursor = database.rawQuery("SELECT * FROM wardrobe", null);
 
+        myList = findViewById(R.id.myList);
+
+        myList.setAdapter(null);
+
         if(wardrobeElementsCursor.getCount() == 0)
         {
             emptyWardrobe = findViewById(R.id.emptyWardrobe);
@@ -93,8 +98,6 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
                 wardrobeElementsCursor.moveToNext();
             }
-
-            ListView myList = findViewById(R.id.myList);
 
             WardrobeElementAdapter wardrobeElementAdapter = new WardrobeElementAdapter(this, wardrobeElements);
             myList.setAdapter(wardrobeElementAdapter);

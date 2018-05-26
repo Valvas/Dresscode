@@ -4,24 +4,18 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.FileProvider;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -38,9 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -51,7 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class WardrobeAddElement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+public class WardrobeElementEdit extends AppCompatActivity
 {
     private static final int STORAGE = 0;
     private static final int CAMERA = 1;
@@ -60,8 +52,9 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
     private EditText wardrobeElementName;
     private Button addPicture;
     private String wardrobeElementPicturePath;
-    private DrawerLayout myDrawer;
-    private NavigationView dresscodeMenu;
+    private String wardrobeElementOldPicturePath;
+
+    private WardrobeElement wardrobeElement;
 
     private Spinner wardrobeElementType;
     private Spinner wardrobeElementColor;
@@ -72,43 +65,36 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wardrobe_add_element);
-
-        myDrawer = findViewById(R.id.myDrawer);
-
-        dresscodeMenu = findViewById(R.id.dresscodeMenu);
-
-        dresscodeMenu.setNavigationItemSelectedListener(this);
-
-        picture = findViewById(R.id.wardrobeAddFormPicture);
-        addPicture = findViewById(R.id.wardrobeAddFormPictureButton);
-        wardrobeElementName = findViewById(R.id.wardrobeAddFormName);
-        wardrobeElementSave = findViewById(R.id.wardrobeAddFormSave);
+        setContentView(R.layout.activity_wardrobe_element_edit);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white);
-        getSupportActionBar().setTitle(getResources().getString(R.string.header_title_add_wardrobe_element));
-        getSupportActionBar().setIcon(R.drawable.ic_add_circle_white);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_return_white);
+        getSupportActionBar().setTitle(getResources().getString(R.string.header_title_edit_wardrobe_element));
+        getSupportActionBar().setIcon(R.drawable.ic_edit_white);
 
-        if(savedInstanceState != null)
-        {
-            if(savedInstanceState.getString("picturePath") != null)
-            {
-                wardrobeElementPicturePath = savedInstanceState.getString("picturePath");
+        picture = findViewById(R.id.wardrobeAddFormPicture);
+        addPicture = findViewById(R.id.wardrobeAddFormPictureButton);
+        wardrobeElementName = findViewById(R.id.wardrobeAddFormName);
+        wardrobeElementSave = findViewById(R.id.wardrobeAddFormSave);
 
-                GlideApp.with(this)
-                        .load(wardrobeElementPicturePath)
-                        .centerInside()
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .into(picture);
-            }
-        }
+        Intent intent = getIntent();
+        wardrobeElement = (WardrobeElement) intent.getSerializableExtra("wardrobeElement");
 
-        wardrobeElementSave.setVisibility(View.GONE);
+        wardrobeElementName.setText(wardrobeElement.getName());
+
+        wardrobeElementPicturePath = wardrobeElement.getPath();
+
+        wardrobeElementPicturePath = String.valueOf(Environment.getExternalStorageDirectory()) + wardrobeElementPicturePath;
+
+        GlideApp.with(this)
+                .load(wardrobeElementPicturePath)
+                .centerInside()
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(picture);
 
         wardrobeElementName.addTextChangedListener(new TextWatcher()
         {
@@ -157,6 +143,8 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
         });
 
         wardrobeElementType.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array));
+
+        wardrobeElementType.setSelection(wardrobeElement.getType() - 1);
     }
 
     public void fillColorsSpinner()
@@ -183,6 +171,21 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
         });
 
         wardrobeElementColor.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array));
+
+        wardrobeElementColor.setSelection(wardrobeElement.getColor() - 1);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void addAPicture(View view)
@@ -258,7 +261,10 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
 
         File picture = File.createTempFile(imageFileName, ".jpg", storageDir);
 
+        wardrobeElementOldPicturePath = wardrobeElementPicturePath;
+
         wardrobeElementPicturePath = picture.getAbsolutePath();
+
         return picture;
     }
 
@@ -276,7 +282,9 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
         {
             Uri contentURI = data.getData();
 
-            wardrobeElementPicturePath = getRealPathFromURI(this, contentURI);
+            wardrobeElementOldPicturePath = wardrobeElementPicturePath;
+
+            wardrobeElementPicturePath = getRealPathFromURI(this, contentURI);;
 
             GlideApp.with(this)
                     .load(wardrobeElementPicturePath)
@@ -292,11 +300,11 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
                     .centerInside()
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(picture);
+
+
         }
 
         checkForm();
-
-        addPicture.setText(getResources().getString(R.string.wardrobe_add_form_picture_change));
     }
 
     public String getRealPathFromURI(Context context, Uri contentURI)
@@ -368,13 +376,18 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
             values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, path);
             values.put(Constants.WARDROBE_TABLE_COLUMNS_COLOR, color);
 
-            long insertedRowId = db.insert(Constants.WARDROBE_TABLE_NAME, null, values);
+            int updatedRows = db.update(Constants.WARDROBE_TABLE_NAME, values, "id = ?", new String[]{ String.valueOf(wardrobeElement.getId()) });
 
-            if(insertedRowId > 0)
+            if(updatedRows > 0)
             {
-                finish();
+                wardrobeElement.setName(name);
+                wardrobeElement.setType(type);
+                wardrobeElement.setPath(path);
+                wardrobeElement.setColor(color);
 
-                startActivity(new Intent(this, WardrobeAddElementConfirmation.class));
+                Intent finishIntent = new Intent(this, WardrobeElementEdit.class);
+                finishIntent.putExtra("wardrobeElement", wardrobeElement);
+                finish();
             }
 
             else
@@ -408,6 +421,11 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
             MediaScannerConnection.scanFile(this, new String[]{f.getPath()}, new String[]{"image/jpeg"}, null);
             fo.close();
 
+            //File fileToDelete = new File(wardrobeElementOldPicturePath);
+
+            //fileToDelete.delete();
+            System.out.println(wardrobeElementOldPicturePath);
+
             return "/Dresscode/" + f.getName();
 
         } catch(IOException e1)
@@ -416,58 +434,5 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
         }
 
         return "";
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
-            case android.R.id.home:
-                myDrawer.openDrawer(Gravity.START);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item)
-    {
-        myDrawer.closeDrawer(Gravity.START);
-
-        switch(item.getItemId()) {
-            case R.id.menuHome:
-                finish();
-                Intent intent = new Intent(this, HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                return true;
-
-            case R.id.menuWardrobe:
-                finish();
-                return true;
-
-            case R.id.menuOutfits:
-                finish();
-                Intent outfitsIntent = new Intent(this, HomeActivity.class);
-                outfitsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                outfitsIntent.putExtra("OUTFITS", true);
-                startActivity(outfitsIntent);
-                return true;
-
-            case R.id.menuExit:
-                finish();
-                Intent exitIntent = new Intent(Intent.ACTION_MAIN);
-                exitIntent.addCategory(Intent.CATEGORY_HOME);
-                exitIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(exitIntent);
-                return true;
-
-            default:
-                return true;
-        }
     }
 }

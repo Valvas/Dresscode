@@ -48,4 +48,24 @@ public class WardrobeElement implements Serializable
     {
         return "Name : " + this.name + "\nType : " + this.type + "\nColor : " + this.color + "\nPicture path : " + this.path;
     }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public void setType(int type)
+    {
+        this.type = type;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
+
+    public void setColor(int color)
+    {
+        this.color = color;
+    }
 }
