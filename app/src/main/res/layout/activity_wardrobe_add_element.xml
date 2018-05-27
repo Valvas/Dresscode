@@ -102,26 +102,6 @@
                         app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormColorLabel" />
 
                     <TextView
-                        android:id="@+id/wardrobeAddFormNameLabel"
-                        style="@style/AddFormLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/wardrobe_add_form_name_label"
-                        android:textColor="#428BCA"
-                        app:layout_constraintBottom_toTopOf="@id/wardrobeAddFormName"
-                        app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormColor" />
-
-                    <EditText
-                        android:id="@+id/wardrobeAddFormName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:hint="@string/wardrobe_add_form_name_hint"
-                        android:inputType="textPersonName"
-                        app:layout_constraintBottom_toTopOf="@id/wardrobeAddFormPictureLabel"
-                        app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormNameLabel" />
-
-                    <TextView
                         android:id="@+id/wardrobeAddFormPictureLabel"
                         style="@style/AddFormLabel"
                         android:layout_width="match_parent"

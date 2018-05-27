@@ -31,8 +31,8 @@ public class WardrobeElementAdapter extends ArrayAdapter<WardrobeElement>
 
         WardrobeElement currentWardrobeElement = getItem(position);
 
-        TextView wardrobeElementName = row.findViewById(R.id.wardrobeElementName);
         TextView wardrobeElementType = row.findViewById(R.id.wardrobeElementType);
+        TextView wardrobeElementColor = row.findViewById(R.id.wardrobeElementColor);
 
         CircleImageView wardrobeElementPicture = row.findViewById(R.id.wardrobeElementPicture);
 
@@ -43,7 +43,7 @@ public class WardrobeElementAdapter extends ArrayAdapter<WardrobeElement>
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(wardrobeElementPicture);
 
-        wardrobeElementName.setText(String.valueOf(currentWardrobeElement.getName()));
+        wardrobeElementColor.setText(parent.getResources().getString(parent.getResources().getIdentifier(Colors.getKey(currentWardrobeElement.getColor()), "string", getContext().getPackageName())));
         wardrobeElementType.setText(parent.getResources().getString(parent.getResources().getIdentifier(Types.getKey(currentWardrobeElement.getType()), "string", getContext().getPackageName())));
 
         return row;

@@ -26,7 +26,6 @@ public class WardrobeElementView extends AppCompatActivity
     private WardrobeElement wardrobeElement;
     private DrawerLayout myDrawer;
 
-    private TextView elementName;
     private TextView elementType;
     private TextView elementColor;
     private ImageView elementPicture;
@@ -50,7 +49,6 @@ public class WardrobeElementView extends AppCompatActivity
 
         wardrobeElement = (WardrobeElement) getIntent().getSerializableExtra(getResources().getString(R.string.WARDROBE_ELEMENT));
 
-        elementName = findViewById(R.id.elementName);
         elementType = findViewById(R.id.elementType);
         elementColor = findViewById(R.id.elementColor);
 
@@ -58,7 +56,6 @@ public class WardrobeElementView extends AppCompatActivity
 
         elementPicture.setScaleType(ImageView.ScaleType.CENTER);
 
-        elementName.setText(elementName.getText() + " : " + String.valueOf(wardrobeElement.getName()));
         elementType.setText(elementType.getText() + " : " + getResources().getString(getResources().getIdentifier(Types.getKey(wardrobeElement.getType()), "string", getPackageName())));
         elementColor.setText(elementColor.getText() + " : " + getResources().getString(getResources().getIdentifier(Colors.getKey(wardrobeElement.getColor()), "string", getPackageName())));
 
@@ -72,18 +69,26 @@ public class WardrobeElementView extends AppCompatActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(data.getSerializableExtra("wardrobeElement") != null)
+        if(data != null)
         {
-            wardrobeElement = (WardrobeElement) data.getSerializableExtra("wardrobeElement");
+            if(data.getSerializableExtra("wardrobeElement") != null)
+            {
+                wardrobeElement = (WardrobeElement) data.getSerializableExtra("wardrobeElement");
 
-            elementName.setText(elementName.getText() + " : " + String.valueOf(wardrobeElement.getName()));
-            elementType.setText(elementType.getText() + " : " + getResources().getString(getResources().getIdentifier(Types.getKey(wardrobeElement.getType()), "string", getPackageName())));
-            elementColor.setText(elementColor.getText() + " : " + getResources().getString(getResources().getIdentifier(Colors.getKey(wardrobeElement.getColor()), "string", getPackageName())));
+                String type = String.valueOf(elementType.getText());
+                String[] typeArray = type.split(" : ");
 
-            GlideApp.with(this)
-                    .load(Environment.getExternalStorageDirectory() + String.valueOf(wardrobeElement.getPath()))
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .into((ImageView) findViewById(R.id.elementPicture));
+                String color = String.valueOf(elementColor.getText());
+                String[] colorArray = color.split(" : ");
+
+                elementType.setText(typeArray[0] + " : " + getResources().getString(getResources().getIdentifier(Types.getKey(wardrobeElement.getType()), "string", getPackageName())));
+                elementColor.setText(colorArray[0] + " : " + getResources().getString(getResources().getIdentifier(Colors.getKey(wardrobeElement.getColor()), "string", getPackageName())));
+
+                GlideApp.with(this)
+                        .load(Environment.getExternalStorageDirectory() + String.valueOf(wardrobeElement.getPath()))
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .into((ImageView) findViewById(R.id.elementPicture));
+            }
         }
     }
 
@@ -138,6 +143,6 @@ public class WardrobeElementView extends AppCompatActivity
     {
         Intent editIntent = new Intent(this, WardrobeElementEdit.class);
         editIntent.putExtra("wardrobeElement", wardrobeElement);
-        startActivity(editIntent);
+        startActivityForResult(editIntent, 1);
     }
 }

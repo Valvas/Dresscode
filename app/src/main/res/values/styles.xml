@@ -7,7 +7,7 @@
     </style>
 
     <style name="HeaderBackground">
-        <item name="android:background">#428BCA</item>
+        <item name="android:background">#5B885B</item>
     </style>
 
     <style name="HeaderButton">

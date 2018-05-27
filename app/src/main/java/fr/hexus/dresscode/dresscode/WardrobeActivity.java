@@ -1,6 +1,5 @@
 package fr.hexus.dresscode.dresscode;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -94,7 +93,7 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
             for(int i = 0; i < wardrobeElementsCursor.getCount(); i++)
             {
-                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")),wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("color")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("name")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
+                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")),wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("color")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
 
                 wardrobeElementsCursor.moveToNext();
             }
@@ -121,11 +120,6 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
             startActivity(intent);
         }
-    }
-
-    public void openWardrobeForm(View view)
-    {
-        startActivity(new Intent(this, WardrobeAddElement.class));
     }
 
     @Override

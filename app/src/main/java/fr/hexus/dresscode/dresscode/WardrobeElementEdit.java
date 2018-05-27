@@ -49,7 +49,6 @@ public class WardrobeElementEdit extends AppCompatActivity
     private static final int CAMERA = 1;
 
     private ImageView picture;
-    private EditText wardrobeElementName;
     private Button addPicture;
     private String wardrobeElementPicturePath;
     private String wardrobeElementOldPicturePath;
@@ -78,13 +77,10 @@ public class WardrobeElementEdit extends AppCompatActivity
 
         picture = findViewById(R.id.wardrobeAddFormPicture);
         addPicture = findViewById(R.id.wardrobeAddFormPictureButton);
-        wardrobeElementName = findViewById(R.id.wardrobeAddFormName);
         wardrobeElementSave = findViewById(R.id.wardrobeAddFormSave);
 
         Intent intent = getIntent();
         wardrobeElement = (WardrobeElement) intent.getSerializableExtra("wardrobeElement");
-
-        wardrobeElementName.setText(wardrobeElement.getName());
 
         wardrobeElementPicturePath = wardrobeElement.getPath();
 
@@ -95,18 +91,6 @@ public class WardrobeElementEdit extends AppCompatActivity
                 .centerInside()
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(picture);
-
-        wardrobeElementName.addTextChangedListener(new TextWatcher()
-        {
-            public void afterTextChanged(Editable s)
-            {
-                checkForm();
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        });
 
         fillTypeSpinner();
         fillColorsSpinner();
@@ -334,7 +318,6 @@ public class WardrobeElementEdit extends AppCompatActivity
 
         if(wardrobeElementType.getSelectedItem().toString().length() == 0) formIsReady = false;
         if(wardrobeElementColor.getSelectedItem().toString().length() == 0) formIsReady = false;
-        if(wardrobeElementName.getText().length() == 0) formIsReady = false;
         if(picture.getDrawable() == null) formIsReady = false;
 
         if(formIsReady)
@@ -352,7 +335,6 @@ public class WardrobeElementEdit extends AppCompatActivity
     {
         int type = wardrobeElementType.getSelectedItemPosition() + 1;
         int color = wardrobeElementColor.getSelectedItemPosition() + 1;
-        String name = String.valueOf(wardrobeElementName.getText());
 
         BitmapDrawable draw = (BitmapDrawable) picture.getDrawable();
         Bitmap bitmap = draw.getBitmap();
@@ -371,7 +353,6 @@ public class WardrobeElementEdit extends AppCompatActivity
             SQLiteDatabase db = appDatabaseCreation.getWritableDatabase();
 
             ContentValues values = new ContentValues();
-            values.put(Constants.WARDROBE_TABLE_COLUMNS_NAME, name);
             values.put(Constants.WARDROBE_TABLE_COLUMNS_TYPE, type);
             values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, path);
             values.put(Constants.WARDROBE_TABLE_COLUMNS_COLOR, color);
@@ -380,13 +361,13 @@ public class WardrobeElementEdit extends AppCompatActivity
 
             if(updatedRows > 0)
             {
-                wardrobeElement.setName(name);
                 wardrobeElement.setType(type);
                 wardrobeElement.setPath(path);
                 wardrobeElement.setColor(color);
 
-                Intent finishIntent = new Intent(this, WardrobeElementEdit.class);
+                Intent finishIntent = new Intent();
                 finishIntent.putExtra("wardrobeElement", wardrobeElement);
+                setResult(RESULT_OK, finishIntent);
                 finish();
             }
 
@@ -421,10 +402,15 @@ public class WardrobeElementEdit extends AppCompatActivity
             MediaScannerConnection.scanFile(this, new String[]{f.getPath()}, new String[]{"image/jpeg"}, null);
             fo.close();
 
-            //File fileToDelete = new File(wardrobeElementOldPicturePath);
+            if(wardrobeElementOldPicturePath != null)
+            {
+                if(!wardrobeElementOldPicturePath.equals(wardrobeElementPicturePath))
+                {
+                    File fileToDelete = new File(wardrobeElementOldPicturePath);
 
-            //fileToDelete.delete();
-            System.out.println(wardrobeElementOldPicturePath);
+                    boolean b = fileToDelete.delete();
+                }
+            }
 
             return "/Dresscode/" + f.getName();
 

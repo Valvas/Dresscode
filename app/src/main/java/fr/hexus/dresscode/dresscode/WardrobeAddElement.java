@@ -57,7 +57,6 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
     private static final int CAMERA = 1;
 
     private ImageView picture;
-    private EditText wardrobeElementName;
     private Button addPicture;
     private String wardrobeElementPicturePath;
     private DrawerLayout myDrawer;
@@ -82,7 +81,6 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
 
         picture = findViewById(R.id.wardrobeAddFormPicture);
         addPicture = findViewById(R.id.wardrobeAddFormPictureButton);
-        wardrobeElementName = findViewById(R.id.wardrobeAddFormName);
         wardrobeElementSave = findViewById(R.id.wardrobeAddFormSave);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -109,18 +107,6 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
         }
 
         wardrobeElementSave.setVisibility(View.GONE);
-
-        wardrobeElementName.addTextChangedListener(new TextWatcher()
-        {
-            public void afterTextChanged(Editable s)
-            {
-                checkForm();
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        });
 
         fillTypeSpinner();
         fillColorsSpinner();
@@ -326,7 +312,6 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
 
         if(wardrobeElementType.getSelectedItem().toString().length() == 0) formIsReady = false;
         if(wardrobeElementColor.getSelectedItem().toString().length() == 0) formIsReady = false;
-        if(wardrobeElementName.getText().length() == 0) formIsReady = false;
         if(picture.getDrawable() == null) formIsReady = false;
 
         if(formIsReady)
@@ -344,7 +329,6 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
     {
         int type = wardrobeElementType.getSelectedItemPosition() + 1;
         int color = wardrobeElementColor.getSelectedItemPosition() + 1;
-        String name = String.valueOf(wardrobeElementName.getText());
 
         BitmapDrawable draw = (BitmapDrawable) picture.getDrawable();
         Bitmap bitmap = draw.getBitmap();
@@ -363,7 +347,6 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
             SQLiteDatabase db = appDatabaseCreation.getWritableDatabase();
 
             ContentValues values = new ContentValues();
-            values.put(Constants.WARDROBE_TABLE_COLUMNS_NAME, name);
             values.put(Constants.WARDROBE_TABLE_COLUMNS_TYPE, type);
             values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, path);
             values.put(Constants.WARDROBE_TABLE_COLUMNS_COLOR, color);
