@@ -24,6 +24,8 @@
     <string name="could_not_save_wardrobe_element">Le nouvel élément n\a pas pu être enregistré</string>
     <string name="new_wardrobe_element_saved">Ajouté au dressing</string>
 
+    <string name="outfits_no_entries">Vous n\'avez pas encore de tenues</string>
+
     <string name="wardrobe_element_detail_remove_alert_title">Supprimer un élément</string>
     <string name="wardrobe_element_detail_remove_alert_message">Êtes-vous sûr(e) ?</string>
 
@@ -42,6 +44,8 @@
 
     <string name="WARDROBE_ELEMENT">WARDROBE_ELEMENT</string>
     <string name="could_no_create_app_directory">Le dossier de l\'application n\'a pas pu être créé</string>
+
+    <string name="amount_of_elements_in_outfit">Nombre d\'éléments dans cette tenue</string>
 
     <string name="BLACK">Noir</string>
     <string name="WHITE">Blanc</string>

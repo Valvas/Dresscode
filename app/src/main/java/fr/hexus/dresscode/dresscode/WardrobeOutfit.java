@@ -15,11 +15,18 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WardrobeOutfit extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
+    private ListView myList;
     private DrawerLayout myDrawer;
     private NavigationView dresscodeMenu;
+    private TextView emptyWardrobeOutfits;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -64,6 +71,41 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
         SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
 
         Cursor wardrobeOutfitsCursor = database.rawQuery("SELECT * FROM outfit", null);
+
+        myList = findViewById(R.id.myList);
+
+        myList.setAdapter(null);
+
+        if(wardrobeOutfitsCursor.getCount() == 0)
+        {
+            emptyWardrobeOutfits = findViewById(R.id.emptyWardrobeOutfits);
+            emptyWardrobeOutfits.setText(R.string.outfits_no_entries);
+        }
+
+        else
+        {
+            emptyWardrobeOutfits = findViewById(R.id.emptyWardrobeOutfits);
+            emptyWardrobeOutfits.setText("");
+
+            List<WardrobeOutfit> wardrobeOutfits = new ArrayList<>();
+
+            wardrobeOutfitsCursor.moveToFirst();
+
+            for(int i = 0; i < wardrobeOutfitsCursor.getCount(); i++)
+            {
+                Cursor wardrobeCurrentOutfitElementsCursor = database.rawQuery("SELECT * FROM wardrobe WHERE " + Constants.WARDROBE_TABLE_COLUMNS_OUTFIT + " = ?", new String[]{String.valueOf(wardrobeOutfitsCursor.getInt(wardrobeOutfitsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_OUTFIT)))});
+                wardrobeOutfits.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")),wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("color")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
+
+                wardrobeElementsCursor.moveToNext();
+            }
+
+            WardrobeElementAdapter wardrobeElementAdapter = new WardrobeElementAdapter(this, wardrobeElements);
+            myList.setAdapter(wardrobeElementAdapter);
+
+            myList.setOnItemClickListener(new WardrobeActivity.returnClickedItem());
+        }
+
+        appDatabaseCreation.close();
     }
 
     @Override

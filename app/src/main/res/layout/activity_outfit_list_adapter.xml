@@ -2,44 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/wardrobe_list_content">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/outfitPicture"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_margin="8dp"
-            app:civ_border_width="1dp"
-            app:civ_border_color="#E0E0E0" />
+        <TextView
+            android:id="@+id/outfitName"
+            style="@style/WardrobeListName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@drawable/wardrobe_list_content">
-
-            <TextView
-                android:id="@+id/wardrobeElementType"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                style="@style/WardrobeListName"/>
-
-            <TextView
-                android:id="@+id/wardrobeElementColor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                style="@style/WardrobeListType"/>
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/outfitElements"
+            style="@style/WardrobeListType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
