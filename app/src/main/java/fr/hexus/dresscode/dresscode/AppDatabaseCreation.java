@@ -18,16 +18,20 @@ public class AppDatabaseCreation extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db)
     {
         String wardrobeTable = "CREATE TABLE " + Constants.WARDROBE_TABLE_NAME + " (id INTEGER PRIMARY KEY, " + Constants.WARDROBE_TABLE_COLUMNS_TYPE + " INTEGER NOT NULL, " + Constants.WARDROBE_TABLE_COLUMNS_COLOR + " INTEGER NOT NULL, " + Constants.WARDROBE_TABLE_COLUMNS_PATH + " TEXT NOT NULL)";
+        String outfitTable = "CREATE TABLE " + Constants.OUTFIT_TABLE_NAME + " (id INTEGER PRIMARY KEY, " + Constants.OUTFIT_TABLE_COLUMNS_NAME + " TEXT NOT NULL)";
 
         db.execSQL(wardrobeTable);
+        db.execSQL(outfitTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         String wardrobeTable = "DROP TABLE IF EXISTS " + Constants.WARDROBE_TABLE_NAME;
+        String outfitTable = "DROP TABLE IF EXISTS " + Constants.OUTFIT_TABLE_NAME;
 
         db.execSQL(wardrobeTable);
+        db.execSQL(outfitTable);
 
         onCreate(db);
     }

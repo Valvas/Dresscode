@@ -41,7 +41,9 @@
 
         <activity android:name=".WardrobeAddElementConfirmation" />
         <activity android:name=".WardrobeOutfit" />
-        <activity android:name=".WardrobeElementEdit"></activity>
+        <activity android:name=".WardrobeElementEdit" />
+        <activity android:name=".WardrobeOutfitAdd" />
+        <activity android:name=".OutfitListAdapter"></activity>
     </application>
 
 </manifest>

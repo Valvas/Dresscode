@@ -1,6 +1,8 @@
 package fr.hexus.dresscode.dresscode;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -40,16 +42,28 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
         getSupportActionBar().setTitle(getResources().getString(R.string.menu_outfit));
         getSupportActionBar().setIcon(R.drawable.ic_dress);
 
-        FloatingActionButton addNewWardrobeElement = findViewById(R.id.addNewWardrobeOutfit);
+        FloatingActionButton addNewWardrobeOutfit= findViewById(R.id.addNewWardrobeOutfit);
 
-        addNewWardrobeElement.setOnClickListener(new View.OnClickListener()
+        addNewWardrobeOutfit.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                //startActivity(new Intent(getApplicationContext(), WardrobeAddElement.class));
+                startActivity(new Intent(getApplicationContext(), WardrobeOutfitAdd.class));
             }
         });
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(this);
+
+        SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
+
+        Cursor wardrobeOutfitsCursor = database.rawQuery("SELECT * FROM outfit", null);
     }
 
     @Override
