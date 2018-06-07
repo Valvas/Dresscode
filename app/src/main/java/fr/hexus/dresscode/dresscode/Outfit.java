@@ -7,7 +7,7 @@ public class Outfit
     private String name;
     private List<WardrobeElement> elements;
 
-    public Outfit(List<WardrobeElement> elements, String name)
+    public Outfit(String name, List<WardrobeElement> elements)
     {
         this.elements = elements;
         this.name = name;

@@ -14,7 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -87,25 +87,51 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
             emptyWardrobeOutfits = findViewById(R.id.emptyWardrobeOutfits);
             emptyWardrobeOutfits.setText("");
 
-            List<WardrobeOutfit> wardrobeOutfits = new ArrayList<>();
+            List<Outfit> wardrobeOutfits = new ArrayList<>();
 
             wardrobeOutfitsCursor.moveToFirst();
 
             for(int i = 0; i < wardrobeOutfitsCursor.getCount(); i++)
             {
                 Cursor wardrobeCurrentOutfitElementsCursor = database.rawQuery("SELECT * FROM wardrobe WHERE " + Constants.WARDROBE_TABLE_COLUMNS_OUTFIT + " = ?", new String[]{String.valueOf(wardrobeOutfitsCursor.getInt(wardrobeOutfitsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_OUTFIT)))});
-                wardrobeOutfits.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")),wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("color")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
 
-                wardrobeElementsCursor.moveToNext();
+                wardrobeCurrentOutfitElementsCursor.moveToFirst();
+
+                List<WardrobeElement> wardrobeElements = new ArrayList<>();
+
+                for(int j = 0; j < wardrobeCurrentOutfitElementsCursor.getCount(); j++)
+                {
+                    wardrobeElements.add(new WardrobeElement(wardrobeCurrentOutfitElementsCursor.getInt(wardrobeCurrentOutfitElementsCursor.getColumnIndex("id")), wardrobeCurrentOutfitElementsCursor.getInt(wardrobeCurrentOutfitElementsCursor.getColumnIndex("type")),wardrobeCurrentOutfitElementsCursor.getInt(wardrobeCurrentOutfitElementsCursor.getColumnIndex("color")), wardrobeCurrentOutfitElementsCursor.getString(wardrobeCurrentOutfitElementsCursor.getColumnIndex("path"))));
+
+                    wardrobeCurrentOutfitElementsCursor.moveToNext();
+                }
+
+                wardrobeOutfits.add(new Outfit(wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_NAME)), wardrobeElements));
             }
 
-            WardrobeElementAdapter wardrobeElementAdapter = new WardrobeElementAdapter(this, wardrobeElements);
-            myList.setAdapter(wardrobeElementAdapter);
+            OutfitListAdapter outfitListAdapter = new OutfitListAdapter(this, wardrobeOutfits);
 
-            myList.setOnItemClickListener(new WardrobeActivity.returnClickedItem());
+            myList.setAdapter(outfitListAdapter);
+
+            myList.setOnItemClickListener(new returnClickedItem());
         }
 
         appDatabaseCreation.close();
+    }
+
+    class returnClickedItem implements AdapterView.OnItemClickListener
+    {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        {
+            /*WardrobeElement clicked = (WardrobeElement) parent.getItemAtPosition(position);
+
+            Intent intent = new Intent(parent.getContext(), WardrobeElementView.class);
+
+            intent.putExtra(getResources().getString(R.string.WARDROBE_ELEMENT), clicked);
+
+            startActivity(intent);*/
+        }
     }
 
     @Override
