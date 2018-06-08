@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:id="@+id/myDrawer"
     tools:openDrawer="start"
     android:layout_gravity="left"
-    tools:context=".WardrobeAddElementConfirmation"
-    android:focusableInTouchMode="true">
+    tools:context="fr.hexus.dresscode.dresscode.ChooseWardrobeElement">
+
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -22,24 +23,28 @@
             style="@style/HeaderBackground"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-        <TextView
-            android:id="@+id/wardrobeAddFormConfirmation"
-            style="@style/AddFormConfirmation"
-            android:layout_width="wrap_content"
+        <ListView
+            android:id="@+id/myList"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:divider="#FFFFFF"/>
+
+        <TextView
+            android:id="@+id/emptyWardrobe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:textAlignment="center"
-            android:drawableLeft="@drawable/ic_baseline_done"
-            android:drawableTint="#A9EEB8"
-            android:text="@string/new_wardrobe_element_saved"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintVertical_bias="0.351" />
 
     </android.support.constraint.ConstraintLayout>
 

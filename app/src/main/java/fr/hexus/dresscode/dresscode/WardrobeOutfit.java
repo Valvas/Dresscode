@@ -49,7 +49,7 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
         getSupportActionBar().setTitle(getResources().getString(R.string.menu_outfit));
         getSupportActionBar().setIcon(R.drawable.ic_dress);
 
-        FloatingActionButton addNewWardrobeOutfit= findViewById(R.id.addNewWardrobeOutfit);
+        FloatingActionButton addNewWardrobeOutfit = findViewById(R.id.addNewWardrobeOutfit);
 
         addNewWardrobeOutfit.setOnClickListener(new View.OnClickListener()
         {

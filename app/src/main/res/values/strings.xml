@@ -12,6 +12,7 @@
     <string name="header_title_add_wardrobe_outfit">Nouvelle tenue</string>
     <string name="header_title_edit_wardrobe_element">Modifier un élément</string>
     <string name="header_title_edit_wardrobe_element_confirmation">Element ajouté</string>
+    <string name="header_title_add_wardrobe_outfit_choose_element">Choisir un élément</string>
     <string name="wardrobe_no_entries">Votre dressing est vide pour le moment, comme c\'est triste...</string>
     <string name="wardrobe_new_element">Ajouter un élément</string>
     <string name="wardrobe_view_return">Retour au dressing</string>
@@ -41,6 +42,11 @@
     <string name="wardrobe_add_form_picture_prompt_title">Choisissez :</string>
     <string name="wardrobe_add_form_picture_prompt_camera">Prendre une photo</string>
     <string name="wardrobe_add_form_picture_prompt_gallery">Prendre une photo de la gallerie</string>
+
+    <string name="wardrobe_outfit_add_form_name">Nom de la tenue :</string>
+    <string name="wardrobe_outfit_add_form_name_hint">Nom</string>
+    <string name="wardrobe_outfit_add_form_elements">Éléments de cette tenue</string>
+    <string name="wardrobe_outfit_add_form_elements_empty">Aucun élément dans cette tenue</string>
 
     <string name="WARDROBE_ELEMENT">WARDROBE_ELEMENT</string>
     <string name="could_no_create_app_directory">Le dossier de l\'application n\'a pas pu être créé</string>

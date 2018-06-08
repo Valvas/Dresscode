@@ -39,11 +39,11 @@
                 android:resource="@xml/pictures_path" />
         </provider>
 
-        <activity android:name=".WardrobeAddElementConfirmation" />
         <activity android:name=".WardrobeOutfit" />
         <activity android:name=".WardrobeElementEdit" />
         <activity android:name=".WardrobeOutfitAdd" />
-        <activity android:name=".OutfitListAdapter"></activity>
+        <activity android:name=".OutfitListAdapter" />
+        <activity android:name=".ChooseWardrobeElement"></activity>
     </application>
 
 </manifest>

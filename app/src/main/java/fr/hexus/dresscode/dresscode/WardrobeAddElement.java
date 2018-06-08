@@ -51,7 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class WardrobeAddElement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+public class WardrobeAddElement extends AppCompatActivity
 {
     private static final int STORAGE = 0;
     private static final int CAMERA = 1;
@@ -75,10 +75,6 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
 
         myDrawer = findViewById(R.id.myDrawer);
 
-        dresscodeMenu = findViewById(R.id.dresscodeMenu);
-
-        dresscodeMenu.setNavigationItemSelectedListener(this);
-
         picture = findViewById(R.id.wardrobeAddFormPicture);
         addPicture = findViewById(R.id.wardrobeAddFormPictureButton);
         wardrobeElementSave = findViewById(R.id.wardrobeAddFormSave);
@@ -88,7 +84,7 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_return_white);
         getSupportActionBar().setTitle(getResources().getString(R.string.header_title_add_wardrobe_element));
         getSupportActionBar().setIcon(R.drawable.ic_add_circle_white);
 
@@ -355,9 +351,8 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
 
             if(insertedRowId > 0)
             {
+                Toast.makeText(this, R.string.new_wardrobe_element_saved, Toast.LENGTH_LONG).show();
                 finish();
-
-                startActivity(new Intent(this, WardrobeAddElementConfirmation.class));
             }
 
             else
@@ -407,50 +402,10 @@ public class WardrobeAddElement extends AppCompatActivity implements NavigationV
         switch(item.getItemId())
         {
             case android.R.id.home:
-                myDrawer.openDrawer(Gravity.START);
+                finish();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item)
-    {
-        myDrawer.closeDrawer(Gravity.START);
-
-        switch(item.getItemId()) {
-            case R.id.menuHome:
-                finish();
-                Intent intent = new Intent(this, HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                return true;
-
-            case R.id.menuWardrobe:
-                finish();
-                return true;
-
-            case R.id.menuOutfits:
-                finish();
-                Intent outfitsIntent = new Intent(this, HomeActivity.class);
-                outfitsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                outfitsIntent.putExtra("OUTFITS", true);
-                startActivity(outfitsIntent);
-                return true;
-
-            case R.id.menuExit:
-                finish();
-                Intent exitIntent = new Intent(Intent.ACTION_MAIN);
-                exitIntent.addCategory(Intent.CATEGORY_HOME);
-                exitIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(exitIntent);
-                return true;
-
-            default:
-                return true;
-        }
     }
 }
