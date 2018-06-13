@@ -98,7 +98,7 @@
                         android:id="@+id/wardrobeAddFormColor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toTopOf="@id/wardrobeAddFormNameLabel"
+                        app:layout_constraintBottom_toTopOf="@id/wardrobeAddFormPictureLabel"
                         app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormColorLabel" />
 
                     <TextView
@@ -109,7 +109,7 @@
                         android:text="@string/wardrobe_add_form_picture_label"
                         android:textColor="#428BCA"
                         app:layout_constraintBottom_toTopOf="@id/wardrobeAddFormPicture"
-                        app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormName" />
+                        app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormColor" />
 
                     <ImageView
                         android:id="@+id/wardrobeAddFormPicture"

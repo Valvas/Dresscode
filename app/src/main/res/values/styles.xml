@@ -7,11 +7,25 @@
     </style>
 
     <style name="HeaderBackground">
-        <item name="android:background">#5CB85C</item>
+        <item name="android:background">#C8D7C8</item>
     </style>
 
-    <style name="HeaderButton">
-        <item name="android:background">@drawable/header_button</item>
+    <style name="LogonPageSendButton">
+        <item name="android:background">@drawable/send_button</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+    </style>
+
+    <style name="LogonPageRegisterButton">
+        <item name="android:background">@drawable/register_button</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:gravity">center</item>
         <item name="android:fontFamily">@font/muli_regular</item>
@@ -81,6 +95,29 @@
 
     <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="LogonPageBackground">
+        <item name="android:background">#C8D7C8</item>
+    </style>
+
+    <style name="LogonPageLabel">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">@font/tajawal_light</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+    </style>
+
+    <style name="LogonPageTitle">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_marginTop">32dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">@font/oneday</item>
+    </style>
+
     <style name="WardrobeListName">
         <item name="android:textColor">#428BCA</item>
         <item name="android:fontFamily">@font/tajawal_light</item>
@@ -127,6 +164,22 @@
         <item name="android:textSize">20sp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
+    </style>
+
+    <style name="logonPageInput">
+        <item name="android:layout_height">36dp</item>
+        <item name="android:background">@drawable/logon_header_input</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+    <style name="SplashScreenTitle">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">@font/oneday</item>
     </style>
 
 </resources>

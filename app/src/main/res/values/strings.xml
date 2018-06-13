@@ -25,6 +25,13 @@
     <string name="could_not_save_wardrobe_element">Le nouvel élément n\a pas pu être enregistré</string>
     <string name="new_wardrobe_element_saved">Ajouté au dressing</string>
 
+    <string name="logon_page_email_label">Adresse Email : </string>
+    <string name="logon_page_email_hint">Adresse Email</string>
+    <string name="logon_page_password_label">Mot De Passe : </string>
+    <string name="logon_page_password_hint">Mot De Passe</string>
+    <string name="logon_page_send_button">Envoyer</string>
+    <string name="logon_page_subscribe_button">Créer Un Compte</string>
+
     <string name="outfits_no_entries">Vous n\'avez pas encore de tenues</string>
 
     <string name="wardrobe_element_detail_remove_alert_title">Supprimer un élément</string>

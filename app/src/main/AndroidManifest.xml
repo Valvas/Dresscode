@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -16,15 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".HomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".HomeActivity" />
         <activity android:name=".WardrobeActivity" />
-        <activity android:name=".MenuActivity" />
         <activity android:name=".WardrobeElementAdapter" />
         <activity android:name=".WardrobeElementView" />
         <activity android:name=".WardrobeAddElement" />
@@ -43,7 +37,14 @@
         <activity android:name=".WardrobeElementEdit" />
         <activity android:name=".WardrobeOutfitAdd" />
         <activity android:name=".OutfitListAdapter" />
-        <activity android:name=".ChooseWardrobeElement"></activity>
+        <activity android:name=".ChooseWardrobeElement" />
+        <activity android:name=".LogonActivity" />
+        <activity android:name=".LaunchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

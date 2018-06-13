@@ -8,4 +8,8 @@
         android:fontStyle="normal"
         android:fontWeight="400"
         android:font="@font/tajawal_light" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/oneday" />
 </font-family>
