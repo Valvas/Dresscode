@@ -8,7 +8,7 @@
     android:id="@+id/myDrawer"
     tools:openDrawer="start"
     android:layout_gravity="left"
-    tools:context="fr.hexus.dresscode.dresscode.ChooseWardrobeElement">
+    tools:context="fr.hexus.dresscode.activities.ChooseWardrobeElement">
 
 
     <android.support.constraint.ConstraintLayout

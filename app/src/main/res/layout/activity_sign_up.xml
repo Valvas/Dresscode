@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="fr.hexus.dresscode.activities.SignUpActivity"
+    style="@style/LogonPageBackground">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/signUpAppName"
+                style="@style/SignUpAppName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/signUpTitle"
+                style="@style/SignUpTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up_title" />
+
+            <TextView
+                android:id="@+id/signUpEmailLabel"
+                style="@style/SignUpLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up_email" />
+
+            <EditText
+                android:id="@+id/signUpEmailInput"
+                style="@style/SignUpInput"
+                android:layout_width="match_parent"
+                android:hint="@string/sign_up_email"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/signUpLastnameLabel"
+                style="@style/SignUpLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up_lastname" />
+
+            <EditText
+                android:id="@+id/signUpLastnameInput"
+                style="@style/SignUpInput"
+                android:layout_width="match_parent"
+                android:hint="@string/sign_up_lastname"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/signUpFirstnameLabel"
+                style="@style/SignUpLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up_firstname" />
+
+            <EditText
+                android:id="@+id/signUpFirstnameInput"
+                style="@style/SignUpInput"
+                android:layout_width="match_parent"
+                android:hint="@string/sign_up_firstname"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/signUpPasswordLabel"
+                style="@style/SignUpLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up_password" />
+
+            <EditText
+                android:id="@+id/signUpPasswordInput"
+                style="@style/SignUpInput"
+                android:layout_width="match_parent"
+                android:hint="@string/sign_up_password"
+                android:inputType="textPassword" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up_password_help"
+                style="@style/SignUpHelp"/>
+
+            <TextView
+                android:id="@+id/signUpConfirmationLabel"
+                style="@style/SignUpLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up_confirmation" />
+
+            <EditText
+                android:id="@+id/signUpConfirmationInput"
+                style="@style/SignUpInput"
+                android:layout_width="match_parent"
+                android:hint="@string/sign_up_password"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/signUpSendButton"
+                style="@style/SignUpSendButton"
+                android:onClick="checkFormBeforeSending"
+                android:text="@string/sign_up_send" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

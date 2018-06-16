@@ -8,7 +8,7 @@
     android:id="@+id/myDrawer"
     tools:openDrawer="start"
     android:layout_gravity="left"
-    tools:context="fr.hexus.dresscode.dresscode.WardrobeOutfitAdd">
+    tools:context="fr.hexus.dresscode.activities.WardrobeOutfitAdd">
 
     <LinearLayout
         android:orientation="vertical"

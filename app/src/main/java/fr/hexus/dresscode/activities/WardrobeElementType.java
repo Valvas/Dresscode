@@ -1,4 +1,4 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.activities;
 
 public class WardrobeElementType
 {

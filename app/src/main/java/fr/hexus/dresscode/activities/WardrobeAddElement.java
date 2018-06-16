@@ -1,4 +1,4 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.activities;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,15 +22,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -43,7 +39,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class WardrobeElementEdit extends AppCompatActivity
+import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.enums.Colors;
+import fr.hexus.dresscode.enums.Types;
+import fr.hexus.dresscode.classes.GlideApp;
+
+public class WardrobeAddElement extends AppCompatActivity
 {
     private static final int STORAGE = 0;
     private static final int CAMERA = 1;
@@ -51,9 +52,8 @@ public class WardrobeElementEdit extends AppCompatActivity
     private ImageView picture;
     private Button addPicture;
     private String wardrobeElementPicturePath;
-    private String wardrobeElementOldPicturePath;
-
-    private WardrobeElement wardrobeElement;
+    private DrawerLayout myDrawer;
+    private NavigationView dresscodeMenu;
 
     private Spinner wardrobeElementType;
     private Spinner wardrobeElementColor;
@@ -64,7 +64,13 @@ public class WardrobeElementEdit extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wardrobe_element_edit);
+        setContentView(R.layout.activity_wardrobe_add_element);
+
+        myDrawer = findViewById(R.id.myDrawer);
+
+        picture = findViewById(R.id.wardrobeAddFormPicture);
+        addPicture = findViewById(R.id.wardrobeAddFormPictureButton);
+        wardrobeElementSave = findViewById(R.id.wardrobeAddFormSave);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,25 +78,24 @@ public class WardrobeElementEdit extends AppCompatActivity
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_return_white);
-        getSupportActionBar().setTitle(getResources().getString(R.string.header_title_edit_wardrobe_element));
-        getSupportActionBar().setIcon(R.drawable.ic_edit_white);
+        getSupportActionBar().setTitle(getResources().getString(R.string.header_title_add_wardrobe_element));
+        getSupportActionBar().setIcon(R.drawable.ic_add_circle_white);
 
-        picture = findViewById(R.id.wardrobeAddFormPicture);
-        addPicture = findViewById(R.id.wardrobeAddFormPictureButton);
-        wardrobeElementSave = findViewById(R.id.wardrobeAddFormSave);
+        if(savedInstanceState != null)
+        {
+            if(savedInstanceState.getString("picturePath") != null)
+            {
+                wardrobeElementPicturePath = savedInstanceState.getString("picturePath");
 
-        Intent intent = getIntent();
-        wardrobeElement = (WardrobeElement) intent.getSerializableExtra("wardrobeElement");
+                GlideApp.with(this)
+                        .load(wardrobeElementPicturePath)
+                        .centerInside()
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .into(picture);
+            }
+        }
 
-        wardrobeElementPicturePath = wardrobeElement.getPath();
-
-        wardrobeElementPicturePath = String.valueOf(Environment.getExternalStorageDirectory()) + wardrobeElementPicturePath;
-
-        GlideApp.with(this)
-                .load(wardrobeElementPicturePath)
-                .centerInside()
-                .placeholder(R.drawable.ic_launcher_background)
-                .into(picture);
+        wardrobeElementSave.setVisibility(View.GONE);
 
         fillTypeSpinner();
         fillColorsSpinner();
@@ -127,8 +132,6 @@ public class WardrobeElementEdit extends AppCompatActivity
         });
 
         wardrobeElementType.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array));
-
-        wardrobeElementType.setSelection(wardrobeElement.getType() - 1);
     }
 
     public void fillColorsSpinner()
@@ -155,21 +158,6 @@ public class WardrobeElementEdit extends AppCompatActivity
         });
 
         wardrobeElementColor.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array));
-
-        wardrobeElementColor.setSelection(wardrobeElement.getColor() - 1);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void addAPicture(View view)
@@ -245,10 +233,7 @@ public class WardrobeElementEdit extends AppCompatActivity
 
         File picture = File.createTempFile(imageFileName, ".jpg", storageDir);
 
-        wardrobeElementOldPicturePath = wardrobeElementPicturePath;
-
         wardrobeElementPicturePath = picture.getAbsolutePath();
-
         return picture;
     }
 
@@ -266,9 +251,7 @@ public class WardrobeElementEdit extends AppCompatActivity
         {
             Uri contentURI = data.getData();
 
-            wardrobeElementOldPicturePath = wardrobeElementPicturePath;
-
-            wardrobeElementPicturePath = getRealPathFromURI(this, contentURI);;
+            wardrobeElementPicturePath = getRealPathFromURI(this, contentURI);
 
             GlideApp.with(this)
                     .load(wardrobeElementPicturePath)
@@ -284,11 +267,11 @@ public class WardrobeElementEdit extends AppCompatActivity
                     .centerInside()
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(picture);
-
-
         }
 
         checkForm();
+
+        addPicture.setText(getResources().getString(R.string.wardrobe_add_form_picture_change));
     }
 
     public String getRealPathFromURI(Context context, Uri contentURI)
@@ -357,17 +340,11 @@ public class WardrobeElementEdit extends AppCompatActivity
             values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, path);
             values.put(Constants.WARDROBE_TABLE_COLUMNS_COLOR, color);
 
-            int updatedRows = db.update(Constants.WARDROBE_TABLE_NAME, values, "id = ?", new String[]{ String.valueOf(wardrobeElement.getId()) });
+            long insertedRowId = db.insert(Constants.WARDROBE_TABLE_NAME, null, values);
 
-            if(updatedRows > 0)
+            if(insertedRowId > 0)
             {
-                wardrobeElement.setType(type);
-                wardrobeElement.setPath(path);
-                wardrobeElement.setColor(color);
-
-                Intent finishIntent = new Intent();
-                finishIntent.putExtra("wardrobeElement", wardrobeElement);
-                setResult(RESULT_OK, finishIntent);
+                Toast.makeText(this, R.string.new_wardrobe_element_saved, Toast.LENGTH_LONG).show();
                 finish();
             }
 
@@ -402,16 +379,6 @@ public class WardrobeElementEdit extends AppCompatActivity
             MediaScannerConnection.scanFile(this, new String[]{f.getPath()}, new String[]{"image/jpeg"}, null);
             fo.close();
 
-            if(wardrobeElementOldPicturePath != null)
-            {
-                if(!wardrobeElementOldPicturePath.equals(wardrobeElementPicturePath))
-                {
-                    File fileToDelete = new File(wardrobeElementOldPicturePath);
-
-                    boolean b = fileToDelete.delete();
-                }
-            }
-
             return "/Dresscode/" + f.getName();
 
         } catch(IOException e1)
@@ -420,5 +387,18 @@ public class WardrobeElementEdit extends AppCompatActivity
         }
 
         return "";
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

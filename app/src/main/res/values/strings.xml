@@ -29,7 +29,7 @@
     <string name="logon_page_email_hint">Adresse Email</string>
     <string name="logon_page_password_label">Mot De Passe : </string>
     <string name="logon_page_password_hint">Mot De Passe</string>
-    <string name="logon_page_send_button">Envoyer</string>
+    <string name="logon_page_send_button">Se connecter</string>
     <string name="logon_page_subscribe_button">Créer Un Compte</string>
 
     <string name="outfits_no_entries">Vous n\'avez pas encore de tenues</string>
@@ -93,4 +93,30 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
+    <string name="error_launch_activity_logon">Connexion échouée, veuillez réessayer plus tard</string>
+
+    <string name="sign_up_title">Création de compte :</string>
+    <string name="sign_up_email">Adresse email</string>
+    <string name="sign_up_lastname">Nom</string>
+    <string name="sign_up_firstname">Prénom</string>
+    <string name="sign_up_password">Mot de passe</string>
+    <string name="sign_up_password_help">Chiffres/lettres (6 à 24 caractères)</string>
+    <string name="sign_up_confirmation">Confirmation du mot de passe</string>
+    <string name="sign_up_send">Créer un compte</string>
+    <string name="sign_up_error_email_empty">Veuillez entrer une adresse email</string>
+    <string name="sign_up_error_email_format">Format de l\'adresse email incorrect</string>
+    <string name="sign_up_error_firstname_empty">Veuillez entrer un prénom</string>
+    <string name="sign_up_error_firstname_format">Format du prénom incorrect</string>
+    <string name="sign_up_error_lastname_empty">Veuillez entrer un nom</string>
+    <string name="sign_up_error_lastname_format">Format du nom incorrect</string>
+    <string name="sign_up_error_password_empty">Veuillez entrer un mot de passe</string>
+    <string name="sign_up_error_password_format">Format du mot de passe incorrect</string>
+    <string name="sign_up_error_confirmation_empty">Veuillez entrer la confirmation du mot de passe</string>
+    <string name="sign_up_error_confirmation_mismatch">Les deux mots de passe ne correspondent pas</string>
+    <string name="sign_up_success">Compte créé avec succès</string>
+
+    <string name="sign_in_email_empty">Veuillez entrer une adresse email</string>
+    <string name="sign_in_password_empty">Veuillez entrer un mot de passe</string>
+    <string name="sign_in_success">Bon retour !</string>
 </resources>

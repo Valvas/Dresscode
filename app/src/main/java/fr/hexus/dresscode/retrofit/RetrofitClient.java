@@ -1,5 +1,6 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.retrofit;
 
+import fr.hexus.dresscode.classes.Constants;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

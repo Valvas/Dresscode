@@ -1,8 +1,7 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,13 +9,14 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import fr.hexus.dresscode.classes.WardrobeElement;
 
 public class WardrobeOutfitAdd extends AppCompatActivity
 {

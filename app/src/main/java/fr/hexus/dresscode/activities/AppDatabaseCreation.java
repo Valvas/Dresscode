@@ -1,8 +1,10 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.activities;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import fr.hexus.dresscode.classes.Constants;
 
 public class AppDatabaseCreation extends SQLiteOpenHelper
 {

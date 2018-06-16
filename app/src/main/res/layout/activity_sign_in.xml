@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogonActivity"
+    tools:context=".SignInActivity"
     style="@style/LogonPageBackground">
 
     <LinearLayout
@@ -24,12 +24,14 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <EditText
+            android:id="@+id/signInEmailInput"
             style="@style/logonPageInput"
             android:layout_width="match_parent"
             android:hint="@string/logon_page_email_hint"
             android:inputType="textEmailAddress" />
 
         <EditText
+            android:id="@+id/signInPasswordInput"
             style="@style/logonPageInput"
             android:layout_width="match_parent"
             android:hint="@string/logon_page_password_hint"
@@ -43,14 +45,16 @@
             <Button
                 android:id="@+id/logonPageSendButton"
                 android:layout_weight="1"
+                android:onClick="onSignInClick"
                 android:text="@string/logon_page_send_button"
                 style="@style/LogonPageSendButton"/>
 
             <Button
                 android:id="@+id/logonPageRegisterButton"
+                style="@style/LogonPageRegisterButton"
                 android:layout_weight="1"
-                android:text="@string/logon_page_subscribe_button"
-                style="@style/LogonPageRegisterButton"/>
+                android:onClick="onSignUpClick"
+                android:text="@string/logon_page_subscribe_button" />
 
         </LinearLayout>
 

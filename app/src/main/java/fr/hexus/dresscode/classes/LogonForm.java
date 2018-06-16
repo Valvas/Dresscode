@@ -1,15 +1,8 @@
-package fr.hexus.dresscode.dresscode;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+package fr.hexus.dresscode.classes;
 
 public class LogonForm
 {
-    @SerializedName("email")
-    @Expose
     private String email;
-    @SerializedName("password")
-    @Expose
     private String password;
 
     public LogonForm(String email, String password)

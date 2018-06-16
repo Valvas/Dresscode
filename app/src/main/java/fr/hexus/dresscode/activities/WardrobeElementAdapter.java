@@ -1,4 +1,4 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.activities;
 
 import android.content.Context;
 import android.os.Environment;
@@ -14,6 +14,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import fr.hexus.dresscode.classes.WardrobeElement;
+import fr.hexus.dresscode.enums.Colors;
+import fr.hexus.dresscode.enums.Types;
+import fr.hexus.dresscode.classes.GlideApp;
 
 public class WardrobeElementAdapter extends ArrayAdapter<WardrobeElement>
 {

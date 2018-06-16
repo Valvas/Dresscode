@@ -1,4 +1,4 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.activities;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;

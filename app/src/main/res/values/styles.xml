@@ -182,4 +182,66 @@
         <item name="android:fontFamily">@font/oneday</item>
     </style>
 
+    <style name="SignUpAppName">
+        <item name="android:fontFamily">@font/oneday</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="SignUpTitle">
+        <item name="android:fontFamily">@font/tajawal_light</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="SignUpError">
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#D9534F</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="SignUpLabel">
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <style name="SignUpHelp">
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#F9F9F9</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <style name="SignUpInput">
+        <item name="android:layout_height">24dp</item>
+        <item name="android:background">@drawable/logon_header_input</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <style name="SignUpSendButton">
+        <item name="android:background">@drawable/send_button</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+    </style>
+
 </resources>

@@ -1,4 +1,4 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.classes;
 
 import java.io.Serializable;
 

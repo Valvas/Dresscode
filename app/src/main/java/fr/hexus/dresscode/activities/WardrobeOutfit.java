@@ -1,15 +1,15 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -21,18 +21,22 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WardrobeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.Outfit;
+import fr.hexus.dresscode.classes.WardrobeElement;
+
+public class WardrobeOutfit extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-    private TextView emptyWardrobe;
+    private ListView myList;
     private DrawerLayout myDrawer;
     private NavigationView dresscodeMenu;
-    private ListView myList;
+    private TextView emptyWardrobeOutfits;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wardrobe);
+        setContentView(R.layout.activity_wardrobe_outfit);
 
         myDrawer = findViewById(R.id.myDrawer);
 
@@ -46,17 +50,17 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white);
-        getSupportActionBar().setTitle(getResources().getString(R.string.menu_wardrobe));
-        getSupportActionBar().setIcon(R.drawable.ic_baseline_all_inbox);
+        getSupportActionBar().setTitle(getResources().getString(R.string.menu_outfit));
+        getSupportActionBar().setIcon(R.drawable.ic_dress);
 
-        FloatingActionButton addNewWardrobeElement = findViewById(R.id.addNewWardrobeElement);
+        FloatingActionButton addNewWardrobeOutfit = findViewById(R.id.addNewWardrobeOutfit);
 
-        addNewWardrobeElement.setOnClickListener(new View.OnClickListener()
+        addNewWardrobeOutfit.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(getApplicationContext(), WardrobeAddElement.class));
+                startActivity(new Intent(getApplicationContext(), WardrobeOutfitAdd.class));
             }
         });
     }
@@ -70,36 +74,48 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
         SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
 
-        Cursor wardrobeElementsCursor = database.rawQuery("SELECT * FROM wardrobe", null);
+        Cursor wardrobeOutfitsCursor = database.rawQuery("SELECT * FROM outfit", null);
 
         myList = findViewById(R.id.myList);
 
         myList.setAdapter(null);
 
-        if(wardrobeElementsCursor.getCount() == 0)
+        if(wardrobeOutfitsCursor.getCount() == 0)
         {
-            emptyWardrobe = findViewById(R.id.emptyWardrobe);
-            emptyWardrobe.setText(R.string.wardrobe_no_entries);
+            emptyWardrobeOutfits = findViewById(R.id.emptyWardrobeOutfits);
+            emptyWardrobeOutfits.setText(R.string.outfits_no_entries);
         }
 
         else
         {
-            emptyWardrobe = findViewById(R.id.emptyWardrobe);
-            emptyWardrobe.setText("");
+            emptyWardrobeOutfits = findViewById(R.id.emptyWardrobeOutfits);
+            emptyWardrobeOutfits.setText("");
 
-            List<WardrobeElement> wardrobeElements = new ArrayList<>();
+            List<Outfit> wardrobeOutfits = new ArrayList<>();
 
-            wardrobeElementsCursor.moveToFirst();
+            wardrobeOutfitsCursor.moveToFirst();
 
-            for(int i = 0; i < wardrobeElementsCursor.getCount(); i++)
+            for(int i = 0; i < wardrobeOutfitsCursor.getCount(); i++)
             {
-                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")),wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("color")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
+                Cursor wardrobeCurrentOutfitElementsCursor = database.rawQuery("SELECT * FROM wardrobe WHERE " + Constants.WARDROBE_TABLE_COLUMNS_OUTFIT + " = ?", new String[]{String.valueOf(wardrobeOutfitsCursor.getInt(wardrobeOutfitsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_OUTFIT)))});
 
-                wardrobeElementsCursor.moveToNext();
+                wardrobeCurrentOutfitElementsCursor.moveToFirst();
+
+                List<WardrobeElement> wardrobeElements = new ArrayList<>();
+
+                for(int j = 0; j < wardrobeCurrentOutfitElementsCursor.getCount(); j++)
+                {
+                    wardrobeElements.add(new WardrobeElement(wardrobeCurrentOutfitElementsCursor.getInt(wardrobeCurrentOutfitElementsCursor.getColumnIndex("id")), wardrobeCurrentOutfitElementsCursor.getInt(wardrobeCurrentOutfitElementsCursor.getColumnIndex("type")),wardrobeCurrentOutfitElementsCursor.getInt(wardrobeCurrentOutfitElementsCursor.getColumnIndex("color")), wardrobeCurrentOutfitElementsCursor.getString(wardrobeCurrentOutfitElementsCursor.getColumnIndex("path"))));
+
+                    wardrobeCurrentOutfitElementsCursor.moveToNext();
+                }
+
+                wardrobeOutfits.add(new Outfit(wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_NAME)), wardrobeElements));
             }
 
-            WardrobeElementAdapter wardrobeElementAdapter = new WardrobeElementAdapter(this, wardrobeElements);
-            myList.setAdapter(wardrobeElementAdapter);
+            OutfitListAdapter outfitListAdapter = new OutfitListAdapter(this, wardrobeOutfits);
+
+            myList.setAdapter(outfitListAdapter);
 
             myList.setOnItemClickListener(new returnClickedItem());
         }
@@ -112,13 +128,13 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            WardrobeElement clicked = (WardrobeElement) parent.getItemAtPosition(position);
+            /*WardrobeElement clicked = (WardrobeElement) parent.getItemAtPosition(position);
 
             Intent intent = new Intent(parent.getContext(), WardrobeElementView.class);
 
             intent.putExtra(getResources().getString(R.string.WARDROBE_ELEMENT), clicked);
 
-            startActivity(intent);
+            startActivity(intent);*/
         }
     }
 
@@ -147,12 +163,12 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
                 return true;
 
             case R.id.menuWardrobe:
-                myDrawer.closeDrawer(Gravity.START);
+                finish();
+                startActivity(new Intent(this, WardrobeActivity.class));
                 return true;
 
             case R.id.menuOutfits:
-                finish();
-                startActivity(new Intent(this, WardrobeOutfit.class));
+                myDrawer.closeDrawer(Gravity.START);
                 return true;
 
             case R.id.menuExit:

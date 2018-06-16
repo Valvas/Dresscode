@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="fr.hexus.dresscode.dresscode">
+    package="fr.hexus.dresscode.activities">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -38,13 +38,15 @@
         <activity android:name=".WardrobeOutfitAdd" />
         <activity android:name=".OutfitListAdapter" />
         <activity android:name=".ChooseWardrobeElement" />
-        <activity android:name=".LogonActivity" />
+        <activity android:name=".SignInActivity" />
         <activity android:name=".LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SignUpActivity"></activity>
     </application>
 
 </manifest>

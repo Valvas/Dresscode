@@ -1,11 +1,11 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.enums;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public enum Types
+public enum Colors
 {
-    TOP (1), SHIRT (2), TROUSERS (3), SKIRT (4), SHORT (5), DRESS (6), SWIMWEAR (7), SPORTSWEAR (8), SOCKS (9), TIGHTS (10), COAT (11), SHOES (12), BELT (13), BAG (14);
+    BLACK (1), WHITE (2), BLUE (3), RED (4), PINK (5), GREEN (6), BROWN (7), ORANGE (8), YELLOW (9), PURPLE (10), PATTERNED (11);
 
     private int id;
 
@@ -13,13 +13,13 @@ public enum Types
 
     static
     {
-        for(Types types : values())
+        for (Colors colors : values())
         {
-            MY_MAP.put(types.getId(), String.valueOf(types));
+            MY_MAP.put(colors.getId(), String.valueOf(colors));
         }
     }
 
-    Types(int id)
+    Colors(int id)
     {
         this.id = id;
     }

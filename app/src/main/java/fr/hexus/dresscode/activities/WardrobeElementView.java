@@ -1,8 +1,7 @@
-package fr.hexus.dresscode.dresscode;
+package fr.hexus.dresscode.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Environment;
@@ -12,14 +11,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
+
+import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.WardrobeElement;
+import fr.hexus.dresscode.enums.Colors;
+import fr.hexus.dresscode.enums.Types;
+import fr.hexus.dresscode.classes.GlideApp;
 
 public class WardrobeElementView extends AppCompatActivity
 {
