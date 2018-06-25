@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SignInActivity"
-    style="@style/LogonPageBackground">
+    style="@style/LogonPageBackground"
+    android:id="@+id/mainBlock">
 
     <LinearLayout
         android:layout_width="match_parent"

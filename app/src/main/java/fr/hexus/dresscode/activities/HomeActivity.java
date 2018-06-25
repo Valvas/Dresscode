@@ -1,6 +1,7 @@
 package fr.hexus.dresscode.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Environment;
@@ -16,6 +17,9 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import fr.hexus.dresscode.classes.AppDatabaseCreation;
+import fr.hexus.dresscode.classes.Constants;
+
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private DrawerLayout myDrawer;
@@ -24,15 +28,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        if(getIntent().getBooleanExtra("EXIT", false))
+        if(getIntent().getBooleanExtra("LOGOUT", false))
         {
+            SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
+            sharedPreferences.edit().remove("token").commit();
             finish();
-        }
-
-        if(getIntent().getBooleanExtra("OUTFITS", false))
-        {
-            Intent intent = new Intent(this, WardrobeOutfit.class);
-            startActivity(intent);
+            startActivity(new Intent(this, SignInActivity.class));
         }
 
         super.onCreate(savedInstanceState);
@@ -107,6 +108,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.menuExit:
                 finish();
+                return true;
+
+            case R.id.menuLogout:
+                finish();
+                SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
+                sharedPreferences.edit().remove("token").commit();
+                startActivity(new Intent(this, SignInActivity.class));
                 return true;
 
             default:

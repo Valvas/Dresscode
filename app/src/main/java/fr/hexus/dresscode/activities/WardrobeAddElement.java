@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,7 +41,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import fr.hexus.dresscode.classes.ApiRequester;
+import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.WardrobeElementForm;
 import fr.hexus.dresscode.enums.Colors;
 import fr.hexus.dresscode.enums.Types;
 import fr.hexus.dresscode.classes.GlideApp;
@@ -322,6 +327,16 @@ public class WardrobeAddElement extends AppCompatActivity
         BitmapDrawable draw = (BitmapDrawable) picture.getDrawable();
         Bitmap bitmap = draw.getBitmap();
 
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+        byte[] byteArrayImage = baos.toByteArray();
+
+        Toast.makeText(this, String.valueOf(byteArrayImage.length), Toast.LENGTH_LONG).show();
+
+        String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+
+        sendWardrobeElementToAPI(new WardrobeElementForm(type, color, encodedImage));
+
         String path = savePictureInDresscodeFolder(bitmap);
 
         if(path.length() == 0)
@@ -400,5 +415,14 @@ public class WardrobeAddElement extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendWardrobeElementToAPI(WardrobeElementForm wardrobeElementForm)
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
+
+        ApiRequester apiRequester = new ApiRequester();
+
+        boolean result = apiRequester.sendNewWardrobeElement(sharedPreferences.getString("token", null), wardrobeElementForm);
     }
 }

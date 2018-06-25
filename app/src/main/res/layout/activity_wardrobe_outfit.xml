@@ -30,12 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                style="@style/HeaderBackground"
-                android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+            <include layout="@layout/toolbar" />
 
             <ListView
                 android:id="@+id/myList"
@@ -63,12 +58,6 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/dresscodeMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:menu="@menu/dresscode_menu" />
+    <include layout="@layout/navigation_view" />
 
 </android.support.v4.widget.DrawerLayout>

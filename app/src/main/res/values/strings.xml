@@ -8,6 +8,7 @@
     <string name="menu_outfit">Mes tenues</string>
     <string name="menu_wardrobe">Mon Dressing</string>
     <string name="menu_detail">Détail</string>
+    <string name="menu_logout">Déconnexion</string>
     <string name="header_title_add_wardrobe_element">Nouvel élément</string>
     <string name="header_title_add_wardrobe_outfit">Nouvelle tenue</string>
     <string name="header_title_edit_wardrobe_element">Modifier un élément</string>

@@ -1,12 +1,17 @@
 package fr.hexus.dresscode.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -16,7 +21,6 @@ import java.io.IOException;
 
 import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.LogonForm;
-import fr.hexus.dresscode.classes.SignUpForm;
 import fr.hexus.dresscode.classes.Token;
 import fr.hexus.dresscode.retrofit.DresscodeService;
 import fr.hexus.dresscode.retrofit.RetrofitClient;
@@ -67,6 +71,20 @@ public class SignInActivity extends AppCompatActivity
             LogonForm logonForm = new LogonForm(emailInput.getText().toString(), passwordInput.getText().toString());
 
             Call<Token> call = service.signIn(logonForm);
+
+            ProgressBar progressBar = new ProgressBar(this);
+
+            ConstraintLayout mainBlock = findViewById(R.id.mainBlock);
+
+            mainBlock.addView(progressBar);
+
+            View currentView = this.getCurrentFocus();
+
+            if(currentView != null)
+            {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
 
             call.enqueue(new Callback<Token>()
             {

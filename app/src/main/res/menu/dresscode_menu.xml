@@ -17,5 +17,9 @@
             android:id="@+id/menuExit"
             android:icon="@drawable/ic_baseline_close"
             android:title="@string/menu_exit" />
+        <item
+            android:id="@+id/menuLogout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/menu_logout" />
     </group>
 </menu>

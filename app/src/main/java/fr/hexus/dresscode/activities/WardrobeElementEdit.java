@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.WardrobeElement;
 import fr.hexus.dresscode.enums.Colors;

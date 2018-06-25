@@ -21,6 +21,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.WardrobeElement;
 
 public class WardrobeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -164,6 +165,13 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                return true;
+
+            case R.id.menuLogout:
+                finish();
+                Intent logoutIntent = new Intent(this, HomeActivity.class);
+                logoutIntent.putExtra("LOGOUT", true);
+                startActivity(logoutIntent);
                 return true;
 
             default:
