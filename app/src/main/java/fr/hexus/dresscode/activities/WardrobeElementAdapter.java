@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -47,7 +48,18 @@ public class WardrobeElementAdapter extends ArrayAdapter<WardrobeElement>
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(wardrobeElementPicture);
 
-        wardrobeElementColor.setText(parent.getResources().getString(parent.getResources().getIdentifier(Colors.getKey(currentWardrobeElement.getColor()), "string", getContext().getPackageName())));
+        ArrayList<Integer> colorsList = currentWardrobeElement.getColors();
+
+        StringBuilder colors = new StringBuilder();
+
+        for(int x = 0; x < colorsList.size(); x++)
+        {
+            colors.append((x + 1) == colorsList.size()
+                    ? parent.getResources().getString(parent.getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getContext().getPackageName()))
+                    : parent.getResources().getString(parent.getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getContext().getPackageName())));
+        }
+
+        wardrobeElementColor.setText(colors);
         wardrobeElementType.setText(parent.getResources().getString(parent.getResources().getIdentifier(Types.getKey(currentWardrobeElement.getType()), "string", getContext().getPackageName())));
 
         return row;

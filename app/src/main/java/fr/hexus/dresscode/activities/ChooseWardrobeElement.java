@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
+import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.WardrobeElement;
 
 public class ChooseWardrobeElement extends AppCompatActivity
@@ -50,7 +51,7 @@ public class ChooseWardrobeElement extends AppCompatActivity
 
         SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
 
-        Cursor wardrobeElementsCursor = database.rawQuery("SELECT * FROM wardrobe", null);
+        Cursor wardrobeElementsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_TABLE_NAME, null);
 
         myList = findViewById(R.id.myList);
 
@@ -73,7 +74,20 @@ public class ChooseWardrobeElement extends AppCompatActivity
 
             for(int i = 0; i < wardrobeElementsCursor.getCount(); i++)
             {
-                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")),wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("color")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
+                Cursor wardrobeElementColorsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME + " WHERE " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("id")) });
+
+                wardrobeElementColorsCursor.moveToFirst();
+
+                ArrayList<Integer> wardrobeElementColors = new ArrayList<>();
+
+                for(int j = 0; j < wardrobeElementColorsCursor.getCount(); j++)
+                {
+                    wardrobeElementColors.add(wardrobeElementColorsCursor.getInt(wardrobeElementColorsCursor.getColumnIndex(Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID)));
+
+                    wardrobeElementColorsCursor.moveToNext();
+                }
+
+                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
 
                 wardrobeElementsCursor.moveToNext();
             }

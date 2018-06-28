@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -26,10 +25,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -38,12 +41,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import fr.hexus.dresscode.classes.ApiRequester;
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.WardrobeElement;
 import fr.hexus.dresscode.classes.WardrobeElementForm;
 import fr.hexus.dresscode.enums.Colors;
 import fr.hexus.dresscode.enums.Types;
@@ -54,14 +59,15 @@ public class WardrobeAddElement extends AppCompatActivity
     private static final int STORAGE = 0;
     private static final int CAMERA = 1;
 
+    private static int selectedColors = 0;
+
     private ImageView picture;
     private Button addPicture;
     private String wardrobeElementPicturePath;
     private DrawerLayout myDrawer;
-    private NavigationView dresscodeMenu;
+    private LinearLayout colorsList;
 
     private Spinner wardrobeElementType;
-    private Spinner wardrobeElementColor;
 
     private FloatingActionButton wardrobeElementSave;
 
@@ -70,6 +76,28 @@ public class WardrobeAddElement extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wardrobe_add_element);
+
+        colorsList = findViewById(R.id.wardrobeAddFormColorsList);
+
+        for(int i = 1; i <= Colors.values().length; i++)
+        {
+            String color = getResources().getString(getResources().getIdentifier(Colors.getKey(i), "string", getPackageName()));
+            final CheckBox checkBox = new CheckBox(getApplicationContext());
+            checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            checkBox.setText(color);
+            checkBox.setId(i);
+
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+                {
+                    selectedColors += isChecked ? 1 : -1;
+                    checkForm();
+                }
+            });
+
+            colorsList.addView(checkBox);
+        }
 
         myDrawer = findViewById(R.id.myDrawer);
 
@@ -103,7 +131,6 @@ public class WardrobeAddElement extends AppCompatActivity
         wardrobeElementSave.setVisibility(View.GONE);
 
         fillTypeSpinner();
-        fillColorsSpinner();
     }
 
     @Override
@@ -137,32 +164,6 @@ public class WardrobeAddElement extends AppCompatActivity
         });
 
         wardrobeElementType.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array));
-    }
-
-    public void fillColorsSpinner()
-    {
-        String[] array = new String[Colors.values().length];
-
-        for(int i = 0; i < Colors.values().length; i++)
-        {
-            array[i] = getResources().getString(getResources().getIdentifier(String.valueOf(Colors.values()[i]), "string", getPackageName()));
-        }
-
-        wardrobeElementColor = findViewById(R.id.wardrobeAddFormColor);
-
-        wardrobeElementColor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
-            {
-                checkForm();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {}
-        });
-
-        wardrobeElementColor.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array));
     }
 
     public void addAPicture(View view)
@@ -300,13 +301,17 @@ public class WardrobeAddElement extends AppCompatActivity
         }
     }
 
+    /****************************************************************************************************/
+    // CHECK FORM EACH TIME AN EVENT OCCUR
+    /****************************************************************************************************/
+
     public void checkForm()
     {
         boolean formIsReady = true;
 
         if(wardrobeElementType.getSelectedItem().toString().length() == 0) formIsReady = false;
-        if(wardrobeElementColor.getSelectedItem().toString().length() == 0) formIsReady = false;
         if(picture.getDrawable() == null) formIsReady = false;
+        if(selectedColors <= 0) formIsReady = false;
 
         if(formIsReady)
         {
@@ -319,10 +324,13 @@ public class WardrobeAddElement extends AppCompatActivity
         }
     }
 
+    /****************************************************************************************************/
+    // SAVE DATA ON SD CARD AND SEND THEM TO THE API
+    /****************************************************************************************************/
+
     public void onSubmitForm(View view)
     {
         int type = wardrobeElementType.getSelectedItemPosition() + 1;
-        int color = wardrobeElementColor.getSelectedItemPosition() + 1;
 
         BitmapDrawable draw = (BitmapDrawable) picture.getDrawable();
         Bitmap bitmap = draw.getBitmap();
@@ -331,11 +339,18 @@ public class WardrobeAddElement extends AppCompatActivity
         bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
         byte[] byteArrayImage = baos.toByteArray();
 
-        Toast.makeText(this, String.valueOf(byteArrayImage.length), Toast.LENGTH_LONG).show();
-
         String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
 
-        sendWardrobeElementToAPI(new WardrobeElementForm(type, color, encodedImage));
+        ArrayList<Integer> colors = new ArrayList<>();
+
+        for(int x = 0; x < colorsList.getChildCount(); x++)
+        {
+            CheckBox currentColor = (CheckBox) colorsList.getChildAt(x);
+
+            if(currentColor.isChecked()) colors.add(currentColor.getId());
+        }
+
+        //sendWardrobeElementToAPI(new WardrobeElementForm(type, color, encodedImage));
 
         String path = savePictureInDresscodeFolder(bitmap);
 
@@ -346,18 +361,9 @@ public class WardrobeAddElement extends AppCompatActivity
 
         else
         {
-            AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(this);
+            WardrobeElement newElement = new WardrobeElement(0, type, colors, path);
 
-            SQLiteDatabase db = appDatabaseCreation.getWritableDatabase();
-
-            ContentValues values = new ContentValues();
-            values.put(Constants.WARDROBE_TABLE_COLUMNS_TYPE, type);
-            values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, path);
-            values.put(Constants.WARDROBE_TABLE_COLUMNS_COLOR, color);
-
-            long insertedRowId = db.insert(Constants.WARDROBE_TABLE_NAME, null, values);
-
-            if(insertedRowId > 0)
+            if(newElement.saveWardrobeElementInDatabase(this))
             {
                 Toast.makeText(this, R.string.new_wardrobe_element_saved, Toast.LENGTH_LONG).show();
                 finish();
@@ -367,10 +373,10 @@ public class WardrobeAddElement extends AppCompatActivity
             {
                 Toast.makeText(this, getResources().getString(R.string.could_not_save_wardrobe_element), Toast.LENGTH_SHORT).show();
             }
-
-            appDatabaseCreation.close();
         }
     }
+
+    /****************************************************************************************************/
 
     public String savePictureInDresscodeFolder(Bitmap myBitmap)
     {

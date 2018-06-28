@@ -3,8 +3,6 @@ package fr.hexus.dresscode.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -31,6 +29,7 @@ import retrofit2.Retrofit;
 
 public class SignInActivity extends AppCompatActivity
 {
+    private ProgressBar loadingSpinner;
     private EditText emailInput;
     private EditText passwordInput;
 
@@ -48,6 +47,8 @@ public class SignInActivity extends AppCompatActivity
 
         emailInput = findViewById(R.id.signInEmailInput);
         passwordInput = findViewById(R.id.signInPasswordInput);
+
+        loadingSpinner = findViewById(R.id.loadingSpinner);
     }
 
     public void onSignInClick(View view)
@@ -72,11 +73,15 @@ public class SignInActivity extends AppCompatActivity
 
             Call<Token> call = service.signIn(logonForm);
 
-            ProgressBar progressBar = new ProgressBar(this);
+            /****************************************************************************************************/
+            // ADD A SPINNER WHILE LOADING
+            /****************************************************************************************************/
 
-            ConstraintLayout mainBlock = findViewById(R.id.mainBlock);
+            loadingSpinner.setVisibility(View.VISIBLE);
 
-            mainBlock.addView(progressBar);
+            /****************************************************************************************************/
+            // HIDE KEYBOARD WHILE LOADING
+            /****************************************************************************************************/
 
             View currentView = this.getCurrentFocus();
 
@@ -86,11 +91,17 @@ public class SignInActivity extends AppCompatActivity
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
 
+            /****************************************************************************************************/
+            // CALL THE API TO TRY AUTHENTICATION
+            /****************************************************************************************************/
+
             call.enqueue(new Callback<Token>()
             {
                 @Override
                 public void onResponse(Call<Token> call, Response<Token> response)
                 {
+                    loadingSpinner.setVisibility(View.GONE);
+
                     if(response.errorBody() != null )
                     {
                         try

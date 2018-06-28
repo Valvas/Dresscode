@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
+import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.WardrobeElement;
 
 public class WardrobeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -96,8 +97,22 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
             for(int i = 0; i < wardrobeElementsCursor.getCount(); i++)
             {
-                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")),wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("color")), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
+                Cursor wardrobeElementColorsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME + " WHERE " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("id")) });
 
+                wardrobeElementColorsCursor.moveToFirst();
+
+                ArrayList<Integer> wardrobeElementColors = new ArrayList<>();
+
+                for(int j = 0; j < wardrobeElementColorsCursor.getCount(); j++)
+                {
+                    System.out.println();
+                    wardrobeElementColors.add(wardrobeElementColorsCursor.getInt(wardrobeElementColorsCursor.getColumnIndex(Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID)));
+
+                    wardrobeElementColorsCursor.moveToNext();
+                }
+
+                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
+                System.out.println(wardrobeElements.get(i).toString());
                 wardrobeElementsCursor.moveToNext();
             }
 

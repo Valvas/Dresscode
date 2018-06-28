@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
@@ -61,7 +62,19 @@ public class WardrobeElementView extends AppCompatActivity
         elementPicture.setScaleType(ImageView.ScaleType.CENTER);
 
         elementType.setText(elementType.getText() + " : " + getResources().getString(getResources().getIdentifier(Types.getKey(wardrobeElement.getType()), "string", getPackageName())));
-        elementColor.setText(elementColor.getText() + " : " + getResources().getString(getResources().getIdentifier(Colors.getKey(wardrobeElement.getColor()), "string", getPackageName())));
+
+        StringBuilder colors = new StringBuilder();
+
+        ArrayList<Integer> colorsList = wardrobeElement.getColors();
+
+        for(int x = 0; x < wardrobeElement.getColors().size(); x++)
+        {
+            colors.append((x + 1) == colorsList.size()
+                    ? getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName()))
+                    : getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName())));
+        }
+
+        elementColor.setText(colors);
 
         GlideApp.with(this)
                 .load(Environment.getExternalStorageDirectory() + String.valueOf(wardrobeElement.getPath()))
@@ -86,7 +99,19 @@ public class WardrobeElementView extends AppCompatActivity
                 String[] colorArray = color.split(" : ");
 
                 elementType.setText(typeArray[0] + " : " + getResources().getString(getResources().getIdentifier(Types.getKey(wardrobeElement.getType()), "string", getPackageName())));
-                elementColor.setText(colorArray[0] + " : " + getResources().getString(getResources().getIdentifier(Colors.getKey(wardrobeElement.getColor()), "string", getPackageName())));
+
+                StringBuilder colors = new StringBuilder();
+
+                ArrayList<Integer> colorsList = wardrobeElement.getColors();
+
+                for(int x = 0; x < wardrobeElement.getColors().size(); x++)
+                {
+                    colors.append((x + 1) == colorsList.size()
+                            ? getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName()))
+                            : ", " + getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName())));
+                }
+
+                elementColor.setText(colors);
 
                 GlideApp.with(this)
                         .load(Environment.getExternalStorageDirectory() + String.valueOf(wardrobeElement.getPath()))

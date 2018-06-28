@@ -1,19 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:id="@+id/myDrawer"
-    tools:openDrawer="start"
-    android:layout_gravity="left"
     tools:context=".WardrobeElementEdit"
     android:focusableInTouchMode="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <include
+            layout="@layout/toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/wardrobeAddFormScroll"/>
+
+        <ScrollView
+            android:id="@+id/wardrobeAddFormScroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/wardrobeAddFormInfo"
+                    style="@style/AddFormInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wardrobe_add_form_info"
+                    android:textAlignment="center"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/wardrobeAddFormTypeLabel"/>
+
+                <TextView
+                    android:id="@+id/wardrobeAddFormTypeLabel"
+                    style="@style/AddFormLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wardrobe_add_form_type_label"
+                    android:textColor="#428BCA"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/wardrobeAddFormInfo"
+                    app:layout_constraintBottom_toTopOf="@+id/wardrobeAddFormType"/>
+
+                <Spinner
+                    android:id="@+id/wardrobeAddFormType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/wardrobeAddFormTypeLabel"
+                    app:layout_constraintBottom_toTopOf="@+id/wardrobeAddFormColorLabel"/>
+
+                <TextView
+                    android:id="@+id/wardrobeAddFormColorLabel"
+                    style="@style/AddFormLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wardrobe_add_form_color_label"
+                    android:textColor="#428BCA"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/wardrobeAddFormType"
+                    app:layout_constraintBottom_toTopOf="@+id/wardrobeAddFormColorsList"/>
+
+                <LinearLayout
+                    android:id="@+id/wardrobeAddFormColorsList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/wardrobeAddFormColorLabel"
+                    app:layout_constraintBottom_toTopOf="@+id/wardrobeAddFormPictureLabel">
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/wardrobeAddFormPictureLabel"
+                    style="@style/AddFormLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wardrobe_add_form_picture_label"
+                    android:textColor="#428BCA"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/wardrobeAddFormColorsList"
+                    app:layout_constraintBottom_toTopOf="@+id/wardrobeAddFormPicture"/>
+
+                <ImageView
+                    android:id="@+id/wardrobeAddFormPicture"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/wardrobeAddFormPictureLabel"
+                    app:layout_constraintBottom_toTopOf="@+id/wardrobeAddFormPictureButton"/>
+
+                <Button
+                    android:id="@+id/wardrobeAddFormPictureButton"
+                    style="@style/AddPictureButton"
+                    android:onClick="addAPicture"
+                    android:text="@string/wardrobe_add_form_picture_button"
+                    android:layout_below="@+id/wardrobeAddFormPicture"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/wardrobeAddFormPicture"
+                    app:layout_constraintBottom_toTopOf="parent"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+        </ScrollView>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/wardrobeAddFormSave"
@@ -26,97 +140,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:src="@drawable/ic_baseline_done"
             android:layout_margin="16dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/toolbar" />
-
-            <ScrollView
-                android:id="@+id/formScrollView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/wardrobeAddFormTypeLabel"
-                        style="@style/AddFormLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/wardrobe_add_form_type_label"
-                        android:textColor="#428BCA"
-                        app:layout_constraintBottom_toTopOf="@id/wardrobeAddFormType"
-                        app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormInfo" />
-
-                    <Spinner
-                        android:id="@+id/wardrobeAddFormType"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toTopOf="@id/wardrobeAddFormColorLabel"
-                        app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormTypeLabel" />
-
-                    <TextView
-                        android:id="@+id/wardrobeAddFormColorLabel"
-                        style="@style/AddFormLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/wardrobe_add_form_color_label"
-                        android:textColor="#428BCA"
-                        app:layout_constraintBottom_toTopOf="@id/wardrobeAddFormColor"
-                        app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormType" />
-
-                    <Spinner
-                        android:id="@+id/wardrobeAddFormColor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toTopOf="@id/wardrobeAddFormPictureLabel"
-                        app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormColorLabel" />
-
-                    <TextView
-                        android:id="@+id/wardrobeAddFormPictureLabel"
-                        style="@style/AddFormLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/wardrobe_add_form_picture_label"
-                        android:textColor="#428BCA"
-                        app:layout_constraintBottom_toTopOf="@id/wardrobeAddFormPicture"
-                        app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormColor" />
-
-                    <ImageView
-                        android:id="@+id/wardrobeAddFormPicture"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scaleType="fitCenter"
-                        android:adjustViewBounds="true"
-                        />
-
-                    <Button
-                        android:id="@+id/wardrobeAddFormPictureButton"
-                        style="@style/AddPictureButton"
-                        android:onClick="addAPicture"
-                        android:text="@string/wardrobe_add_form_picture_change"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/wardrobeAddFormPicture" />
-
-                </LinearLayout>
-
-            </ScrollView>
-
-        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 

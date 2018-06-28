@@ -22,10 +22,14 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,6 +38,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -49,15 +54,17 @@ public class WardrobeElementEdit extends AppCompatActivity
     private static final int STORAGE = 0;
     private static final int CAMERA = 1;
 
+    private int selectedColors = 0;
+
     private ImageView picture;
     private Button addPicture;
     private String wardrobeElementPicturePath;
     private String wardrobeElementOldPicturePath;
+    private LinearLayout colorsList;
 
     private WardrobeElement wardrobeElement;
 
     private Spinner wardrobeElementType;
-    private Spinner wardrobeElementColor;
 
     private FloatingActionButton wardrobeElementSave;
 
@@ -66,6 +73,28 @@ public class WardrobeElementEdit extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wardrobe_element_edit);
+
+        colorsList = findViewById(R.id.wardrobeAddFormColorsList);
+
+        for(int i = 1; i <= Colors.values().length; i++)
+        {
+            String color = getResources().getString(getResources().getIdentifier(Colors.getKey(i), "string", getPackageName()));
+            final CheckBox checkBox = new CheckBox(getApplicationContext());
+            checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            checkBox.setText(color);
+            checkBox.setId(i);
+
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+                {
+                    selectedColors += isChecked ? 1 : -1;
+                    checkForm();
+                }
+            });
+
+            colorsList.addView(checkBox);
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,7 +123,6 @@ public class WardrobeElementEdit extends AppCompatActivity
                 .into(picture);
 
         fillTypeSpinner();
-        fillColorsSpinner();
     }
 
     @Override
@@ -130,34 +158,6 @@ public class WardrobeElementEdit extends AppCompatActivity
         wardrobeElementType.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array));
 
         wardrobeElementType.setSelection(wardrobeElement.getType() - 1);
-    }
-
-    public void fillColorsSpinner()
-    {
-        String[] array = new String[Colors.values().length];
-
-        for(int i = 0; i < Colors.values().length; i++)
-        {
-            array[i] = getResources().getString(getResources().getIdentifier(String.valueOf(Colors.values()[i]), "string", getPackageName()));
-        }
-
-        wardrobeElementColor = findViewById(R.id.wardrobeAddFormColor);
-
-        wardrobeElementColor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
-            {
-                checkForm();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {}
-        });
-
-        wardrobeElementColor.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array));
-
-        wardrobeElementColor.setSelection(wardrobeElement.getColor() - 1);
     }
 
     @Override
@@ -313,13 +313,17 @@ public class WardrobeElementEdit extends AppCompatActivity
         }
     }
 
+    /****************************************************************************************************/
+    // CHECK FORM EACH TIME AN EVENT OCCUR
+    /****************************************************************************************************/
+
     public void checkForm()
     {
         boolean formIsReady = true;
 
         if(wardrobeElementType.getSelectedItem().toString().length() == 0) formIsReady = false;
-        if(wardrobeElementColor.getSelectedItem().toString().length() == 0) formIsReady = false;
         if(picture.getDrawable() == null) formIsReady = false;
+        if(selectedColors <= 0) formIsReady = false;
 
         if(formIsReady)
         {
@@ -332,15 +336,27 @@ public class WardrobeElementEdit extends AppCompatActivity
         }
     }
 
+    /****************************************************************************************************/
+    // SAVE DATA ON SD CARD AND SEND THEM TO THE API
+    /****************************************************************************************************/
+
     public void onSubmitForm(View view)
     {
         int type = wardrobeElementType.getSelectedItemPosition() + 1;
-        int color = wardrobeElementColor.getSelectedItemPosition() + 1;
 
         BitmapDrawable draw = (BitmapDrawable) picture.getDrawable();
         Bitmap bitmap = draw.getBitmap();
 
         String path = savePictureInDresscodeFolder(bitmap);
+
+        ArrayList<Integer> colors = new ArrayList<>();
+
+        for(int x = 0; x < colorsList.getChildCount(); x++)
+        {
+            CheckBox currentColor = (CheckBox) colorsList.getChildAt(x);
+
+            if(currentColor.isChecked()) colors.add(currentColor.getId());
+        }
 
         if(path.length() == 0)
         {
@@ -349,23 +365,13 @@ public class WardrobeElementEdit extends AppCompatActivity
 
         else
         {
-            AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(this);
+            wardrobeElement.setColors(colors);
+            wardrobeElement.setType(type);
+            wardrobeElement.setPath(path);
 
-            SQLiteDatabase db = appDatabaseCreation.getWritableDatabase();
-
-            ContentValues values = new ContentValues();
-            values.put(Constants.WARDROBE_TABLE_COLUMNS_TYPE, type);
-            values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, path);
-            values.put(Constants.WARDROBE_TABLE_COLUMNS_COLOR, color);
-
-            int updatedRows = db.update(Constants.WARDROBE_TABLE_NAME, values, "id = ?", new String[]{ String.valueOf(wardrobeElement.getId()) });
-
-            if(updatedRows > 0)
+            if(wardrobeElement.updateWardrobeElementInDatabase(this))
             {
-                wardrobeElement.setType(type);
-                wardrobeElement.setPath(path);
-                wardrobeElement.setColor(color);
-
+                Toast.makeText(this, R.string.new_wardrobe_element_saved, Toast.LENGTH_LONG).show();
                 Intent finishIntent = new Intent();
                 finishIntent.putExtra("wardrobeElement", wardrobeElement);
                 setResult(RESULT_OK, finishIntent);
@@ -376,10 +382,10 @@ public class WardrobeElementEdit extends AppCompatActivity
             {
                 Toast.makeText(this, getResources().getString(R.string.could_not_save_wardrobe_element), Toast.LENGTH_SHORT).show();
             }
-
-            appDatabaseCreation.close();
         }
     }
+
+    /****************************************************************************************************/
 
     public String savePictureInDresscodeFolder(Bitmap myBitmap)
     {

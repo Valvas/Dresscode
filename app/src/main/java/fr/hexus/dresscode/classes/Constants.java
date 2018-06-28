@@ -7,9 +7,12 @@ public final class Constants
     public static final String WARDROBE_TABLE_COLUMNS_PATH = "path";
     public static final String WARDROBE_TABLE_COLUMNS_COLOR = "color";
     public static final String WARDROBE_TABLE_COLUMNS_OUTFIT = "outfit";
+    public static final String WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_COLOR_ID = "color";
+    public static final String WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID = "element";
 
     public static final String OUTFIT_TABLE_NAME = "outfit";
     public static final String OUTFIT_TABLE_COLUMNS_NAME = "name";
+    public static final String WARDROBE_ELEMENT_COLORS_TABLE_NAME = "colors";
 
     public static final String SHARED_PREFERENCES_FILE_NAME = "customPreferences";
 

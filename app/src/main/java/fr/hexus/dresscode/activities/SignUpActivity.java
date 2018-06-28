@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -25,6 +26,7 @@ import retrofit2.Retrofit;
 
 public class SignUpActivity extends AppCompatActivity
 {
+    ProgressBar loadingSpinner;
     EditText emailInput;
     EditText passwordInput;
     EditText lastnameInput;
@@ -42,6 +44,8 @@ public class SignUpActivity extends AppCompatActivity
         lastnameInput = findViewById(R.id.signUpLastnameInput);
         firstnameInput = findViewById(R.id.signUpFirstnameInput);
         confirmationInput = findViewById(R.id.signUpConfirmationInput);
+
+        loadingSpinner = findViewById(R.id.loadingSpinner);
     }
 
     public void checkFormBeforeSending(View view)
@@ -112,11 +116,15 @@ public class SignUpActivity extends AppCompatActivity
 
         Call<Token> call = service.signUp(signUpForm);
 
+        loadingSpinner.setVisibility(View.VISIBLE);
+
         call.enqueue(new Callback<Token>()
         {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response)
             {
+                loadingSpinner.setVisibility(View.GONE);
+
                 if(response.errorBody() != null )
                 {
                     try
@@ -146,7 +154,9 @@ public class SignUpActivity extends AppCompatActivity
                     sharedPreferences.edit().putString("token", newToken.getToken()).commit();
 
                     finish();
-                    startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                    Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                    homeIntent.setFlags(homeIntent.FLAG_ACTIVITY_NEW_TASK | homeIntent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(homeIntent);
                 }
             }
 

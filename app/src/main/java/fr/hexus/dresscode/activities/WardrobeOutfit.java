@@ -98,20 +98,7 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
 
             for(int i = 0; i < wardrobeOutfitsCursor.getCount(); i++)
             {
-                Cursor wardrobeCurrentOutfitElementsCursor = database.rawQuery("SELECT * FROM wardrobe WHERE " + Constants.WARDROBE_TABLE_COLUMNS_OUTFIT + " = ?", new String[]{String.valueOf(wardrobeOutfitsCursor.getInt(wardrobeOutfitsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_OUTFIT)))});
-
-                wardrobeCurrentOutfitElementsCursor.moveToFirst();
-
-                List<WardrobeElement> wardrobeElements = new ArrayList<>();
-
-                for(int j = 0; j < wardrobeCurrentOutfitElementsCursor.getCount(); j++)
-                {
-                    wardrobeElements.add(new WardrobeElement(wardrobeCurrentOutfitElementsCursor.getInt(wardrobeCurrentOutfitElementsCursor.getColumnIndex("id")), wardrobeCurrentOutfitElementsCursor.getInt(wardrobeCurrentOutfitElementsCursor.getColumnIndex("type")),wardrobeCurrentOutfitElementsCursor.getInt(wardrobeCurrentOutfitElementsCursor.getColumnIndex("color")), wardrobeCurrentOutfitElementsCursor.getString(wardrobeCurrentOutfitElementsCursor.getColumnIndex("path"))));
-
-                    wardrobeCurrentOutfitElementsCursor.moveToNext();
-                }
-
-                wardrobeOutfits.add(new Outfit(wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_NAME)), wardrobeElements));
+                wardrobeOutfits.add(new Outfit(wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_NAME))));
             }
 
             OutfitListAdapter outfitListAdapter = new OutfitListAdapter(this, wardrobeOutfits);

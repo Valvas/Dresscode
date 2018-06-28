@@ -1,5 +1,6 @@
 package fr.hexus.dresscode.classes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Outfit
@@ -11,6 +12,12 @@ public class Outfit
     {
         this.elements = elements;
         this.name = name;
+    }
+
+    public Outfit(String name)
+    {
+        this.name = name;
+        this.elements = new ArrayList<>();
     }
 
     public List<WardrobeElement> getElements()
