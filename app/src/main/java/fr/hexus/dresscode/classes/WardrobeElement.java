@@ -88,6 +88,8 @@ public class WardrobeElement implements Serializable
 
         if(insertedRowId > 0)
         {
+            this.id = (int) insertedRowId;
+
             for(int x = 0; x < this.colors.size(); x++)
             {
                 ContentValues colorValues = new ContentValues();

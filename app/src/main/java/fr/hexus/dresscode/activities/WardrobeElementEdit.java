@@ -1,11 +1,9 @@
 package fr.hexus.dresscode.activities;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -42,8 +40,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import fr.hexus.dresscode.classes.AppDatabaseCreation;
-import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.WardrobeElement;
 import fr.hexus.dresscode.enums.Colors;
 import fr.hexus.dresscode.enums.Types;
@@ -76,6 +72,9 @@ public class WardrobeElementEdit extends AppCompatActivity
 
         colorsList = findViewById(R.id.wardrobeAddFormColorsList);
 
+        Intent intent = getIntent();
+        wardrobeElement = (WardrobeElement) intent.getSerializableExtra("wardrobeElement");
+
         for(int i = 1; i <= Colors.values().length; i++)
         {
             String color = getResources().getString(getResources().getIdentifier(Colors.getKey(i), "string", getPackageName()));
@@ -83,6 +82,15 @@ public class WardrobeElementEdit extends AppCompatActivity
             checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             checkBox.setText(color);
             checkBox.setId(i);
+
+            for(int j = 0; j < wardrobeElement.getColors().size(); j++)
+            {
+                if(wardrobeElement.getColors().get(j) == i)
+                {
+                    selectedColors += 1;
+                    checkBox.setChecked(true);
+                }
+            }
 
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
             {
@@ -108,9 +116,6 @@ public class WardrobeElementEdit extends AppCompatActivity
         picture = findViewById(R.id.wardrobeAddFormPicture);
         addPicture = findViewById(R.id.wardrobeAddFormPictureButton);
         wardrobeElementSave = findViewById(R.id.wardrobeAddFormSave);
-
-        Intent intent = getIntent();
-        wardrobeElement = (WardrobeElement) intent.getSerializableExtra("wardrobeElement");
 
         wardrobeElementPicturePath = wardrobeElement.getPath();
 

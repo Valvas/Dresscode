@@ -105,14 +105,13 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
                 for(int j = 0; j < wardrobeElementColorsCursor.getCount(); j++)
                 {
-                    System.out.println();
-                    wardrobeElementColors.add(wardrobeElementColorsCursor.getInt(wardrobeElementColorsCursor.getColumnIndex(Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID)));
+                    wardrobeElementColors.add(wardrobeElementColorsCursor.getInt(wardrobeElementColorsCursor.getColumnIndex(Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_COLOR_ID)));
 
                     wardrobeElementColorsCursor.moveToNext();
                 }
 
                 wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
-                System.out.println(wardrobeElements.get(i).toString());
+
                 wardrobeElementsCursor.moveToNext();
             }
 

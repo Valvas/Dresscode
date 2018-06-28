@@ -71,7 +71,7 @@ public class WardrobeElementView extends AppCompatActivity
         {
             colors.append((x + 1) == colorsList.size()
                     ? getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName()))
-                    : getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName())));
+                    : getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName())) + " ");
         }
 
         elementColor.setText(colors);
@@ -108,7 +108,7 @@ public class WardrobeElementView extends AppCompatActivity
                 {
                     colors.append((x + 1) == colorsList.size()
                             ? getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName()))
-                            : ", " + getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName())));
+                            : getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName())) + " ");
                 }
 
                 elementColor.setText(colors);

@@ -56,7 +56,7 @@ public class WardrobeElementAdapter extends ArrayAdapter<WardrobeElement>
         {
             colors.append((x + 1) == colorsList.size()
                     ? parent.getResources().getString(parent.getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getContext().getPackageName()))
-                    : parent.getResources().getString(parent.getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getContext().getPackageName())));
+                    : parent.getResources().getString(parent.getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getContext().getPackageName())) + " ");
         }
 
         wardrobeElementColor.setText(colors);

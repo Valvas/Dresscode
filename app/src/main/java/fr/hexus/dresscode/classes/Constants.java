@@ -5,7 +5,6 @@ public final class Constants
     public static final String WARDROBE_TABLE_NAME = "wardrobe";
     public static final String WARDROBE_TABLE_COLUMNS_TYPE = "type";
     public static final String WARDROBE_TABLE_COLUMNS_PATH = "path";
-    public static final String WARDROBE_TABLE_COLUMNS_COLOR = "color";
     public static final String WARDROBE_TABLE_COLUMNS_OUTFIT = "outfit";
     public static final String WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_COLOR_ID = "color";
     public static final String WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID = "element";
