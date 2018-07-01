@@ -25,7 +25,7 @@ public class OutfitListAdapter extends ArrayAdapter<Outfit>
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
     {
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View row = inflater.inflate(R.layout.activity_wardrobe_outfit, null);
+        View row = inflater.inflate(R.layout.activity_outfit_list_adapter, null);
 
         Outfit currentOutfit = getItem(position);
 

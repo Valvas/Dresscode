@@ -21,6 +21,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.hexus.dresscode.activities.HomeActivity;
+import fr.hexus.dresscode.activities.OutfitListAdapter;
+import fr.hexus.dresscode.activities.R;
+import fr.hexus.dresscode.activities.WardrobeActivity;
+import fr.hexus.dresscode.activities.WardrobeOutfitAdd;
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.Outfit;
@@ -84,13 +89,13 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
         if(wardrobeOutfitsCursor.getCount() == 0)
         {
             emptyWardrobeOutfits = findViewById(R.id.emptyWardrobeOutfits);
-            emptyWardrobeOutfits.setText(R.string.outfits_no_entries);
+            emptyWardrobeOutfits.setVisibility(View.VISIBLE);
         }
 
         else
         {
             emptyWardrobeOutfits = findViewById(R.id.emptyWardrobeOutfits);
-            emptyWardrobeOutfits.setText("");
+            emptyWardrobeOutfits.setVisibility(View.GONE);
 
             List<Outfit> wardrobeOutfits = new ArrayList<>();
 
@@ -98,7 +103,7 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
 
             for(int i = 0; i < wardrobeOutfitsCursor.getCount(); i++)
             {
-                wardrobeOutfits.add(new Outfit(wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_NAME))));
+                wardrobeOutfits.add(new Outfit(wardrobeOutfitsCursor.getInt(wardrobeOutfitsCursor.getColumnIndex("id")), wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_NAME)), new ArrayList<WardrobeElement>()));
             }
 
             OutfitListAdapter outfitListAdapter = new OutfitListAdapter(this, wardrobeOutfits);

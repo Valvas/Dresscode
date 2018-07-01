@@ -120,4 +120,11 @@
     <string name="sign_in_email_empty">Veuillez entrer une adresse email</string>
     <string name="sign_in_password_empty">Veuillez entrer un mot de passe</string>
     <string name="sign_in_success">Bon retour !</string>
+
+    <string name="outfit_add_form_database_insert_error">Erreur : La nouvelle tenue n\'a pas pu être enregistrée</string>
+    <string name="outfit_add_form_database_insert_success">La nouvelle tenue a été enregistrée avec succès</string>
+
+    <string name="read_external_storage_permission_denied">Erreur : le droit de lecture du support de stockage externe est requis pour le bon fonctionnement de l\'application</string>
+    <string name="write_external_storage_permission_denied">Erreur : le droit d\'écriture du support de stockage externe est requis pour le bon fonctionnement de l\'application</string>
+    <string name="internet_permission_denied">Erreur : le droit d\'accès à Internet est requis pour le bon fonctionnement de l\'application</string>
 </resources>

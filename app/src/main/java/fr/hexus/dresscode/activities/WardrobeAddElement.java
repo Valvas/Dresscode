@@ -36,6 +36,10 @@ import android.widget.LinearLayout;;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GcmNetworkManager;
+import com.google.android.gms.gcm.OneoffTask;
+import com.google.android.gms.gcm.Task;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,6 +52,7 @@ import java.util.Date;
 import fr.hexus.dresscode.classes.ApiRequester;
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.GCMService;
 import fr.hexus.dresscode.classes.WardrobeElement;
 import fr.hexus.dresscode.classes.WardrobeElementForm;
 import fr.hexus.dresscode.enums.Colors;
@@ -60,6 +65,8 @@ public class WardrobeAddElement extends AppCompatActivity
     private static final int CAMERA = 1;
 
     private static int selectedColors = 0;
+
+    private GcmNetworkManager gcmNetworkManager;
 
     private ImageView picture;
     private Button addPicture;
@@ -76,6 +83,8 @@ public class WardrobeAddElement extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wardrobe_add_element);
+
+        gcmNetworkManager = GcmNetworkManager.getInstance(this);
 
         colorsList = findViewById(R.id.wardrobeAddFormColorsList);
 
@@ -350,8 +359,6 @@ public class WardrobeAddElement extends AppCompatActivity
             if(currentColor.isChecked()) colors.add(currentColor.getId());
         }
 
-        //sendWardrobeElementToAPI(new WardrobeElementForm(type, color, encodedImage));
-
         String path = savePictureInDresscodeFolder(bitmap);
 
         if(path.length() == 0)
@@ -363,10 +370,29 @@ public class WardrobeAddElement extends AppCompatActivity
         {
             WardrobeElement newElement = new WardrobeElement(0, type, colors, path);
 
+            final SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
+
             if(newElement.saveWardrobeElementInDatabase(this))
             {
+                Bundle extras = new Bundle();
+                extras.putSerializable(Constants.SERIALIZED_WARDROBE_ELEMENT_KEY, newElement);
+                extras.putString("picture", encodedImage);
+                extras.putString("token", sharedPreferences.getString("token", null));
+
+                Task task = new OneoffTask.Builder()
+                        .setService(GCMService.class)
+                        .setExecutionWindow(0, 30)
+                        .setTag(Constants.WARDROBE_ELEMENT_API_TAG_CREATE)
+                        .setUpdateCurrent(false)
+                        .setRequiredNetwork(Task.NETWORK_STATE_CONNECTED)
+                        .setRequiresCharging(false)
+                        .setExtras(extras)
+                        .build();
+
+                gcmNetworkManager.schedule(task);
+
                 Toast.makeText(this, R.string.new_wardrobe_element_saved, Toast.LENGTH_LONG).show();
-                finish();
+                //finish();
             }
 
             else
@@ -421,14 +447,5 @@ public class WardrobeAddElement extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void sendWardrobeElementToAPI(WardrobeElementForm wardrobeElementForm)
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
-
-        ApiRequester apiRequester = new ApiRequester();
-
-        boolean result = apiRequester.sendNewWardrobeElement(sharedPreferences.getString("token", null), wardrobeElementForm);
     }
 }

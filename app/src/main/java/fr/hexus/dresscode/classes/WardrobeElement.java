@@ -3,9 +3,21 @@ package fr.hexus.dresscode.classes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import fr.hexus.dresscode.retrofit.DresscodeService;
+import fr.hexus.dresscode.retrofit.RetrofitClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class WardrobeElement implements Serializable
 {
@@ -60,7 +72,7 @@ public class WardrobeElement implements Serializable
     public String toString()
     {
         StringBuilder stringToReturn = new StringBuilder();
-        stringToReturn.append("\n[Element]\n- Type : " + this.type + "\n- Path : " + this.path + "\n- Colors : ");
+        stringToReturn.append("\n[Element]\n- ID : " + this.id + "\n- Type : " + this.type + "\n- Path : " + this.path + "\n- Colors : ");
 
         for(int x = 0; x < this.colors.size(); x++)
         {
@@ -152,5 +164,74 @@ public class WardrobeElement implements Serializable
         appDatabaseCreation.close();
 
         return true;
+    }
+
+    /****************************************************************************************************/
+    // SEND ELEMENT TO THE API
+    /****************************************************************************************************/
+
+    public void sendWardrobeElementToTheAPI(String token, String picture) throws CallException
+    {
+        int[] colors = new int[this.colors.size()];
+
+        for(int i = 0; i < this.colors.size(); i++)
+        {
+            colors[i] = this.colors.get(i);
+        }
+
+        Retrofit retrofit = RetrofitClient.getClient();
+
+        DresscodeService service = retrofit.create(DresscodeService.class);
+
+        WardrobeElementForm wardrobeElementForm = new WardrobeElementForm(this.type, colors, picture);
+
+        Call<Void> call = service.addWardrobeElement(token, wardrobeElementForm);
+
+        call.enqueue(new Callback<Void>()
+        {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response)
+            {
+                if(response.errorBody() != null )
+                {
+                    try
+                    {
+                        JSONObject object = new JSONObject(response.errorBody().string());
+
+                        throw new CallException(object.getString("message"));
+
+                    } catch(JSONException e)
+                    {
+                        System.out.println("1 : " + e.getMessage());
+                        e.printStackTrace();
+
+                    } catch(IOException e)
+                    {
+                        System.out.println("2 : " + e.getMessage());
+                        e.printStackTrace();
+
+                    } catch(CallException e)
+                    {
+                        System.out.println("3 : " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t)
+            {
+                try
+                {
+                    System.out.println("4 : " + t.getMessage());
+                    throw new CallException(t.getMessage(), t.getCause());
+
+                } catch(CallException e)
+                {
+                    System.out.println("5 : " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
