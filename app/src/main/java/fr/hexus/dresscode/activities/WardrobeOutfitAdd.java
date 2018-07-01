@@ -1,7 +1,9 @@
 package fr.hexus.dresscode.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,26 +13,31 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import fr.hexus.dresscode.classes.GlideApp;
 import fr.hexus.dresscode.classes.Outfit;
 import fr.hexus.dresscode.classes.WardrobeElement;
+import fr.hexus.dresscode.enums.Colors;
+import fr.hexus.dresscode.enums.Types;
 
 public class WardrobeOutfitAdd extends AppCompatActivity
 {
     private List<WardrobeElement> wardrobeElements = new ArrayList<>();
-    private WardrobeElementAdapter wardrobeElementAdapter;
 
     private LinearLayout outfitElementsList;
     private FloatingActionButton outfitElementsAdd;
-    private ListView myList;
     private TextView outfitElementsEmpty;
 
     private EditText outfitNameValue;
@@ -75,27 +82,30 @@ public class WardrobeOutfitAdd extends AppCompatActivity
             public void afterTextChanged(Editable editable) { }
         });
 
-        myList = findViewById(R.id.myList);
-
         outfitElementsEmpty = findViewById(R.id.outfitElementsEmpty);
 
         outfitElementsList = findViewById(R.id.outfitElementsList);
 
         outfitElementsAdd = findViewById(R.id.outfitElementsAdd);
 
-        outfitElementsAdd.setOnClickListener(new View.OnClickListener()
+        outfitElementsAdd.setOnClickListener(view ->
         {
-            @Override
-            public void onClick(View view)
+            int[] ids = new int[wardrobeElements.size()];
+
+            for(int i = 0; i < wardrobeElements.size(); i++)
             {
-                startActivityForResult(new Intent(getApplicationContext(), ChooseWardrobeElement.class), PICK_WARDROBE_ELEMENT_REQUEST);
+                ids[i] = wardrobeElements.get(i).getId();
             }
+
+            Intent getItemIntent = new Intent(getApplicationContext(), ChooseWardrobeElement.class);
+            getItemIntent.putExtra("selectedItems", ids);
+            startActivityForResult(getItemIntent, PICK_WARDROBE_ELEMENT_REQUEST);
         });
-
-        wardrobeElementAdapter = new WardrobeElementAdapter(this, wardrobeElements);
-
-        myList.setAdapter(wardrobeElementAdapter);
     }
+
+    /******************************************************************************************/
+    //  CLICK ON BUTTON TO RETURN TO PREVIOUS ACTIVITY
+    /******************************************************************************************/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -122,13 +132,102 @@ public class WardrobeOutfitAdd extends AppCompatActivity
         {
             if(data.getSerializableExtra("wardrobeElement") != null)
             {
-                outfitElementsEmpty.setText("");
+                WardrobeElement newWardrobeElement = (WardrobeElement) data.getSerializableExtra("wardrobeElement");
 
-                wardrobeElements.add((WardrobeElement) data.getSerializableExtra("wardrobeElement"));
+                LinearLayout newElement = new LinearLayout(getApplicationContext());
+                newElement.setOrientation(LinearLayout.HORIZONTAL);
+                newElement.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-                wardrobeElementAdapter = new WardrobeElementAdapter(this, wardrobeElements);
+                LinearLayout newElementData = new LinearLayout(getApplicationContext());
+                newElementData.setOrientation(LinearLayout.VERTICAL);
+                newElementData.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                newElementData.setWeightSum(1);
 
-                myList.setAdapter(wardrobeElementAdapter);
+                /****************************************************************************************************/
+                // PICTURE
+                /****************************************************************************************************/
+
+                CircleImageView wardrobeElementPicture = new CircleImageView(getApplicationContext());
+
+                wardrobeElementPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams((int) (64 * getResources().getDisplayMetrics().density), (int) (64 * getResources().getDisplayMetrics().density));
+                lp.setMargins((int) (8 * getResources().getDisplayMetrics().density), (int) (8 * getResources().getDisplayMetrics().density), (int) (8 * getResources().getDisplayMetrics().density), (int) (8 * getResources().getDisplayMetrics().density));
+                wardrobeElementPicture.setLayoutParams(lp);
+
+                GlideApp.with(newElement)
+                        .load(Environment.getExternalStorageDirectory() + String.valueOf(newWardrobeElement.getPath()))
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .into(wardrobeElementPicture);
+
+                newElement.addView(wardrobeElementPicture);
+
+                /****************************************************************************************************/
+                // TYPE
+                /****************************************************************************************************/
+
+                TextView newElementType = new TextView(getApplicationContext());
+                newElementType.setText(getResources().getString(getResources().getIdentifier(Types.getKey(newWardrobeElement.getType()), "string", getPackageName())));
+
+                /****************************************************************************************************/
+                // COLORS
+                /****************************************************************************************************/
+
+                TextView newElementColors = new TextView(getApplicationContext());
+
+                ArrayList<Integer> colorsList = newWardrobeElement.getColors();
+
+                StringBuilder colors = new StringBuilder();
+
+                for(int x = 0; x < colorsList.size(); x++)
+                {
+                    colors.append((x + 1) == colorsList.size()
+                            ? getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName()))
+                            : getResources().getString(getResources().getIdentifier(Colors.getKey(colorsList.get(x)), "string", getPackageName())) + " ");
+                }
+
+                newElementColors.setText(colors);
+
+                /****************************************************************************************************/
+                // DELETE BUTTON
+                /****************************************************************************************************/
+
+                ImageView remove = new ImageView(getApplicationContext());
+
+                LinearLayout.LayoutParams removeLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                remove.setImageResource(R.drawable.ic_delete);
+                removeLayoutParams.setMargins((int) (8 * getResources().getDisplayMetrics().density), (int) (8 * getResources().getDisplayMetrics().density), (int) (8 * getResources().getDisplayMetrics().density), (int) (8 * getResources().getDisplayMetrics().density));
+                remove.setLayoutParams(removeLayoutParams);
+
+                remove.setOnClickListener(view ->
+                {
+                    View currentElement = (View) view.getParent();
+                    LinearLayout outfitElementsList = findViewById(R.id.outfitElementsList);
+
+                    outfitElementsList.removeView(currentElement);
+
+                    wardrobeElements.remove(newWardrobeElement);
+
+                    if(wardrobeElements.size() == 0)
+                    {
+                        outfitElementsEmpty.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                /****************************************************************************************************/
+                // PUTTING VIEWS
+                /****************************************************************************************************/
+
+                newElementData.addView(newElementType);
+                newElementData.addView(newElementColors);
+
+                newElement.addView(newElementData);
+                newElement.addView(remove);
+
+                outfitElementsList.addView(newElement);
+
+                outfitElementsEmpty.setVisibility(View.GONE);
+
+                wardrobeElements.add(newWardrobeElement);
 
                 checkForm();
             }

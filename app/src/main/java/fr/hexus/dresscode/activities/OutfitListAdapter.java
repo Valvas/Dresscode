@@ -32,6 +32,11 @@ public class OutfitListAdapter extends ArrayAdapter<Outfit>
         TextView outfitName = row.findViewById(R.id.outfitName);
         TextView outfitElements = row.findViewById(R.id.outfitElements);
 
+        for(int i = 0; i < currentOutfit.getElements().size(); i++)
+        {
+            System.out.println(currentOutfit.getElements().get(i).toString());
+        }
+
         outfitName.setText(currentOutfit.getName());
         outfitElements.setText(getContext().getResources().getString(R.string.amount_of_elements_in_outfit) + " : " + currentOutfit.getElements().size());
 

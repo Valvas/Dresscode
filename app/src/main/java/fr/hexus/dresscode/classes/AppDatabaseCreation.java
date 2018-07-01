@@ -9,7 +9,7 @@ import fr.hexus.dresscode.classes.Constants;
 public class AppDatabaseCreation extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "dresscode.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
 
     public AppDatabaseCreation(Context context)
     {

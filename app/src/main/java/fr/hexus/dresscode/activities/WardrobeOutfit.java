@@ -61,14 +61,7 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
 
         FloatingActionButton addNewWardrobeOutfit = findViewById(R.id.addNewWardrobeOutfit);
 
-        addNewWardrobeOutfit.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                startActivity(new Intent(getApplicationContext(), WardrobeOutfitAdd.class));
-            }
-        });
+        addNewWardrobeOutfit.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), WardrobeOutfitAdd.class)));
     }
 
     @Override
@@ -80,7 +73,7 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
 
         SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
 
-        Cursor wardrobeOutfitsCursor = database.rawQuery("SELECT * FROM outfit", null);
+        Cursor wardrobeOutfitsCursor = database.rawQuery("SELECT * FROM " + Constants.OUTFIT_TABLE_NAME, null);
 
         myList = findViewById(R.id.myList);
 
@@ -101,9 +94,57 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
 
             wardrobeOutfitsCursor.moveToFirst();
 
+            /****************************************************************************************************/
+            // BROWSE OUTFITS
+            /****************************************************************************************************/
+
             for(int i = 0; i < wardrobeOutfitsCursor.getCount(); i++)
             {
-                wardrobeOutfits.add(new Outfit(wardrobeOutfitsCursor.getInt(wardrobeOutfitsCursor.getColumnIndex("id")), wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_NAME)), new ArrayList<WardrobeElement>()));
+                List<WardrobeElement> wardrobeOutfitElements = new ArrayList<>();
+
+                Cursor wardrobeOutfitElementsCursor = database.rawQuery("SELECT * FROM " + Constants.OUTFIT_ELEMENTS_TABLE_NAME + " WHERE " + Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_ID + " = ?", new String[]{ wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex("id")) });
+
+                wardrobeOutfitElementsCursor.moveToFirst();
+
+                /****************************************************************************************************/
+                // BROWSE ELEMENTS FROM EACH OUTFIT
+                /****************************************************************************************************/
+
+                for(int j = 0; j < wardrobeOutfitElementsCursor.getCount(); j++)
+                {
+                    /****************************************************************************************************/
+                    // GET THE DETAIL OF EACH ELEMENT
+                    /****************************************************************************************************/
+
+                    Cursor wardrobeOutfitElementsCurrentCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_TABLE_NAME + " WHERE id = ?", new String[]{ wardrobeOutfitElementsCursor.getString(wardrobeOutfitElementsCursor.getColumnIndex(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_ID)) });
+
+                    wardrobeOutfitElementsCurrentCursor.moveToFirst();
+
+                    Cursor wardrobeOutfitElementsCurrentColorsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME + " WHERE " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex("id")) });
+
+                    wardrobeOutfitElementsCurrentColorsCursor.moveToFirst();
+
+                    ArrayList<Integer> currentElementColor = new ArrayList<>();
+
+                    /****************************************************************************************************/
+                    // BROWSE COLORS OF EACH OUTFIT ELEMENT
+                    /****************************************************************************************************/
+
+                    for(int k = 0; k < wardrobeOutfitElementsCurrentColorsCursor.getCount(); k++)
+                    {
+                        currentElementColor.add(wardrobeOutfitElementsCurrentColorsCursor.getInt(wardrobeOutfitElementsCurrentColorsCursor.getColumnIndex(Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_COLOR_ID)));
+
+                        wardrobeOutfitElementsCurrentColorsCursor.moveToNext();
+                    }
+
+                    wardrobeOutfitElements.add(new WardrobeElement(wardrobeOutfitElementsCurrentCursor.getInt(wardrobeOutfitElementsCurrentCursor.getColumnIndex("id")), wardrobeOutfitElementsCurrentCursor.getInt(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_TYPE)), currentElementColor, wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_PATH))));
+
+                    wardrobeOutfitElementsCursor.moveToNext();
+                }
+
+                wardrobeOutfits.add(new Outfit(wardrobeOutfitsCursor.getInt(wardrobeOutfitsCursor.getColumnIndex("id")), wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_NAME)), wardrobeOutfitElements));
+
+                wardrobeOutfitsCursor.moveToNext();
             }
 
             OutfitListAdapter outfitListAdapter = new OutfitListAdapter(this, wardrobeOutfits);

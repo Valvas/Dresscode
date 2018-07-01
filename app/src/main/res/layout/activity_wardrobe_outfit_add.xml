@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/myDrawer"
-    tools:openDrawer="start"
     android:layout_gravity="left"
     tools:context="fr.hexus.dresscode.activities.WardrobeOutfitAdd">
 
@@ -69,7 +68,7 @@
                             android:id="@+id/outfitElementsLabel"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:gravity="center"
+                            android:gravity="center|left"
                             android:layout_weight="1"
                             android:text="@string/wardrobe_outfit_add_form_elements" />
 
@@ -84,6 +83,17 @@
 
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/outfitElementsEmpty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wardrobe_outfit_add_form_elements_empty"
+                        android:textAlignment="center"
+                        app:layout_constraintTop_toBottomOf="@+id/outfitElementsHeader"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
                     <LinearLayout
                         android:id="@+id/outfitElementsList"
                         android:layout_width="match_parent"
@@ -92,23 +102,10 @@
                         android:background="@drawable/border"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
                         app:layout_constraintTop_toBottomOf="@+id/outfitElementsHeader"
                         app:layout_constraintBottom_toBottomOf="parent">
-
-                        <ListView
-                            android:id="@+id/myList"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:divider="#FFFFFF"/>
-
-                        <TextView
-                            android:id="@+id/outfitElementsEmpty"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/wardrobe_outfit_add_form_elements_empty"
-                            android:textAlignment="center"/>
 
                     </LinearLayout>
 

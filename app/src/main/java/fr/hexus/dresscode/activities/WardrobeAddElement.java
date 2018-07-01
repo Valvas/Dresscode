@@ -392,7 +392,7 @@ public class WardrobeAddElement extends AppCompatActivity
                 gcmNetworkManager.schedule(task);
 
                 Toast.makeText(this, R.string.new_wardrobe_element_saved, Toast.LENGTH_LONG).show();
-                //finish();
+                finish();
             }
 
             else
