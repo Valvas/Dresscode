@@ -3,11 +3,17 @@ package fr.hexus.dresscode.classes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.util.Base64;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -170,8 +176,18 @@ public class WardrobeElement implements Serializable
     // SEND ELEMENT TO THE API
     /****************************************************************************************************/
 
-    public void sendWardrobeElementToTheAPI(String token, String picture) throws CallException
+    public void sendWardrobeElementToTheAPI(String token) throws CallException
     {
+        File image = new File(String.valueOf(Environment.getExternalStorageDirectory() + this.path));
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+        byte[] byteArrayImage = baos.toByteArray();
+
+        String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+
         int[] colors = new int[this.colors.size()];
 
         for(int i = 0; i < this.colors.size(); i++)
@@ -183,7 +199,7 @@ public class WardrobeElement implements Serializable
 
         DresscodeService service = retrofit.create(DresscodeService.class);
 
-        WardrobeElementForm wardrobeElementForm = new WardrobeElementForm(this.type, colors, picture);
+        WardrobeElementForm wardrobeElementForm = new WardrobeElementForm(this.type, colors, encodedImage);
 
         Call<Void> call = service.addWardrobeElement(token, wardrobeElementForm);
 
