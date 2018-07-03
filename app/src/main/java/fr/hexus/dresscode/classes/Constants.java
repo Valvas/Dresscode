@@ -16,8 +16,6 @@ public final class Constants
     public static final String WARDROBE_ELEMENT_COLORS_TABLE_NAME = "colors";
     public static final String OUTFIT_ELEMENTS_TABLE_NAME = "elements";
 
-    public static final String SERIALIZED_WARDROBE_ELEMENT_KEY = "wardrobeElementKey";
-
     public static final String SHARED_PREFERENCES_FILE_NAME = "customPreferences";
 
     public static final String API_BASE_URL = "http://dresscode.ddns.net";
@@ -34,4 +32,6 @@ public final class Constants
     public static final String WARDROBE_OUTFIT_API_TAG_CREATE = "WARDROBE_OUTFIT_API_TAG_CREATE";
     public static final String WARDROBE_OUTFIT_API_TAG_UPDATE = "WARDROBE_OUTFIT_API_TAG_UPDATE";
     public static final String WARDROBE_OUTFIT_API_TAG_DELETE = "WARDROBE_OUTFIT_API_TAG_DELETE";
+
+    public static final String LOG_NETWORK_MANAGER_SENDING_NEW_WARDROBE_ELEMENT = "ENDING_NEW_WARDROBE_ELEMENT";
 }

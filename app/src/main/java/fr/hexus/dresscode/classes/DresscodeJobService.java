@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Base64;
+import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
@@ -24,7 +25,8 @@ public class DresscodeJobService extends JobService
 
         if(Constants.WARDROBE_ELEMENT_API_TAG_CREATE.equals(job.getTag()))
         {
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!! SENDING TO API !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Log.println(Log.INFO, Constants.LOG_NETWORK_MANAGER_SENDING_NEW_WARDROBE_ELEMENT, "Sending new wardrobe element to the API");
+
             final Bundle extras = job.getExtras();
             final int type = extras.getInt("type");
             final String colors = extras.getString("colors");
