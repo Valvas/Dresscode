@@ -4,6 +4,7 @@ public final class Constants
 {
     public static final String WARDROBE_TABLE_NAME = "wardrobe";
     public static final String WARDROBE_TABLE_COLUMNS_TYPE = "type";
+    public static final String WARDROBE_TABLE_COLUMNS_UUID = "uuid";
     public static final String WARDROBE_TABLE_COLUMNS_PATH = "path";
     public static final String WARDROBE_TABLE_COLUMNS_OUTFIT = "outfit";
     public static final String WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_COLOR_ID = "color";
@@ -33,5 +34,5 @@ public final class Constants
     public static final String WARDROBE_OUTFIT_API_TAG_UPDATE = "WARDROBE_OUTFIT_API_TAG_UPDATE";
     public static final String WARDROBE_OUTFIT_API_TAG_DELETE = "WARDROBE_OUTFIT_API_TAG_DELETE";
 
-    public static final String LOG_NETWORK_MANAGER_SENDING_NEW_WARDROBE_ELEMENT = "ENDING_NEW_WARDROBE_ELEMENT";
+    public static final String LOG_NETWORK_MANAGER_SENDING_NEW_WARDROBE_ELEMENT = "SENDING_NEW_WARDROBE_ELEMENT";
 }

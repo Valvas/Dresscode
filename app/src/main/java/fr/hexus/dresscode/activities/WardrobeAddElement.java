@@ -335,12 +335,6 @@ public class WardrobeAddElement extends AppCompatActivity
         BitmapDrawable draw = (BitmapDrawable) picture.getDrawable();
         Bitmap bitmap = draw.getBitmap();
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-        byte[] byteArrayImage = baos.toByteArray();
-
-        String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-
         ArrayList<Integer> colors = new ArrayList<>();
 
         for(int x = 0; x < colorsList.getChildCount(); x++)

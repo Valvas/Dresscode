@@ -1,17 +1,11 @@
 package fr.hexus.dresscode.classes;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Base64;
 import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.ArrayList;
 
 public class DresscodeJobService extends JobService
@@ -46,7 +40,7 @@ public class DresscodeJobService extends JobService
 
             try
             {
-                currentElement.sendWardrobeElementToTheAPI(token);
+                currentElement.sendWardrobeElementToTheAPI(token, getApplicationContext());
 
                 jobFinished(job, false);
 

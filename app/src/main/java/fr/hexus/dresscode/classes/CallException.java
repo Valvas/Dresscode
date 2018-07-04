@@ -1,24 +1,11 @@
 package fr.hexus.dresscode.classes;
 
+import android.util.Log;
+
 public class CallException extends Exception
 {
-    public CallException()
-    {
-        super();
-    }
-
     public CallException(String message)
     {
-        super(message);
-    }
-
-    public CallException(String message, Throwable cause)
-    {
-        super(message, cause);
-    }
-
-    public CallException(Throwable cause)
-    {
-        super(cause);
+        Log.println(Log.ERROR, "CallException", message);
     }
 }

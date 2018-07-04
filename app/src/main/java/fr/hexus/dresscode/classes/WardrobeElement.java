@@ -2,11 +2,13 @@ package fr.hexus.dresscode.classes;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -30,6 +32,7 @@ public class WardrobeElement implements Serializable
     private String path;
     private int id;
     private int type;
+    private String uuid;
     private ArrayList<Integer> colors;
 
     public WardrobeElement(int id, int type, ArrayList colors, String path)
@@ -37,6 +40,7 @@ public class WardrobeElement implements Serializable
         this.id         = id;
         this.type       = type;
         this.path       = path;
+        this.uuid       = null;
         this.colors     = colors;
     }
 
@@ -60,6 +64,11 @@ public class WardrobeElement implements Serializable
         return this.path;
     }
 
+    public String getUuid()
+    {
+        return this.uuid;
+    }
+
     public void setType(int type)
     {
         this.type = type;
@@ -73,6 +82,11 @@ public class WardrobeElement implements Serializable
     public void setColors(ArrayList<Integer> colors)
     {
         this.colors = colors;
+    }
+
+    public void setUuid(String uuid)
+    {
+        this.uuid = uuid;
     }
 
     public String toString()
@@ -101,6 +115,7 @@ public class WardrobeElement implements Serializable
         ContentValues values = new ContentValues();
         values.put(Constants.WARDROBE_TABLE_COLUMNS_TYPE, this.type);
         values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, this.path);
+        values.put(Constants.WARDROBE_TABLE_COLUMNS_UUID, "");
 
         long insertedRowId = db.insert(Constants.WARDROBE_TABLE_NAME, null, values);
 
@@ -143,6 +158,7 @@ public class WardrobeElement implements Serializable
         ContentValues values = new ContentValues();
         values.put(Constants.WARDROBE_TABLE_COLUMNS_TYPE, this.type);
         values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, this.path);
+        values.put(Constants.WARDROBE_TABLE_COLUMNS_UUID, this.uuid);
 
         long updatedRows = db.update(Constants.WARDROBE_TABLE_NAME, values, "id = ?", new String[]{ String.valueOf(this.id) });
 
@@ -176,7 +192,7 @@ public class WardrobeElement implements Serializable
     // SEND ELEMENT TO THE API
     /****************************************************************************************************/
 
-    public void sendWardrobeElementToTheAPI(String token) throws CallException
+    public void sendWardrobeElementToTheAPI(String token, Context context) throws CallException
     {
         File image = new File(String.valueOf(Environment.getExternalStorageDirectory() + this.path));
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -201,12 +217,12 @@ public class WardrobeElement implements Serializable
 
         WardrobeElementForm wardrobeElementForm = new WardrobeElementForm(this.type, colors, encodedImage);
 
-        Call<Void> call = service.addWardrobeElement(token, wardrobeElementForm);
+        Call<JSONObject> call = service.addWardrobeElement(token, wardrobeElementForm);
 
-        call.enqueue(new Callback<Void>()
+        call.enqueue(new Callback<JSONObject>()
         {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response)
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> response)
             {
                 if(response.errorBody() != null )
                 {
@@ -214,37 +230,49 @@ public class WardrobeElement implements Serializable
                     {
                         JSONObject object = new JSONObject(response.errorBody().string());
 
+                        Log.println(Log.ERROR, "Sending wardrobe element to API",  object.getString("message"));
+
                         throw new CallException(object.getString("message"));
 
                     } catch(JSONException e)
                     {
-                        System.out.println("1 : " + e.getMessage());
+                        Log.println(Log.ERROR, "Sending wardrobe element to API",  e.getMessage());
                         e.printStackTrace();
 
                     } catch(IOException e)
                     {
-                        System.out.println("2 : " + e.getMessage());
+                        Log.println(Log.ERROR, "Sending wardrobe element to API",  e.getMessage());
                         e.printStackTrace();
 
                     } catch(CallException e)
                     {
-                        System.out.println("3 : " + e.getMessage());
                         e.printStackTrace();
                     }
+                }
+
+                else
+                {
+                    //uuid = response.body();
+
+                        Log.println(Log.INFO, "test", String.valueOf(response.body()));
+
+
+
+                    //Log.println(Log.INFO, "test", "UUID : " + uuid);
+
+                    //updateWardrobeElementInDatabase(context);
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t)
+            public void onFailure(Call<JSONObject> call, Throwable t)
             {
                 try
                 {
-                    System.out.println("4 : " + t.getMessage());
-                    throw new CallException(t.getMessage(), t.getCause());
+                    throw new CallException(t.getMessage());
 
                 } catch(CallException e)
                 {
-                    System.out.println("5 : " + e.getMessage());
                     e.printStackTrace();
                 }
             }

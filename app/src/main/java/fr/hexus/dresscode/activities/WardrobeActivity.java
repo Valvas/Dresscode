@@ -1,6 +1,7 @@
 package fr.hexus.dresscode.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -11,19 +12,37 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
+import fr.hexus.dresscode.classes.CallException;
 import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.LogonForm;
+import fr.hexus.dresscode.classes.Token;
 import fr.hexus.dresscode.classes.WardrobeElement;
+import fr.hexus.dresscode.classes.WardrobeElementForm;
+import fr.hexus.dresscode.retrofit.DresscodeService;
+import fr.hexus.dresscode.retrofit.RetrofitClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class WardrobeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -31,12 +50,17 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
     private DrawerLayout myDrawer;
     private NavigationView dresscodeMenu;
     private ListView myList;
+    private Button wardrobeSyncButton;
+    private LinearLayout wardrobeSyncInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wardrobe);
+
+        wardrobeSyncButton = findViewById(R.id.wardrobeSyncButton);
+        wardrobeSyncInfo = findViewById(R.id.wardrobeSyncInfo);
 
         myDrawer = findViewById(R.id.myDrawer);
 
@@ -55,14 +79,7 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
         FloatingActionButton addNewWardrobeElement = findViewById(R.id.addNewWardrobeElement);
 
-        addNewWardrobeElement.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                startActivity(new Intent(getApplicationContext(), WardrobeAddElement.class));
-            }
-        });
+        addNewWardrobeElement.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), WardrobeAddElement.class)));
     }
 
     @Override
@@ -191,5 +208,141 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
             default:
                 return true;
         }
+    }
+
+    /****************************************************************************************************/
+    // CLICKING ON SYNC BUTTON
+    /****************************************************************************************************/
+
+    public void clickOnSync(View view)
+    {
+        int errorsCounter = 0;
+
+        wardrobeSyncButton.setVisibility(View.GONE);
+        wardrobeSyncInfo.setVisibility(View.VISIBLE);
+
+        /****************************************************************************************************/
+        // GET TOKEN FROM SHARED PREFERENCES
+        /****************************************************************************************************/
+
+        final SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
+
+        /****************************************************************************************************/
+        // GET WARDROBE ELEMENTS FROM DATABASE THAT HAVE NOT ALREADY BEEN SENT TO THE API
+        /****************************************************************************************************/
+
+        AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(this);
+
+        SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
+
+        Cursor wardrobeElementsCursor = database.query(Constants.WARDROBE_TABLE_NAME, new String[]{ "*" }, Constants.WARDROBE_TABLE_COLUMNS_UUID + " = ?", new String[]{ "" }, null, null, null);
+
+        wardrobeElementsCursor.moveToFirst();
+
+        for(int i = 0; i < wardrobeElementsCursor.getCount(); i++)
+        {
+            Cursor wardrobeElementColorsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME + " WHERE " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("id")) });
+
+            wardrobeElementColorsCursor.moveToFirst();
+
+            ArrayList<Integer> wardrobeElementColors = new ArrayList<>();
+
+            for(int j = 0; j < wardrobeElementColorsCursor.getCount(); j++)
+            {
+                wardrobeElementColors.add(wardrobeElementColorsCursor.getInt(wardrobeElementColorsCursor.getColumnIndex(Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_COLOR_ID)));
+
+                wardrobeElementColorsCursor.moveToNext();
+            }
+
+            wardrobeElementColorsCursor.close();
+
+            WardrobeElement currentWardrobeElement = new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path")));
+
+            try
+            {
+                currentWardrobeElement.sendWardrobeElementToTheAPI(sharedPreferences.getString("token", null), getApplicationContext());
+
+            } catch(CallException e)
+            {
+                errorsCounter += 1;
+            }
+
+            wardrobeElementsCursor.moveToNext();
+        }
+
+        wardrobeElementsCursor.close();
+
+        /****************************************************************************************************/
+        // GET WARDROBE ELEMENTS FROM API
+        /****************************************************************************************************/
+
+        Retrofit retrofit = RetrofitClient.getClient();
+
+        DresscodeService service = retrofit.create(DresscodeService.class);
+
+        Call<JSONObject> call = service.getAllWardrobeElements(sharedPreferences.getString("token", null));
+
+        call.enqueue(new Callback<JSONObject>()
+        {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> response)
+            {
+                if(response.errorBody() != null )
+                {
+                    wardrobeSyncInfo.setVisibility(View.GONE);
+                    wardrobeSyncButton.setVisibility(View.VISIBLE);
+
+                    try
+                    {
+                        String message = new JSONObject(response.errorBody().string()).getString("message");
+
+                        Log.println(Log.ERROR, "Getting wardrobe elements from API",  message);
+
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.sync_failed), Toast.LENGTH_SHORT).show();
+
+                    } catch(JSONException e)
+                    {
+                        Log.println(Log.ERROR, "Getting wardrobe elements from API",  e.getMessage());
+
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.sync_failed), Toast.LENGTH_SHORT).show();
+
+                    } catch(IOException e)
+                    {
+                        Log.println(Log.ERROR, "Getting wardrobe elements from API",  e.getMessage());
+
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.sync_failed), Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+
+                else
+                {
+                    fillList(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t)
+            {
+                wardrobeSyncInfo.setVisibility(View.GONE);
+                wardrobeSyncButton.setVisibility(View.VISIBLE);
+
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.sync_failed), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        wardrobeSyncInfo.setVisibility(View.GONE);
+        wardrobeSyncButton.setVisibility(View.VISIBLE);
+
+        Toast.makeText(this, getResources().getString(R.string.sync_done), Toast.LENGTH_SHORT).show();
+    }
+
+    /****************************************************************************************************/
+    // FILL WARDROBE ELEMENTS LIST
+    /****************************************************************************************************/
+
+    public void fillList(JSONObject elements)
+    {
+
     }
 }

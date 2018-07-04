@@ -211,14 +211,10 @@ public class LaunchActivity extends AppCompatActivity
         {
             final Handler handler = new Handler();
 
-            handler.postDelayed(new Runnable()
+            handler.postDelayed(() ->
             {
-                @Override
-                public void run()
-                {
-                    finish();
-                    startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-                }
+                finish();
+                startActivity(new Intent(getApplicationContext(), SignInActivity.class));
             }, 3000);
         }
     }

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class SignInActivity extends AppCompatActivity
     private ProgressBar loadingSpinner;
     private EditText emailInput;
     private EditText passwordInput;
+    private LinearLayout signInForm;
 
     private Button signInButton;
     private Button signUpButton;
@@ -44,6 +46,8 @@ public class SignInActivity extends AppCompatActivity
 
         signInButton = findViewById(R.id.logonPageSendButton);
         signUpButton = findViewById(R.id.logonPageRegisterButton);
+
+        signInForm = findViewById(R.id.signInForm);
 
         emailInput = findViewById(R.id.signInEmailInput);
         passwordInput = findViewById(R.id.signInPasswordInput);
@@ -77,6 +81,7 @@ public class SignInActivity extends AppCompatActivity
             // ADD A SPINNER WHILE LOADING
             /****************************************************************************************************/
 
+            signInForm.setVisibility(View.GONE);
             loadingSpinner.setVisibility(View.VISIBLE);
 
             /****************************************************************************************************/
@@ -100,10 +105,11 @@ public class SignInActivity extends AppCompatActivity
                 @Override
                 public void onResponse(Call<Token> call, Response<Token> response)
                 {
-                    loadingSpinner.setVisibility(View.GONE);
-
                     if(response.errorBody() != null )
                     {
+                        loadingSpinner.setVisibility(View.GONE);
+                        signInForm.setVisibility(View.VISIBLE);
+
                         try
                         {
                             JSONObject object = new JSONObject(response.errorBody().string());
@@ -138,6 +144,9 @@ public class SignInActivity extends AppCompatActivity
                 @Override
                 public void onFailure(Call<Token> call, Throwable t)
                 {
+                    loadingSpinner.setVisibility(View.GONE);
+                    signInForm.setVisibility(View.VISIBLE);
+
                     Toast.makeText(getApplicationContext(), "Erreur : " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
