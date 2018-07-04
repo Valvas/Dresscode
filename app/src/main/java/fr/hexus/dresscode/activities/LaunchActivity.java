@@ -34,24 +34,7 @@ public class LaunchActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
 
-        checkReadingStorageRight();
-    }
-
-    /****************************************************************************************************/
-    // CHECK READING STORAGE RIGHT
-    /****************************************************************************************************/
-
-    public void checkReadingStorageRight()
-    {
-        if(checkSelfPermission("READ_EXTERNAL_STORAGE") == PERMISSION_DENIED)
-        {
-            ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
-        }
-
-        else
-        {
-            checkWritingStorageRight();
-        }
+        checkWritingStorageRight();
     }
 
     /****************************************************************************************************/
@@ -62,7 +45,7 @@ public class LaunchActivity extends AppCompatActivity
     {
         if(checkSelfPermission("WRITE_EXTERNAL_STORAGE") == PERMISSION_DENIED)
         {
-            ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE }, 2);
+            ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1);
         }
 
         else
@@ -79,7 +62,7 @@ public class LaunchActivity extends AppCompatActivity
     {
         if(checkSelfPermission("INTERNET") == PERMISSION_DENIED)
         {
-            ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.INTERNET }, 3);
+            ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.INTERNET }, 2);
         }
 
         else
@@ -101,22 +84,6 @@ public class LaunchActivity extends AppCompatActivity
             {
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
-                    checkWritingStorageRight();
-                }
-
-                else
-                {
-                    Toast.makeText(this, getResources().getString(R.string.read_external_storage_permission_denied), Toast.LENGTH_LONG).show();
-                    finish();
-                }
-
-                return;
-            }
-
-            case 2:
-            {
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
                     checkInternetAccessRight();
                 }
 
@@ -129,7 +96,7 @@ public class LaunchActivity extends AppCompatActivity
                 return;
             }
 
-            case 3:
+            case 2:
             {
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {

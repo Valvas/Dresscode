@@ -23,6 +23,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonElement;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -280,12 +282,12 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
         DresscodeService service = retrofit.create(DresscodeService.class);
 
-        Call<JSONObject> call = service.getAllWardrobeElements(sharedPreferences.getString("token", null));
+        Call<JsonElement> call = service.getAllWardrobeElements(sharedPreferences.getString("token", null));
 
-        call.enqueue(new Callback<JSONObject>()
+        call.enqueue(new Callback<JsonElement>()
         {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response)
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response)
             {
                 if(response.errorBody() != null )
                 {
@@ -311,7 +313,6 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
                         Log.println(Log.ERROR, "Getting wardrobe elements from API",  e.getMessage());
 
                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.sync_failed), Toast.LENGTH_SHORT).show();
-
                     }
                 }
 
@@ -322,7 +323,7 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable t)
+            public void onFailure(Call<JsonElement> call, Throwable t)
             {
                 wardrobeSyncInfo.setVisibility(View.GONE);
                 wardrobeSyncButton.setVisibility(View.VISIBLE);
@@ -330,19 +331,19 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.sync_failed), Toast.LENGTH_SHORT).show();
             }
         });
-
-        wardrobeSyncInfo.setVisibility(View.GONE);
-        wardrobeSyncButton.setVisibility(View.VISIBLE);
-
-        Toast.makeText(this, getResources().getString(R.string.sync_done), Toast.LENGTH_SHORT).show();
     }
 
     /****************************************************************************************************/
     // FILL WARDROBE ELEMENTS LIST
     /****************************************************************************************************/
 
-    public void fillList(JSONObject elements)
+    public void fillList(JsonElement elements)
     {
+        System.out.println(elements);
 
+        wardrobeSyncInfo.setVisibility(View.GONE);
+        wardrobeSyncButton.setVisibility(View.VISIBLE);
+
+        Toast.makeText(this, getResources().getString(R.string.sync_done), Toast.LENGTH_SHORT).show();
     }
 }

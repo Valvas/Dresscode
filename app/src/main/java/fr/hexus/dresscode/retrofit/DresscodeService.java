@@ -1,12 +1,12 @@
 package fr.hexus.dresscode.retrofit;
 
+import com.google.gson.JsonElement;
+
 import org.json.JSONObject;
 
 import fr.hexus.dresscode.classes.LogonForm;
-import fr.hexus.dresscode.classes.Account;
 import fr.hexus.dresscode.classes.SignUpForm;
 import fr.hexus.dresscode.classes.Token;
-import fr.hexus.dresscode.classes.WardrobeElement;
 import fr.hexus.dresscode.classes.WardrobeElementForm;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -30,5 +30,5 @@ public interface DresscodeService
     Call<JSONObject> addWardrobeElement(@Header("Authorization") String token, @Body WardrobeElementForm wardrobeElementForm);
 
     @GET("/getAllElements")
-    Call<JSONObject> getAllWardrobeElements(@Header("Authorization") String token);
+    Call<JsonElement> getAllWardrobeElements(@Header("Authorization") String token);
 }
