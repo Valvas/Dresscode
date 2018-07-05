@@ -33,15 +33,17 @@ public class WardrobeElement implements Serializable
     private int id;
     private int type;
     private String uuid;
+    private boolean storedOnApi;
     private ArrayList<Integer> colors;
 
-    public WardrobeElement(int id, int type, ArrayList colors, String path)
+    public WardrobeElement(int id, int type, String uuid, ArrayList colors, String path, boolean storedOnApi)
     {
-        this.id         = id;
-        this.type       = type;
-        this.path       = path;
-        this.uuid       = null;
-        this.colors     = colors;
+        this.id             = id;
+        this.type           = type;
+        this.path           = path;
+        this.uuid           = uuid;
+        this.colors         = colors;
+        this.storedOnApi    = storedOnApi;
     }
 
     public int getId()
@@ -69,6 +71,11 @@ public class WardrobeElement implements Serializable
         return this.uuid;
     }
 
+    public boolean getStoredOnApi()
+    {
+        return this.storedOnApi;
+    }
+
     public void setType(int type)
     {
         this.type = type;
@@ -89,10 +96,15 @@ public class WardrobeElement implements Serializable
         this.uuid = uuid;
     }
 
+    public void setStoredOnApi(boolean storedOnApi)
+    {
+        this.storedOnApi = storedOnApi;
+    }
+
     public String toString()
     {
         StringBuilder stringToReturn = new StringBuilder();
-        stringToReturn.append("\n[Element]\n- ID : " + this.id + "\n- Type : " + this.type + "\n- Path : " + this.path + "\n- Colors : ");
+        stringToReturn.append("\n[Element]\n- ID : " + this.id + "\n- Type : " + this.type + "\n- UUID : " + this.uuid + "\n- Path : " + this.path + "\n- Stored on API : " + this.storedOnApi + "\n- Colors : ");
 
         for(int x = 0; x < this.colors.size(); x++)
         {
@@ -115,7 +127,8 @@ public class WardrobeElement implements Serializable
         ContentValues values = new ContentValues();
         values.put(Constants.WARDROBE_TABLE_COLUMNS_TYPE, this.type);
         values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, this.path);
-        values.put(Constants.WARDROBE_TABLE_COLUMNS_UUID, "");
+        values.put(Constants.WARDROBE_TABLE_COLUMNS_UUID, this.uuid);
+        values.put(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API, this.storedOnApi);
 
         long insertedRowId = db.insert(Constants.WARDROBE_TABLE_NAME, null, values);
 
@@ -159,6 +172,7 @@ public class WardrobeElement implements Serializable
         values.put(Constants.WARDROBE_TABLE_COLUMNS_TYPE, this.type);
         values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, this.path);
         values.put(Constants.WARDROBE_TABLE_COLUMNS_UUID, this.uuid);
+        values.put(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API, this.storedOnApi);
 
         long updatedRows = db.update(Constants.WARDROBE_TABLE_NAME, values, "id = ?", new String[]{ String.valueOf(this.id) });
 
@@ -215,16 +229,16 @@ public class WardrobeElement implements Serializable
 
         DresscodeService service = retrofit.create(DresscodeService.class);
 
-        WardrobeElementForm wardrobeElementForm = new WardrobeElementForm(this.type, colors, encodedImage);
+        WardrobeElementForm wardrobeElementForm = new WardrobeElementForm(this.type, colors, this.uuid, encodedImage);
 
-        Call<JSONObject> call = service.addWardrobeElement(token, wardrobeElementForm);
+        Call<Void> call = service.addWardrobeElement(token, wardrobeElementForm);
 
-        call.enqueue(new Callback<JSONObject>()
+        call.enqueue(new Callback<Void>()
         {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response)
+            public void onResponse(Call<Void> call, Response<Void> response)
             {
-                if(response.errorBody() != null )
+                if(response.errorBody() != null)
                 {
                     try
                     {
@@ -252,20 +266,16 @@ public class WardrobeElement implements Serializable
 
                 else
                 {
-                    //uuid = response.body();
+                    // REQUEST SUCCEDEED, WARDROBE ELEMENT IS STORED ON THE API AND NEEDS TO BE UPDATED IN LOCAL DATABASE
 
-                        Log.println(Log.INFO, "test", String.valueOf(response.body()));
+                    storedOnApi = true;
 
-
-
-                    //Log.println(Log.INFO, "test", "UUID : " + uuid);
-
-                    //updateWardrobeElementInDatabase(context);
+                    updateWardrobeElementInDatabase(context);
                 }
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable t)
+            public void onFailure(Call<Void> call, Throwable t)
             {
                 try
                 {

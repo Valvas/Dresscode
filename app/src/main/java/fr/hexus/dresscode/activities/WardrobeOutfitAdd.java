@@ -1,6 +1,7 @@
 package fr.hexus.dresscode.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -20,10 +21,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.DresscodeJobService;
 import fr.hexus.dresscode.classes.GlideApp;
 import fr.hexus.dresscode.classes.Outfit;
 import fr.hexus.dresscode.classes.WardrobeElement;
@@ -38,6 +50,8 @@ public class WardrobeOutfitAdd extends AppCompatActivity
     private FloatingActionButton outfitElementsAdd;
     private TextView outfitElementsEmpty;
 
+    private FirebaseJobDispatcher dispatcher;
+
     private EditText outfitNameValue;
 
     private FloatingActionButton outfitAddFormSave;
@@ -49,6 +63,8 @@ public class WardrobeOutfitAdd extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wardrobe_outfit_add);
+
+        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
 
         outfitNameValue = findViewById(R.id.outfitNameValue);
         outfitAddFormSave = findViewById(R.id.outfitAddFormSave);
@@ -262,10 +278,107 @@ public class WardrobeOutfitAdd extends AppCompatActivity
 
     public void onSubmitForm(View view)
     {
-        Outfit newOutfit = new Outfit(0, String.valueOf(outfitNameValue.getText()), wardrobeElements);
+        Outfit newOutfit = new Outfit(String.valueOf(outfitNameValue.getText()), wardrobeElements, UUID.randomUUID().toString(), false);
 
         if(newOutfit.saveOutfitInDatabase(this))
         {
+            final SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
+
+            // BROWSE EACH ELEMENT OF THE OUTFIT TO GET THEIR PARAMETERS AND PUT THEM IN ARRAYS FOR THE REQUEST
+
+            int[] types = new int[newOutfit.getElements().size()];
+            String[] paths = new String[newOutfit.getElements().size()];
+            String[] uuids = new String[newOutfit.getElements().size()];
+            String[] stored = new String[newOutfit.getElements().size()];
+            String[] colors = new String[newOutfit.getElements().size()];
+
+            for(int i = 0; i < newOutfit.getElements().size(); i++)
+            {
+                // PUT CURRENT ELEMENT'S COLORS IN A STRING
+
+                StringBuilder currentElementColorsToString = new StringBuilder();
+
+                for(int j = 0; j < newOutfit.getElements().get(i).getColors().size(); j++)
+                {
+                    if((j + 1) == newOutfit.getElements().get(i).getColors().size())
+                    {
+                        currentElementColorsToString.append(String.valueOf(newOutfit.getElements().get(i).getColors().get(j)));
+                    }
+
+                    else
+                    {
+                        currentElementColorsToString.append(String.valueOf(newOutfit.getElements().get(i).getColors().get(j)) + ",");
+                    }
+                }
+
+                // PUT CURRENT ELEMENT'S ATTRIBUTES IN THE ARRAYS
+
+                types[i] = newOutfit.getElements().get(i).getType();
+                paths[i] = newOutfit.getElements().get(i).getPath();
+                uuids[i] = newOutfit.getElements().get(i).getUuid();
+                stored[i] = newOutfit.getElements().get(i).getStoredOnApi() ? "1" : "0";
+                colors[i] = String.valueOf(currentElementColorsToString);
+            }
+
+            // BROWSE EACH ELEMENT'S ATTRIBUTES TO PUT THEM IN A UNIQUE STRING
+
+            StringBuilder typesToString = new StringBuilder();
+            StringBuilder uuidsToString = new StringBuilder();
+            StringBuilder pathsToString = new StringBuilder();
+            StringBuilder storedToString = new StringBuilder();
+            StringBuilder colorsToString = new StringBuilder();
+
+            for(int i = 0; i < newOutfit.getElements().size(); i++)
+            {
+                if((i + 1) == newOutfit.getElements().size())
+                {
+                    typesToString.append(types[i]);
+                    uuidsToString.append(uuids[i]);
+                    pathsToString.append(paths[i]);
+                    storedToString.append(stored[i]);
+                    colorsToString.append(colors[i]);
+                }
+
+                else
+                {
+                    typesToString.append(types[i] + ";");
+                    uuidsToString.append(uuids[i] + ";");
+                    pathsToString.append(paths[i] + ";");
+                    storedToString.append(stored[i] + ";");
+                    colorsToString.append(colors[i] + ";");
+                }
+            }
+
+            // PUT THE DATA IN A BUNDLE TO GIVE TO THE JOB SERVICE
+
+            Bundle extras = new Bundle();
+
+            extras.putString("outfitName", newOutfit.getName());
+            extras.putString("outfitUuid", newOutfit.getUuid());
+            extras.putString("token", sharedPreferences.getString("token", null));
+
+            extras.putString("types", String.valueOf(typesToString));
+            extras.putString("uuids", String.valueOf(uuidsToString));
+            extras.putString("paths", String.valueOf(pathsToString));
+            extras.putString("stored", String.valueOf(storedToString));
+            extras.putString("colors", String.valueOf(colorsToString));
+
+            // CREATE A NEW TASK FOR THE API REQUEST TO ADD THIS NEW OUTFIT
+
+            Job job = dispatcher.newJobBuilder()
+                    .setService(DresscodeJobService.class)
+                    .setTag(Constants.WARDROBE_OUTFIT_API_TAG_CREATE)
+                    .setRecurring(false)
+                    .setLifetime(Lifetime.FOREVER)
+                    .setTrigger(Trigger.executionWindow(0, 60))
+                    .setReplaceCurrent(false)
+                    .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                    .setConstraints(Constraint.ON_ANY_NETWORK)
+                    .setExtras(extras)
+                    .build();
+
+            dispatcher.mustSchedule(job);
+
             Toast.makeText(this, getResources().getString(R.string.outfit_add_form_database_insert_success), Toast.LENGTH_SHORT).show();
             finish();
         }

@@ -14,7 +14,8 @@
     <string name="header_title_edit_wardrobe_element">Modifier un élément</string>
     <string name="header_title_edit_wardrobe_element_confirmation">Element ajouté</string>
     <string name="header_title_add_wardrobe_outfit_choose_element">Choisir un élément</string>
-    <string name="wardrobe_no_entries">Votre dressing est vide pour le moment, comme c\'est triste...</string>
+    <string name="wardrobe_no_entries">Votre dressing est vide pour le moment</string>
+    <string name="wardrobe_no_more_entries_to_add">Il n\'y a plus d\'éléments que vous pouvez ajouter</string>
     <string name="wardrobe_new_element">Ajouter un élément</string>
     <string name="wardrobe_view_return">Retour au dressing</string>
     <string name="wardrobe_view_name">Nom</string>

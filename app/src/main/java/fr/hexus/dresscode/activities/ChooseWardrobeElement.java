@@ -60,17 +60,15 @@ public class ChooseWardrobeElement extends AppCompatActivity
 
         myList.setAdapter(null);
 
+        emptyWardrobe = findViewById(R.id.emptyWardrobe);
+
         if(wardrobeElementsCursor.getCount() == 0)
         {
-            emptyWardrobe = findViewById(R.id.emptyWardrobe);
-            emptyWardrobe.setText(R.string.wardrobe_no_entries);
+            emptyWardrobe.setVisibility(View.VISIBLE);
         }
 
         else
         {
-            emptyWardrobe = findViewById(R.id.emptyWardrobe);
-            emptyWardrobe.setText("");
-
             List<WardrobeElement> wardrobeElements = new ArrayList<>();
 
             wardrobeElementsCursor.moveToFirst();
@@ -92,18 +90,27 @@ public class ChooseWardrobeElement extends AppCompatActivity
                         wardrobeElementColorsCursor.moveToNext();
                     }
 
-                    wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
+                    wardrobeElementColorsCursor.close();
 
+                    wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_TYPE)), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_UUID)), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_PATH)), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API)) != 0));
                 }
 
                 wardrobeElementsCursor.moveToNext();
             }
 
             WardrobeElementAdapter wardrobeElementAdapter = new WardrobeElementAdapter(this, wardrobeElements);
+
             myList.setAdapter(wardrobeElementAdapter);
 
             myList.setOnItemClickListener(new returnClickedItem());
+
+            if(wardrobeElements.size() == 0)
+            {
+                emptyWardrobe.setVisibility(View.VISIBLE);
+            }
         }
+
+        wardrobeElementsCursor.close();
 
         appDatabaseCreation.close();
     }

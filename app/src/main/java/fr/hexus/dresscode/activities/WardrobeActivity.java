@@ -93,7 +93,7 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
         SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
 
-        Cursor wardrobeElementsCursor = database.rawQuery("SELECT * FROM wardrobe", null);
+        Cursor wardrobeElementsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_TABLE_NAME, null);
 
         myList = findViewById(R.id.myList);
 
@@ -102,13 +102,13 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
         if(wardrobeElementsCursor.getCount() == 0)
         {
             emptyWardrobe = findViewById(R.id.emptyWardrobe);
-            emptyWardrobe.setText(R.string.wardrobe_no_entries);
+            emptyWardrobe.setVisibility(View.VISIBLE);
         }
 
         else
         {
             emptyWardrobe = findViewById(R.id.emptyWardrobe);
-            emptyWardrobe.setText("");
+            emptyWardrobe.setVisibility(View.GONE);
 
             List<WardrobeElement> wardrobeElements = new ArrayList<>();
 
@@ -129,7 +129,9 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
                     wardrobeElementColorsCursor.moveToNext();
                 }
 
-                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path"))));
+                wardrobeElementColorsCursor.close();
+
+                wardrobeElements.add(new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_TYPE)), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_UUID)), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_PATH)), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API)) != 0));
 
                 wardrobeElementsCursor.moveToNext();
             }
@@ -139,6 +141,8 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
             myList.setOnItemClickListener(new returnClickedItem());
         }
+
+        wardrobeElementsCursor.close();
 
         appDatabaseCreation.close();
     }
@@ -258,7 +262,7 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
             wardrobeElementColorsCursor.close();
 
-            WardrobeElement currentWardrobeElement = new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("type")), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("path")));
+            WardrobeElement currentWardrobeElement = new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_TYPE)), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_UUID)), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_PATH)), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API)) != 0);
 
             try
             {
@@ -274,11 +278,13 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
         wardrobeElementsCursor.close();
 
+        appDatabaseCreation.close();
+
         /****************************************************************************************************/
         // GET WARDROBE ELEMENTS FROM API
         /****************************************************************************************************/
 
-        Retrofit retrofit = RetrofitClient.getClient();
+        /*Retrofit retrofit = RetrofitClient.getClient();
 
         DresscodeService service = retrofit.create(DresscodeService.class);
 
@@ -330,7 +336,7 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.sync_failed), Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
     /****************************************************************************************************/

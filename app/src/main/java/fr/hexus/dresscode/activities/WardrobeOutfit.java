@@ -73,21 +73,23 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
 
         SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
 
-        Cursor wardrobeOutfitsCursor = database.rawQuery("SELECT * FROM " + Constants.OUTFIT_TABLE_NAME, null);
+        Cursor wardrobeOutfitsCursor = database.query(Constants.OUTFIT_TABLE_NAME, null, null, null, null, null, null);
 
         myList = findViewById(R.id.myList);
 
         myList.setAdapter(null);
 
+        emptyWardrobeOutfits = findViewById(R.id.emptyWardrobeOutfits);
+
         if(wardrobeOutfitsCursor.getCount() == 0)
         {
-            emptyWardrobeOutfits = findViewById(R.id.emptyWardrobeOutfits);
             emptyWardrobeOutfits.setVisibility(View.VISIBLE);
+
+            wardrobeOutfitsCursor.close();
         }
 
         else
         {
-            emptyWardrobeOutfits = findViewById(R.id.emptyWardrobeOutfits);
             emptyWardrobeOutfits.setVisibility(View.GONE);
 
             List<Outfit> wardrobeOutfits = new ArrayList<>();
@@ -102,7 +104,7 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
             {
                 List<WardrobeElement> wardrobeOutfitElements = new ArrayList<>();
 
-                Cursor wardrobeOutfitElementsCursor = database.rawQuery("SELECT * FROM " + Constants.OUTFIT_ELEMENTS_TABLE_NAME + " WHERE " + Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_ID + " = ?", new String[]{ wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex("id")) });
+                Cursor wardrobeOutfitElementsCursor = database.query(Constants.OUTFIT_ELEMENTS_TABLE_NAME, null, Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_UUID + " = ?", new String[]{ wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_UUID)) }, null, null, null);
 
                 wardrobeOutfitElementsCursor.moveToFirst();
 
@@ -116,11 +118,11 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
                     // GET THE DETAIL OF EACH ELEMENT
                     /****************************************************************************************************/
 
-                    Cursor wardrobeOutfitElementsCurrentCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_TABLE_NAME + " WHERE id = ?", new String[]{ wardrobeOutfitElementsCursor.getString(wardrobeOutfitElementsCursor.getColumnIndex(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_ID)) });
+                    Cursor wardrobeOutfitElementsCurrentCursor = database.query(Constants.WARDROBE_TABLE_NAME, null, "id = ?", new String[]{ wardrobeOutfitElementsCursor.getString(wardrobeOutfitElementsCursor.getColumnIndex(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_ID)) }, null, null, null);
 
                     wardrobeOutfitElementsCurrentCursor.moveToFirst();
 
-                    Cursor wardrobeOutfitElementsCurrentColorsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME + " WHERE " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex("id")) });
+                    Cursor wardrobeOutfitElementsCurrentColorsCursor = database.query(Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME, null, Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex("id")) }, null, null, null);
 
                     wardrobeOutfitElementsCurrentColorsCursor.moveToFirst();
 
@@ -137,15 +139,23 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
                         wardrobeOutfitElementsCurrentColorsCursor.moveToNext();
                     }
 
-                    wardrobeOutfitElements.add(new WardrobeElement(wardrobeOutfitElementsCurrentCursor.getInt(wardrobeOutfitElementsCurrentCursor.getColumnIndex("id")), wardrobeOutfitElementsCurrentCursor.getInt(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_TYPE)), currentElementColor, wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_PATH))));
+                    wardrobeOutfitElementsCurrentColorsCursor.close();
+
+                    wardrobeOutfitElementsCurrentCursor.close();
+
+                    wardrobeOutfitElements.add(new WardrobeElement(wardrobeOutfitElementsCurrentCursor.getInt(wardrobeOutfitElementsCurrentCursor.getColumnIndex("id")), wardrobeOutfitElementsCurrentCursor.getInt(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_TYPE)), wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_UUID)), currentElementColor, wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_PATH)), wardrobeOutfitElementsCurrentCursor.getInt(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API)) != 0));
 
                     wardrobeOutfitElementsCursor.moveToNext();
                 }
 
-                wardrobeOutfits.add(new Outfit(wardrobeOutfitsCursor.getInt(wardrobeOutfitsCursor.getColumnIndex("id")), wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_NAME)), wardrobeOutfitElements));
+                wardrobeOutfitElementsCursor.close();
+
+                wardrobeOutfits.add(new Outfit(wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_NAME)), wardrobeOutfitElements, wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_UUID)), wardrobeOutfitsCursor.getInt(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_STORED_ON_API)) == 1));
 
                 wardrobeOutfitsCursor.moveToNext();
             }
+
+            wardrobeOutfitsCursor.close();
 
             OutfitListAdapter outfitListAdapter = new OutfitListAdapter(this, wardrobeOutfits);
 

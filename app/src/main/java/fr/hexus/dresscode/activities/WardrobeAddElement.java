@@ -1,5 +1,8 @@
 package fr.hexus.dresscode.activities;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
@@ -19,7 +23,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,11 +47,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.DresscodeJobService;
@@ -353,7 +356,7 @@ public class WardrobeAddElement extends AppCompatActivity
 
         else
         {
-            WardrobeElement newElement = new WardrobeElement(0, type, colors, path);
+            WardrobeElement newElement = new WardrobeElement(0, type, UUID.randomUUID().toString(), colors, path, false);
 
             final SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
 
@@ -373,6 +376,7 @@ public class WardrobeAddElement extends AppCompatActivity
                 Bundle extras = new Bundle();
                 extras.putString("colors", colorsToSend);
                 extras.putInt("type", newElement.getType());
+                extras.putString("uuid", newElement.getUuid());
                 extras.putString("picture", newElement.getPath());
                 extras.putString("token", sharedPreferences.getString("token", null));
 
@@ -381,14 +385,14 @@ public class WardrobeAddElement extends AppCompatActivity
                         .setTag(Constants.WARDROBE_ELEMENT_API_TAG_CREATE)
                         .setRecurring(false)
                         .setLifetime(Lifetime.FOREVER)
-                        .setTrigger(Trigger.executionWindow(0, 60))
+                        .setTrigger(Trigger.executionWindow(0, 10))
                         .setReplaceCurrent(false)
-                        .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                        .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
                         .setConstraints(Constraint.ON_ANY_NETWORK)
                         .setExtras(extras)
                         .build();
 
-                dispatcher.mustSchedule(job);
+                dispatcher.schedule(job);
 
                 Toast.makeText(this, R.string.new_wardrobe_element_saved, Toast.LENGTH_LONG).show();
                 finish();
