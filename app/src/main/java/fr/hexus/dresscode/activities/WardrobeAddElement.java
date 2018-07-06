@@ -1,8 +1,5 @@
 package fr.hexus.dresscode.activities;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
@@ -56,6 +52,7 @@ import java.util.UUID;
 import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.DresscodeJobService;
 import fr.hexus.dresscode.classes.WardrobeElement;
+import fr.hexus.dresscode.classes.WardrobeElementCreateJobService;
 import fr.hexus.dresscode.enums.Colors;
 import fr.hexus.dresscode.enums.Types;
 import fr.hexus.dresscode.classes.GlideApp;
@@ -381,18 +378,18 @@ public class WardrobeAddElement extends AppCompatActivity
                 extras.putString("token", sharedPreferences.getString("token", null));
 
                 Job job = dispatcher.newJobBuilder()
-                        .setService(DresscodeJobService.class)
-                        .setTag(Constants.WARDROBE_ELEMENT_API_TAG_CREATE)
+                        .setService(WardrobeElementCreateJobService.class)
+                        .setTag(newElement.getUuid())
                         .setRecurring(false)
                         .setLifetime(Lifetime.FOREVER)
-                        .setTrigger(Trigger.executionWindow(0, 10))
+                        .setTrigger(Trigger.executionWindow(0, 15))
                         .setReplaceCurrent(false)
                         .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
                         .setConstraints(Constraint.ON_ANY_NETWORK)
                         .setExtras(extras)
                         .build();
 
-                dispatcher.schedule(job);
+                dispatcher.mustSchedule(job);
 
                 Toast.makeText(this, R.string.new_wardrobe_element_saved, Toast.LENGTH_LONG).show();
                 finish();

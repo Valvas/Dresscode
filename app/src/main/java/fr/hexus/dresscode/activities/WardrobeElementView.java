@@ -1,6 +1,5 @@
 package fr.hexus.dresscode.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -15,6 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,11 +37,15 @@ public class WardrobeElementView extends AppCompatActivity
     private TextView elementColor;
     private ImageView elementPicture;
 
+    private FirebaseJobDispatcher dispatcher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wardrobe_element_view);
+
+        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
 
         myDrawer = findViewById(R.id.myDrawer);
 
@@ -140,14 +146,11 @@ public class WardrobeElementView extends AppCompatActivity
             .setTitle(getResources().getString(R.string.wardrobe_element_detail_remove_alert_title))
             .setMessage(getResources().getString(R.string.wardrobe_element_detail_remove_alert_message))
             .setIcon(R.drawable.ic_info_red)
-            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+            .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
             {
-                public void onClick(DialogInterface dialog, int whichButton)
+                if(removeElementFromLocal())
                 {
-                    if(removeElementFromLocal())
-                    {
-                        finish();
-                    }
+                    finish();
                 }
             })
             .setNegativeButton(android.R.string.no, null).show();
@@ -155,6 +158,8 @@ public class WardrobeElementView extends AppCompatActivity
 
     public boolean removeElementFromLocal()
     {
+        dispatcher.cancel(wardrobeElement.getUuid());
+
         AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(this);
 
         SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();

@@ -14,6 +14,8 @@ public class DresscodeJobService extends JobService
     @Override
     public boolean onStartJob(JobParameters job)
     {
+        Log.println(Log.INFO, "New Job", "A new job has started : " + job.getTag());
+
         new DresscodeAsyncTask(this).execute(job);
 
         return true;
@@ -79,16 +81,17 @@ public class DresscodeJobService extends JobService
     public boolean onStopJob(JobParameters job)
     {
         Log.println(Log.DEBUG, "DresscodeAsyncTask", "Job has been stopped !");
-        return true;
+        return false;
     }
 
     /****************************************************************************************************/
     // INTERN CLASS THAT WILL HANDLE ASYNC TASKS
     /****************************************************************************************************/
 
-    private class DresscodeAsyncTask extends AsyncTask<JobParameters, Void, JobParameters>
+    private class DresscodeAsyncTask extends AsyncTask<JobParameters, Void, JobParameters> implements IJobServiceObserver
     {
         private JobService jobService;
+        private JobParameters jobParameters;
 
         public DresscodeAsyncTask(JobService jobService)
         {
@@ -98,6 +101,8 @@ public class DresscodeJobService extends JobService
         @Override
         protected JobParameters doInBackground(JobParameters... job)
         {
+            this.jobParameters = job[0];
+
             /****************************************************************************************************/
             // SEND NEW WARDROBE ELEMENT TO THE API
             /****************************************************************************************************/
@@ -122,18 +127,11 @@ public class DresscodeJobService extends JobService
 
                 WardrobeElement currentElement = new WardrobeElement(0, type, uuid, elementColors, picture, false);
 
+                currentElement.addObserver(this);
+
                 Log.println(Log.INFO, Constants.LOG_NETWORK_MANAGER_SENDING_NEW_WARDROBE_ELEMENT, "Sending new wardrobe element to the API (" + currentElement.getUuid() + ")");
 
-                try
-                {
-                    currentElement.sendWardrobeElementToTheAPI(token, getApplicationContext());
-
-                    jobService.jobFinished(job[0], true);
-
-                } catch(CallException exception)
-                {
-                    jobService.jobFinished(job[0], true);
-                }
+                currentElement.sendWardrobeElementToTheAPI(token, getApplicationContext());
             }
 
             return job[0];
@@ -142,7 +140,13 @@ public class DresscodeJobService extends JobService
         @Override
         protected void onPostExecute(JobParameters job)
         {
-            Log.println(Log.DEBUG, "DresscodeAsyncTask", "Task Done !");
+
+        }
+
+        @Override
+        public void jobDone(boolean rescheduleJob) throws Exception
+        {
+            jobService.jobFinished(jobParameters, rescheduleJob);
         }
     }
 }

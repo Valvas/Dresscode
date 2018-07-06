@@ -11,6 +11,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Job;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Struct;
 import java.util.ArrayList;
 
 import fr.hexus.dresscode.retrofit.DresscodeService;
@@ -27,7 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class WardrobeElement implements Serializable
+public class WardrobeElement implements Serializable, IJobServiceObservable
 {
     private String path;
     private int id;
@@ -35,6 +38,8 @@ public class WardrobeElement implements Serializable
     private String uuid;
     private boolean storedOnApi;
     private ArrayList<Integer> colors;
+
+    private ArrayList<IJobServiceObserver> observers;
 
     public WardrobeElement(int id, int type, String uuid, ArrayList colors, String path, boolean storedOnApi)
     {
@@ -44,6 +49,8 @@ public class WardrobeElement implements Serializable
         this.uuid           = uuid;
         this.colors         = colors;
         this.storedOnApi    = storedOnApi;
+
+        this.observers      = new ArrayList<>();
     }
 
     public int getId()
@@ -188,12 +195,19 @@ public class WardrobeElement implements Serializable
 
                 long insertedColorId = db.insert(Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME, null, colorValues);
 
-                if(insertedColorId < 0) return false;
+                if(insertedColorId < 0)
+                {
+                    appDatabaseCreation.close();
+
+                    return false;
+                }
             }
         }
 
         else
         {
+            appDatabaseCreation.close();
+
             return false;
         }
 
@@ -206,7 +220,7 @@ public class WardrobeElement implements Serializable
     // SEND ELEMENT TO THE API
     /****************************************************************************************************/
 
-    public void sendWardrobeElementToTheAPI(String token, Context context) throws CallException
+    public void sendWardrobeElementToTheAPI(String token, Context context)
     {
         File image = new File(String.valueOf(Environment.getExternalStorageDirectory() + this.path));
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -244,21 +258,22 @@ public class WardrobeElement implements Serializable
                     {
                         JSONObject object = new JSONObject(response.errorBody().string());
 
-                        Log.println(Log.ERROR, "Sending wardrobe element to API",  object.getString("message"));
-
-                        throw new CallException(object.getString("message"));
+                        Log.println(Log.ERROR, "TEST", object.getString("message"));
 
                     } catch(JSONException e)
                     {
-                        Log.println(Log.ERROR, "Sending wardrobe element to API",  e.getMessage());
                         e.printStackTrace();
 
                     } catch(IOException e)
                     {
-                        Log.println(Log.ERROR, "Sending wardrobe element to API",  e.getMessage());
                         e.printStackTrace();
+                    }
 
-                    } catch(CallException e)
+                    try
+                    {
+                        notifyObservers(true);
+
+                    } catch(Exception e)
                     {
                         e.printStackTrace();
                     }
@@ -271,21 +286,67 @@ public class WardrobeElement implements Serializable
                     storedOnApi = true;
 
                     updateWardrobeElementInDatabase(context);
+
+                    try
+                    {
+                        notifyObservers(false);
+
+                    } catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t)
             {
+                Log.println(Log.ERROR, "DresscodeAsyncTask", t.getMessage());
+
                 try
                 {
-                    throw new CallException(t.getMessage());
+                    notifyObservers(true);
 
-                } catch(CallException e)
+                } catch(Exception e)
                 {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    /****************************************************************************************************/
+    // ADD OBSERVER TO THIS CLASS
+    /****************************************************************************************************/
+
+    @Override
+    public void addObserver(IJobServiceObserver o)
+    {
+        observers.add(o);
+    }
+
+    /****************************************************************************************************/
+    // REMOVE OBSERVER TO THIS CLASS
+    /****************************************************************************************************/
+
+    @Override
+    public void removeObserver(IJobServiceObserver o)
+    {
+        observers.remove(o);
+    }
+
+    /****************************************************************************************************/
+    // NOTIFY OBSERVERS OF THIS CLASS
+    /****************************************************************************************************/
+
+    @Override
+    public void notifyObservers(boolean rescheduleJob) throws Exception
+    {
+        Log.println(Log.DEBUG, "DresscodeAsyncTask", "Notifying observers ! Reschedule : " + rescheduleJob);
+
+        for(int i = 0; i < observers.size(); i++)
+        {
+            observers.get(i).jobDone(rescheduleJob);
+        }
     }
 }

@@ -264,14 +264,7 @@ public class WardrobeActivity extends AppCompatActivity implements NavigationVie
 
             WardrobeElement currentWardrobeElement = new WardrobeElement(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id")), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_TYPE)), wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_UUID)), wardrobeElementColors, wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_PATH)), wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API)) != 0);
 
-            try
-            {
-                currentWardrobeElement.sendWardrobeElementToTheAPI(sharedPreferences.getString("token", null), getApplicationContext());
-
-            } catch(CallException e)
-            {
-                errorsCounter += 1;
-            }
+            currentWardrobeElement.sendWardrobeElementToTheAPI(sharedPreferences.getString("token", null), getApplicationContext());
 
             wardrobeElementsCursor.moveToNext();
         }
