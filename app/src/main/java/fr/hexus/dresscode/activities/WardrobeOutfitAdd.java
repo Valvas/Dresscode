@@ -41,6 +41,7 @@ import fr.hexus.dresscode.classes.Outfit;
 import fr.hexus.dresscode.classes.WardrobeElement;
 import fr.hexus.dresscode.enums.Colors;
 import fr.hexus.dresscode.enums.Types;
+import fr.hexus.dresscode.retrofit.WardrobeOutfitCreateJobService;
 
 public class WardrobeOutfitAdd extends AppCompatActivity
 {
@@ -366,7 +367,7 @@ public class WardrobeOutfitAdd extends AppCompatActivity
             // CREATE A NEW TASK FOR THE API REQUEST TO ADD THIS NEW OUTFIT
 
             Job job = dispatcher.newJobBuilder()
-                    .setService(DresscodeJobService.class)
+                    .setService(WardrobeOutfitCreateJobService.class)
                     .setTag(Constants.WARDROBE_OUTFIT_API_TAG_CREATE)
                     .setRecurring(false)
                     .setLifetime(Lifetime.FOREVER)

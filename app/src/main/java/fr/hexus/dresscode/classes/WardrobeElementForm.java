@@ -28,4 +28,29 @@ public class WardrobeElementForm
 
         return String.valueOf(stringToReturn);
     }
+
+    public int getType()
+    {
+        return this.type;
+    }
+
+    public String getUuid()
+    {
+        return this.uuid;
+    }
+
+    public String getPicture()
+    {
+        return this.picture;
+    }
+
+    public int[] getColors()
+    {
+        return this.color;
+    }
+
+    public void setPicture(String pictureName)
+    {
+        this.picture = pictureName;
+    }
 }

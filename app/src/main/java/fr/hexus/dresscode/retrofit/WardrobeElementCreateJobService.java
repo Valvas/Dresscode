@@ -1,4 +1,4 @@
-package fr.hexus.dresscode.classes;
+package fr.hexus.dresscode.retrofit;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
 import java.util.ArrayList;
+
+import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.IJobServiceObserver;
+import fr.hexus.dresscode.classes.WardrobeElement;
 
 public class WardrobeElementCreateJobService extends JobService
 {

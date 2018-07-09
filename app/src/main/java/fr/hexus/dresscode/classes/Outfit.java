@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,19 +26,23 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class Outfit
+public class Outfit implements Serializable, IJobServiceObservable
 {
     private String name;
     private String uuid;
-    private boolean storedInApi;
+    private boolean storedOnApi;
     private List<WardrobeElement> elements;
 
-    public Outfit(String name, List<WardrobeElement> elements, String uuid, boolean storedInApi)
+    private ArrayList<IJobServiceObserver> observers;
+
+    public Outfit(String name, List<WardrobeElement> elements, String uuid, boolean storedOnApi)
     {
         this.uuid = uuid;
-        this.storedInApi = storedInApi;
+        this.storedOnApi = storedOnApi;
         this.elements = elements;
         this.name = name;
+
+        this.observers = new ArrayList<>();
     }
 
     public List<WardrobeElement> getElements()
@@ -72,12 +77,12 @@ public class Outfit
 
     public void setStoredInApi(boolean storedInApi)
     {
-        this.storedInApi = storedInApi;
+        this.storedOnApi = storedInApi;
     }
 
     public String toString()
     {
-        return "\n[Outfit]\n- UUID : " + this.uuid + "\n- Name : " + this.name + "\n- Stored in API : " + this.storedInApi + "\n- Elements : " + this.elements.size() + "\n";
+        return "\n[Outfit]\n- UUID : " + this.uuid + "\n- Name : " + this.name + "\n- Stored in API : " + this.storedOnApi + "\n- Elements : " + this.elements.size() + "\n";
     }
 
     /****************************************************************************************************/
@@ -93,11 +98,9 @@ public class Outfit
         ContentValues values = new ContentValues();
         values.put(Constants.OUTFIT_TABLE_COLUMNS_NAME, this.name);
         values.put(Constants.OUTFIT_TABLE_COLUMNS_UUID, this.uuid);
-        values.put(Constants.OUTFIT_TABLE_COLUMNS_STORED_ON_API, this.storedInApi);
+        values.put(Constants.OUTFIT_TABLE_COLUMNS_STORED_ON_API, this.storedOnApi);
 
         long insertedRowId = db.insert(Constants.OUTFIT_TABLE_NAME, null, values);
-
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! : " + insertedRowId);
 
         if(insertedRowId > 0)
         {
@@ -143,7 +146,7 @@ public class Outfit
         ContentValues values = new ContentValues();
         values.put(Constants.OUTFIT_TABLE_COLUMNS_NAME, this.name);
         values.put(Constants.OUTFIT_TABLE_COLUMNS_UUID, this.uuid);
-        values.put(Constants.OUTFIT_TABLE_COLUMNS_NAME, this.storedInApi);
+        values.put(Constants.OUTFIT_TABLE_COLUMNS_NAME, this.storedOnApi);
 
         long updatedRows = db.update(Constants.OUTFIT_TABLE_NAME, values, Constants.OUTFIT_TABLE_COLUMNS_UUID + " = ?", new String[]{ String.valueOf(this.uuid) });
     }
@@ -152,7 +155,7 @@ public class Outfit
     // SEND OUTFIT TO THE API
     /****************************************************************************************************/
 
-    public void sendOutfitToTheAPI(String token) throws CallException
+    public void sendOutfitToTheAPI(String token, Context context)
     {
         WardrobeElementForm[] wardrobeElementForms = new WardrobeElementForm[this.elements.size()];
 
@@ -213,21 +216,38 @@ public class Outfit
                     {
                         JSONObject object = new JSONObject(response.errorBody().string());
 
-                        Log.println(Log.ERROR, "Sending wardrobe outfit to API",  object.getString("message"));
-
-                        throw new CallException(object.getString("message"));
+                        Log.println(Log.ERROR, "TEST", object.getString("message"));
 
                     } catch(JSONException e)
                     {
-                        Log.println(Log.ERROR, "Sending wardrobe outfit to API",  e.getMessage());
                         e.printStackTrace();
 
                     } catch(IOException e)
                     {
-                        Log.println(Log.ERROR, "Sending wardrobe outfit to API",  e.getMessage());
                         e.printStackTrace();
+                    }
 
-                    } catch(CallException e)
+                    try
+                    {
+                        notifyObservers(true);
+
+                    } catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
+                else
+                {
+                    storedOnApi = true;
+
+                    updateOutfitInDatabase(context);
+
+                    try
+                    {
+                        notifyObservers(false);
+
+                    } catch(Exception e)
                     {
                         e.printStackTrace();
                     }
@@ -237,15 +257,52 @@ public class Outfit
             @Override
             public void onFailure(Call<Void> call, Throwable t)
             {
+                Log.println(Log.ERROR, "DresscodeAsyncTask", t.getMessage());
+
                 try
                 {
-                    throw new CallException(t.getMessage());
+                    notifyObservers(true);
 
-                } catch(CallException e)
+                } catch(Exception e)
                 {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    /****************************************************************************************************/
+    // ADD OBSERVER TO THIS CLASS
+    /****************************************************************************************************/
+
+    @Override
+    public void addObserver(IJobServiceObserver o)
+    {
+        observers.add(o);
+    }
+
+    /****************************************************************************************************/
+    // REMOVE OBSERVER TO THIS CLASS
+    /****************************************************************************************************/
+
+    @Override
+    public void removeObserver(IJobServiceObserver o)
+    {
+        observers.remove(o);
+    }
+
+    /****************************************************************************************************/
+    // NOTIFY OBSERVERS OF THIS CLASS
+    /****************************************************************************************************/
+
+    @Override
+    public void notifyObservers(boolean rescheduleJob) throws Exception
+    {
+        Log.println(Log.DEBUG, "DresscodeAsyncTask", "Notifying observers ! Reschedule : " + rescheduleJob);
+
+        for(int i = 0; i < observers.size(); i++)
+        {
+            observers.get(i).jobDone(rescheduleJob);
+        }
     }
 }

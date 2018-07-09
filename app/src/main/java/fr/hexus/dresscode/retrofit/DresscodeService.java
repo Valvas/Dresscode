@@ -1,12 +1,16 @@
 package fr.hexus.dresscode.retrofit;
 
+import java.util.ArrayList;
+
 import fr.hexus.dresscode.classes.LogonForm;
 import fr.hexus.dresscode.classes.OutfitForm;
 import fr.hexus.dresscode.classes.SignUpForm;
 import fr.hexus.dresscode.classes.Token;
+import fr.hexus.dresscode.classes.WardrobeAllElementsForm;
 import fr.hexus.dresscode.classes.WardrobeElementForm;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -27,4 +31,7 @@ public interface DresscodeService
 
     @POST("/addOutfit")
     Call<Void> addWardrobeOutfit(@Header("Authorization") String token, @Body OutfitForm outfitForm);
+
+    @GET("/getAllElements")
+    Call<WardrobeAllElementsForm> getAllWardrobeElements(@Header("Authorization") String token);
 }

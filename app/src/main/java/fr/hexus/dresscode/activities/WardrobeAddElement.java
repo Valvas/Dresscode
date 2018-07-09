@@ -50,9 +50,8 @@ import java.util.Date;
 import java.util.UUID;
 
 import fr.hexus.dresscode.classes.Constants;
-import fr.hexus.dresscode.classes.DresscodeJobService;
 import fr.hexus.dresscode.classes.WardrobeElement;
-import fr.hexus.dresscode.classes.WardrobeElementCreateJobService;
+import fr.hexus.dresscode.retrofit.WardrobeElementCreateJobService;
 import fr.hexus.dresscode.enums.Colors;
 import fr.hexus.dresscode.enums.Types;
 import fr.hexus.dresscode.classes.GlideApp;
@@ -240,6 +239,7 @@ public class WardrobeAddElement extends AppCompatActivity
         File picture = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         wardrobeElementPicturePath = picture.getAbsolutePath();
+
         return picture;
     }
 

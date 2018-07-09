@@ -141,9 +141,9 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
 
                     wardrobeOutfitElementsCurrentColorsCursor.close();
 
-                    wardrobeOutfitElementsCurrentCursor.close();
-
                     wardrobeOutfitElements.add(new WardrobeElement(wardrobeOutfitElementsCurrentCursor.getInt(wardrobeOutfitElementsCurrentCursor.getColumnIndex("id")), wardrobeOutfitElementsCurrentCursor.getInt(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_TYPE)), wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_UUID)), currentElementColor, wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_PATH)), wardrobeOutfitElementsCurrentCursor.getInt(wardrobeOutfitElementsCurrentCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API)) != 0));
+
+                    wardrobeOutfitElementsCurrentCursor.close();
 
                     wardrobeOutfitElementsCursor.moveToNext();
                 }
@@ -172,13 +172,13 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            /*WardrobeElement clicked = (WardrobeElement) parent.getItemAtPosition(position);
+            Outfit clicked = (Outfit) parent.getItemAtPosition(position);
 
-            Intent intent = new Intent(parent.getContext(), WardrobeElementView.class);
+            Intent outfitDetailIntent = new Intent(parent.getContext(), WardrobeOutfitView.class);
 
-            intent.putExtra(getResources().getString(R.string.WARDROBE_ELEMENT), clicked);
+            outfitDetailIntent.putExtra("outfit", clicked);
 
-            startActivity(intent);*/
+            startActivity(outfitDetailIntent);
         }
     }
 

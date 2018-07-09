@@ -9,7 +9,7 @@ import fr.hexus.dresscode.classes.Constants;
 public class AppDatabaseCreation extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "dresscode.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public AppDatabaseCreation(Context context)
     {
@@ -20,7 +20,7 @@ public class AppDatabaseCreation extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db)
     {
         String wardrobeTable = "CREATE TABLE " + Constants.WARDROBE_TABLE_NAME + " (id INTEGER PRIMARY KEY, " + Constants.WARDROBE_TABLE_COLUMNS_TYPE + " INTEGER NOT NULL, " + Constants.WARDROBE_TABLE_COLUMNS_PATH + " TEXT NOT NULL, " + Constants.WARDROBE_TABLE_COLUMNS_UUID + " TEXT, " + Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API + " BOOLEAN NOT NULL)";
-        String outfitTable = "CREATE TABLE " + Constants.OUTFIT_TABLE_NAME + "(" + Constants.OUTFIT_TABLE_COLUMNS_NAME + " TEXT NOT NULL, " + Constants.OUTFIT_TABLE_COLUMNS_UUID + "TEXT NOT NULL, " + Constants.OUTFIT_TABLE_COLUMNS_STORED_ON_API + " BOOLEAN NOT NULL)";
+        String outfitTable = "CREATE TABLE " + Constants.OUTFIT_TABLE_NAME + "(" + Constants.OUTFIT_TABLE_COLUMNS_NAME + " TEXT NOT NULL, " + Constants.OUTFIT_TABLE_COLUMNS_UUID + " TEXT NOT NULL, " + Constants.OUTFIT_TABLE_COLUMNS_STORED_ON_API + " BOOLEAN NOT NULL)";
         String wardrobeElementColorsTable = "CREATE TABLE " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME + " (id, INTEGER PRIMARY KEY, " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " INTEGER NOT NULL, " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_COLOR_ID + " INTEGER NOT NULL)";
         String outfitElementsTable = "CREATE TABLE " + Constants.OUTFIT_ELEMENTS_TABLE_NAME + " (id, INTEGER PRIMARY KEY, " + Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_UUID + " TEXT NOT NULL, " + Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_ID + " INTEGER NOT NULL)";
 

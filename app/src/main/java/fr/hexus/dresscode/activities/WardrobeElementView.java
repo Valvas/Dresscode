@@ -31,7 +31,6 @@ import fr.hexus.dresscode.classes.GlideApp;
 public class WardrobeElementView extends AppCompatActivity
 {
     private WardrobeElement wardrobeElement;
-    private DrawerLayout myDrawer;
 
     private TextView elementType;
     private TextView elementColor;
@@ -46,8 +45,6 @@ public class WardrobeElementView extends AppCompatActivity
         setContentView(R.layout.activity_wardrobe_element_view);
 
         dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
-
-        myDrawer = findViewById(R.id.myDrawer);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

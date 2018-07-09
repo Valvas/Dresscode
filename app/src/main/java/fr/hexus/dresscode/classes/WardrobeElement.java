@@ -227,7 +227,7 @@ public class WardrobeElement implements Serializable, IJobServiceObservable
         Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] byteArrayImage = baos.toByteArray();
 
         String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
