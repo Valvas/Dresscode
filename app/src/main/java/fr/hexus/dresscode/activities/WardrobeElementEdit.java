@@ -3,6 +3,7 @@ package fr.hexus.dresscode.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -25,11 +26,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,10 +48,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.WardrobeElement;
 import fr.hexus.dresscode.enums.Colors;
 import fr.hexus.dresscode.enums.Types;
 import fr.hexus.dresscode.classes.GlideApp;
+import fr.hexus.dresscode.retrofit.WardrobeElementUpdateJobService;
 
 public class WardrobeElementEdit extends AppCompatActivity
 {
@@ -51,6 +61,8 @@ public class WardrobeElementEdit extends AppCompatActivity
     private static final int CAMERA = 1;
 
     private int selectedColors = 0;
+
+    private FirebaseJobDispatcher dispatcher;
 
     private ImageView picture;
     private Button addPicture;
@@ -69,6 +81,8 @@ public class WardrobeElementEdit extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wardrobe_element_edit);
+
+        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
 
         colorsList = findViewById(R.id.wardrobeAddFormColorsList);
 
@@ -92,13 +106,10 @@ public class WardrobeElementEdit extends AppCompatActivity
                 }
             }
 
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) ->
             {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-                {
-                    selectedColors += isChecked ? 1 : -1;
-                    checkForm();
-                }
+                selectedColors += isChecked ? 1 : -1;
+                checkForm();
             });
 
             colorsList.addView(checkBox);
@@ -290,8 +301,6 @@ public class WardrobeElementEdit extends AppCompatActivity
                     .centerInside()
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(picture);
-
-
         }
 
         checkForm();
@@ -380,6 +389,41 @@ public class WardrobeElementEdit extends AppCompatActivity
                 Intent finishIntent = new Intent();
                 finishIntent.putExtra("wardrobeElement", wardrobeElement);
                 setResult(RESULT_OK, finishIntent);
+
+                final SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
+
+                StringBuilder colorsBuilder = new StringBuilder();
+
+                for(int i = 0; i < wardrobeElement.getColors().size(); i++)
+                {
+                    colorsBuilder.append((i + 1) == wardrobeElement.getColors().size()
+                            ? wardrobeElement.getColors().get(i)
+                            : wardrobeElement.getColors().get(i) + ",");
+                }
+
+                String colorsToSend = String.valueOf(colorsBuilder);
+
+                Bundle extras = new Bundle();
+                extras.putString("colors", colorsToSend);
+                extras.putInt("type", wardrobeElement.getType());
+                extras.putString("uuid", wardrobeElement.getUuid());
+                extras.putString("picture", wardrobeElement.getPath());
+                extras.putString("token", sharedPreferences.getString("token", null));
+
+                Job job = dispatcher.newJobBuilder()
+                        .setService(WardrobeElementUpdateJobService.class)
+                        .setTag(wardrobeElement.getUuid())
+                        .setRecurring(false)
+                        .setLifetime(Lifetime.FOREVER)
+                        .setTrigger(Trigger.executionWindow(0, 15))
+                        .setReplaceCurrent(false)
+                        .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                        .setConstraints(Constraint.ON_ANY_NETWORK)
+                        .setExtras(extras)
+                        .build();
+
+                dispatcher.mustSchedule(job);
+
                 finish();
             }
 

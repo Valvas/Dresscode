@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.FinishListener;
 import fr.hexus.dresscode.classes.Token;
 import fr.hexus.dresscode.retrofit.DresscodeService;
 import fr.hexus.dresscode.retrofit.RetrofitClient;
@@ -36,10 +37,6 @@ public class LaunchActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
-
-        FirebaseJobDispatcher test = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
-
-        test.cancelAll();
 
         checkWritingStorageRight();
     }

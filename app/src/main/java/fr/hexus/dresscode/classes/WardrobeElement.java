@@ -258,7 +258,7 @@ public class WardrobeElement implements Serializable, IJobServiceObservable
                     {
                         JSONObject object = new JSONObject(response.errorBody().string());
 
-                        Log.println(Log.ERROR, "TEST", object.getString("message"));
+                        Log.println(Log.ERROR, "DresscodeAsyncTask", object.getString("message"));
 
                     } catch(JSONException e)
                     {
@@ -287,6 +287,162 @@ public class WardrobeElement implements Serializable, IJobServiceObservable
 
                     updateWardrobeElementInDatabase(context);
 
+                    try
+                    {
+                        notifyObservers(false);
+
+                    } catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t)
+            {
+                Log.println(Log.ERROR, "DresscodeAsyncTask", t.getMessage());
+
+                try
+                {
+                    notifyObservers(true);
+
+                } catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /****************************************************************************************************/
+    // UPDATE ELEMENT IN THE API
+    /****************************************************************************************************/
+
+    public void updateInApi(String token, Context context)
+    {
+        Retrofit retrofit = RetrofitClient.getClient();
+
+        DresscodeService service = retrofit.create(DresscodeService.class);
+
+        // PREPARING REQUEST TO THE API
+
+        Call<Void> call = service.removeWardrobeElement(token, this.uuid);
+
+        // SENDING THE REQUEST
+
+        call.enqueue(new Callback<Void>()
+        {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response)
+            {
+                if(response.errorBody() != null)
+                {
+                    try
+                    {
+                        JSONObject object = new JSONObject(response.errorBody().string());
+
+                        Log.println(Log.ERROR, "DresscodeAsyncTask", object.getString("message"));
+
+                    } catch(JSONException e)
+                    {
+                        e.printStackTrace();
+
+                    } catch(IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    try
+                    {
+                        notifyObservers(true);
+
+                    } catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
+                else
+                {
+                    try
+                    {
+                        notifyObservers(false);
+
+                    } catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t)
+            {
+                Log.println(Log.ERROR, "DresscodeAsyncTask", t.getMessage());
+
+                try
+                {
+                    notifyObservers(true);
+
+                } catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /****************************************************************************************************/
+    // REMOVE ELEMENT FROM THE API
+    /****************************************************************************************************/
+
+    public void removeFromApi(String token, Context context)
+    {
+        Retrofit retrofit = RetrofitClient.getClient();
+
+        DresscodeService service = retrofit.create(DresscodeService.class);
+
+        // PREPARING REQUEST TO THE API
+
+        Call<Void> call = service.removeWardrobeElement(token, this.uuid);
+
+        // SENDING THE REQUEST
+
+        call.enqueue(new Callback<Void>()
+        {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response)
+            {
+                if(response.errorBody() != null)
+                {
+                    try
+                    {
+                        JSONObject object = new JSONObject(response.errorBody().string());
+
+                        Log.println(Log.ERROR, "DresscodeAsyncTask", object.getString("message"));
+
+                    } catch(JSONException e)
+                    {
+                        e.printStackTrace();
+
+                    } catch(IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    try
+                    {
+                        notifyObservers(true);
+
+                    } catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
+                else
+                {
                     try
                     {
                         notifyObservers(false);

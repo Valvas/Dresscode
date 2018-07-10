@@ -1,6 +1,7 @@
 package fr.hexus.dresscode.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Environment;
@@ -15,8 +16,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,6 +33,8 @@ import fr.hexus.dresscode.classes.WardrobeElement;
 import fr.hexus.dresscode.enums.Colors;
 import fr.hexus.dresscode.enums.Types;
 import fr.hexus.dresscode.classes.GlideApp;
+import fr.hexus.dresscode.retrofit.WardrobeElementCreateJobService;
+import fr.hexus.dresscode.retrofit.WardrobeElementRemoveJobService;
 
 public class WardrobeElementView extends AppCompatActivity
 {
@@ -140,23 +148,43 @@ public class WardrobeElementView extends AppCompatActivity
     public void onClickRemove(View view)
     {
         new AlertDialog.Builder(this)
-            .setTitle(getResources().getString(R.string.wardrobe_element_detail_remove_alert_title))
-            .setMessage(getResources().getString(R.string.wardrobe_element_detail_remove_alert_message))
-            .setIcon(R.drawable.ic_info_red)
-            .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
+        .setTitle(getResources().getString(R.string.wardrobe_element_detail_remove_alert_title))
+        .setMessage(getResources().getString(R.string.wardrobe_element_detail_remove_alert_message))
+        .setIcon(R.drawable.ic_info_red)
+        .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
+        {
+            dispatcher.cancel(wardrobeElement.getUuid());
+
+            if(removeElementFromLocal())
             {
-                if(removeElementFromLocal())
-                {
-                    finish();
-                }
-            })
-            .setNegativeButton(android.R.string.no, null).show();
+                final SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
+
+                String token = sharedPreferences.getString("token", null);
+
+                Bundle extras = new Bundle();
+                extras.putString("token", token);
+
+                Job job = dispatcher.newJobBuilder()
+                        .setService(WardrobeElementRemoveJobService.class)
+                        .setTag(wardrobeElement.getUuid())
+                        .setRecurring(false)
+                        .setLifetime(Lifetime.FOREVER)
+                        .setTrigger(Trigger.executionWindow(0, 15))
+                        .setReplaceCurrent(false)
+                        .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                        .setConstraints(Constraint.ON_ANY_NETWORK)
+                        .setExtras(extras)
+                        .build();
+
+                dispatcher.mustSchedule(job);
+                finish();
+            }
+        })
+        .setNegativeButton(android.R.string.no, null).show();
     }
 
     public boolean removeElementFromLocal()
     {
-        dispatcher.cancel(wardrobeElement.getUuid());
-
         AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(this);
 
         SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();

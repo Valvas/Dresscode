@@ -10,6 +10,7 @@ import fr.hexus.dresscode.classes.WardrobeAllElementsForm;
 import fr.hexus.dresscode.classes.WardrobeElementForm;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -29,9 +30,15 @@ public interface DresscodeService
     @POST("/addElement")
     Call<Void> addWardrobeElement(@Header("Authorization") String token, @Body WardrobeElementForm wardrobeElementForm);
 
+    @POST("/updateElement")
+    Call<Void> updateWardrobeElement(@Header("Authorization") String token, @Body WardrobeElementForm wardrobeElementForm);
+
     @POST("/addOutfit")
     Call<Void> addWardrobeOutfit(@Header("Authorization") String token, @Body OutfitForm outfitForm);
 
     @GET("/getAllElements")
     Call<WardrobeAllElementsForm> getAllWardrobeElements(@Header("Authorization") String token);
+
+    @DELETE("/deleteElement")
+    Call<Void> removeWardrobeElement(@Header("Authorization") String token, @Body String wardrobeElementUuid);
 }

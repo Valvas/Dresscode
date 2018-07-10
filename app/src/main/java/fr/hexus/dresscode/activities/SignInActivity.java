@@ -257,8 +257,6 @@ public class SignInActivity extends AppCompatActivity
 
                         WardrobeElement currentElement = new WardrobeElement(0, wardrobeAllElementsForm.getElements().get(i).getType(), wardrobeAllElementsForm.getElements().get(i).getUuid(), currentElementColors, wardrobeAllElementsForm.getElements().get(i).getPicture(), true);
 
-                        System.out.println(currentElement.toString());
-
                         Cursor getElementCursor = db.query(Constants.WARDROBE_TABLE_NAME, new String[]{ "id" },  Constants.WARDROBE_TABLE_COLUMNS_UUID + " = ?", new String[]{ currentElement.getUuid() }, null, null, null);
 
                         if(getElementCursor.getCount() == 0)

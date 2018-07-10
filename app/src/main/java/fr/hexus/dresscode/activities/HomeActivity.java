@@ -1,7 +1,6 @@
 package fr.hexus.dresscode.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Environment;
@@ -9,7 +8,6 @@ import android.support.design.widget.NavigationView;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -19,10 +17,10 @@ import android.widget.Toast;
 import java.io.File;
 
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
-import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.FinishListener;
 import fr.hexus.dresscode.classes.Logout;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FinishListener
 {
     private DrawerLayout myDrawer;
     private NavigationView dresscodeMenu;
@@ -32,6 +30,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     {
         if(getIntent().getBooleanExtra("LOGOUT", false))
         {
+            Logout.addFinishListener(this);
             Logout.logoutAccount(this);
         }
 
@@ -69,6 +68,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
+
+    /****************************************************************************************************/
+    // IMPLEMENTS THE FINISH LISTENER TO END ACTIVITY ON LOGOUT
+    /****************************************************************************************************/
+
+    @Override
+    public void finishActivity()
+    {
+        Intent logoutIntent = new Intent(this, SignInActivity.class);
+
+        finish();
+
+        startActivity(logoutIntent);
+    }
+
+    /****************************************************************************************************/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -110,6 +125,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 return true;
 
             case R.id.menuLogout:
+                Logout.addFinishListener(this);
                 Logout.logoutAccount(this);
                 return true;
 
