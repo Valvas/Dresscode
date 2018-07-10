@@ -19,6 +19,8 @@ public final class Constants
     public static final String WARDROBE_ELEMENT_COLORS_TABLE_NAME = "colors";
     public static final String OUTFIT_ELEMENTS_TABLE_NAME = "elements";
 
+    public static final String DRESSCODE_APP_FOLDER = "/dresscode";
+
     public static final String SHARED_PREFERENCES_FILE_NAME = "customPreferences";
 
     public static final String API_BASE_URL = "http://dresscode.ddns.net";

@@ -35,7 +35,6 @@ import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fr.hexus.dresscode.classes.Constants;
-import fr.hexus.dresscode.classes.DresscodeJobService;
 import fr.hexus.dresscode.classes.GlideApp;
 import fr.hexus.dresscode.classes.Outfit;
 import fr.hexus.dresscode.classes.WardrobeElement;

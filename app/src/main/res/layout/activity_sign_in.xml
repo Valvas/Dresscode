@@ -33,7 +33,7 @@
         android:id="@+id/signInForm"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        style="@style/logonPageForm"
+        style="@style/LogonPageForm"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

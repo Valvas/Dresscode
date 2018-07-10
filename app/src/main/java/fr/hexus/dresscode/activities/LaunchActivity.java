@@ -37,6 +37,10 @@ public class LaunchActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
 
+        FirebaseJobDispatcher test = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
+
+        test.cancelAll();
+
         checkWritingStorageRight();
     }
 

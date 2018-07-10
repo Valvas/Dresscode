@@ -3,6 +3,8 @@ package fr.hexus.dresscode.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.LogonForm;
 import fr.hexus.dresscode.classes.Token;
@@ -145,15 +148,6 @@ public class SignInActivity extends AppCompatActivity
                         sharedPreferences.edit().putString("token", newToken.getToken()).commit();
 
                         getAccountDataFromAPI(newToken.getToken());
-
-                        /*Toast.makeText(getApplicationContext(), getResources().getString(R.string.sign_in_success), Toast.LENGTH_LONG).show();
-
-                        final SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
-
-                        sharedPreferences.edit().putString("token", newToken.getToken()).commit();
-
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));*/
                     }
                 }
 
@@ -178,6 +172,10 @@ public class SignInActivity extends AppCompatActivity
 
     public void getAccountDataFromAPI(String token)
     {
+        AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(getApplicationContext());
+
+        SQLiteDatabase db = appDatabaseCreation.getWritableDatabase();
+
         Retrofit retrofit = RetrofitClient.getClient();
 
         DresscodeService service = retrofit.create(DresscodeService.class);
@@ -218,7 +216,12 @@ public class SignInActivity extends AppCompatActivity
                 {
                     WardrobeAllElementsForm wardrobeAllElementsForm = response.body();
 
-                    ArrayList<WardrobeElement> preparedElements = new ArrayList<>();
+                    File dresscodeDirectory = new File(Environment.getExternalStorageDirectory() + "/Dresscode");
+
+                    if(!dresscodeDirectory.exists())
+                    {
+                        dresscodeDirectory.mkdirs();
+                    }
 
                     for(int i = 0; i < wardrobeAllElementsForm.getElements().size(); i++)
                     {
@@ -228,13 +231,6 @@ public class SignInActivity extends AppCompatActivity
 
                         Bitmap bmp = BitmapFactory.decodeByteArray(decode, 0, decode.length);
 
-                        File dresscodeDirectory = new File(Environment.getExternalStorageDirectory() + "/Dresscode");
-
-                        if(!dresscodeDirectory.exists())
-                        {
-                            dresscodeDirectory.mkdirs();
-                        }
-
                         try
                         {
                             File f = new File(dresscodeDirectory, Calendar.getInstance().getTimeInMillis() + ".jpg");
@@ -243,7 +239,7 @@ public class SignInActivity extends AppCompatActivity
                             fo.write(decode);
                             fo.close();
 
-                            wardrobeAllElementsForm.getElements().get(i).setPicture(f.getName());
+                            wardrobeAllElementsForm.getElements().get(i).setPicture(Constants.DRESSCODE_APP_FOLDER + "/" + f.getName());
 
                         } catch(IOException e1)
                         {
@@ -259,16 +255,32 @@ public class SignInActivity extends AppCompatActivity
                             currentElementColors.add(wardrobeAllElementsForm.getElements().get(i).getColors()[j]);
                         }
 
-                        preparedElements.add(new WardrobeElement(0, wardrobeAllElementsForm.getElements().get(i).getType(), wardrobeAllElementsForm.getElements().get(i).getUuid(), currentElementColors, wardrobeAllElementsForm.getElements().get(i).getPicture(), true));
+                        WardrobeElement currentElement = new WardrobeElement(0, wardrobeAllElementsForm.getElements().get(i).getType(), wardrobeAllElementsForm.getElements().get(i).getUuid(), currentElementColors, wardrobeAllElementsForm.getElements().get(i).getPicture(), true);
 
-                        System.out.println(preparedElements.get(i).toString());
+                        System.out.println(currentElement.toString());
+
+                        Cursor getElementCursor = db.query(Constants.WARDROBE_TABLE_NAME, new String[]{ "id" },  Constants.WARDROBE_TABLE_COLUMNS_UUID + " = ?", new String[]{ currentElement.getUuid() }, null, null, null);
+
+                        if(getElementCursor.getCount() == 0)
+                        {
+                            currentElement.saveWardrobeElementInDatabase(getApplicationContext());
+                        }
+
+                        getElementCursor.close();
                     }
+
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.sign_in_success), Toast.LENGTH_LONG).show();
+
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                 }
             }
 
             @Override
             public void onFailure(Call<WardrobeAllElementsForm> call, Throwable t)
             {
+                System.out.println(token);
+                System.out.println(t.getMessage());
                 loadingSpinner.setVisibility(View.GONE);
                 signInForm.setVisibility(View.VISIBLE);
 

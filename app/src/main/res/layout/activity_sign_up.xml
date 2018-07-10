@@ -19,9 +19,14 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" >
 
         <LinearLayout
+            style="@style/SignUpForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -95,11 +100,13 @@
                 android:layout_width="match_parent"
                 android:hint="@string/sign_up_password"
                 android:inputType="textPassword" />
+
             <TextView
+                android:id="@+id/signUpPasswordHelp"
+                style="@style/SignUpHelp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/sign_up_password_help"
-                style="@style/SignUpHelp"/>
+                android:text="@string/sign_up_password_help" />
 
             <TextView
                 android:id="@+id/signUpConfirmationLabel"
@@ -114,6 +121,27 @@
                 android:layout_width="match_parent"
                 android:hint="@string/sign_up_password"
                 android:inputType="textPassword" />
+
+            <LinearLayout
+                style="@style/SignUpTermsOfUse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/signUpTermsOfUse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sign_up_terms_of_use" />
+
+                <TextView
+                    android:id="@+id/signUpTermsOfUseDetail"
+                    style="@style/SignUpTermsOfUseDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sign_up_terms_of_use_detail" />
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/signUpSendButton"

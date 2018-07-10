@@ -9,6 +9,7 @@ import android.support.design.widget.NavigationView;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -19,6 +20,7 @@ import java.io.File;
 
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.Logout;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -30,10 +32,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     {
         if(getIntent().getBooleanExtra("LOGOUT", false))
         {
-            SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
-            sharedPreferences.edit().remove("token").commit();
-            finish();
-            startActivity(new Intent(this, SignInActivity.class));
+            Logout.logoutAccount(this);
         }
 
         super.onCreate(savedInstanceState);
@@ -111,10 +110,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 return true;
 
             case R.id.menuLogout:
-                finish();
-                SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
-                sharedPreferences.edit().remove("token").commit();
-                startActivity(new Intent(this, SignInActivity.class));
+                Logout.logoutAccount(this);
                 return true;
 
             default:

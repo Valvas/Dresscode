@@ -199,14 +199,14 @@
     <style name="SignUpAppName">
         <item name="android:fontFamily">@font/oneday</item>
         <item name="android:textSize">32sp</item>
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">#667788</item>
         <item name="android:layout_margin">8dp</item>
     </style>
 
     <style name="SignUpTitle">
         <item name="android:fontFamily">@font/tajawal_light</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">#000000</item>
         <item name="android:layout_margin">8dp</item>
     </style>
 
@@ -218,9 +218,9 @@
     </style>
 
     <style name="SignUpLabel">
-        <item name="android:fontFamily">@font/muli_regular</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/raleway_semi_bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#000000</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
@@ -230,18 +230,19 @@
     <style name="SignUpHelp">
         <item name="android:fontFamily">@font/muli_regular</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">#F9F9F9</item>
+        <item name="android:textColor">#667788</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_marginBottom">4dp</item>
     </style>
 
     <style name="SignUpInput">
-        <item name="android:layout_height">24dp</item>
-        <item name="android:background">@drawable/logon_header_input</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/sign_up_input</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:padding">4dp</item>
     </style>
 
     <style name="SignUpSendButton">
@@ -265,10 +266,31 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="logonPageForm">
+    <style name="LogonPageForm">
         <item name="android:background">@drawable/logon_form</item>
         <item name="android:layout_margin">16dp</item>
         <item name="android:padding">8dp</item>
+        <item name="android:elevation">8dp</item>
+    </style>
+
+    <style name="SignUpTermsOfUse">
+        <item name="android:background">@drawable/white_box</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:elevation">16dp</item>
+    </style>
+
+    <style name="SignUpTermsOfUseDetail">
+        <item name="android:textColor">#6200EE</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="SignUpForm">
+        <item name="android:background">@drawable/sign_up_terms_of_use</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">16dp</item>
         <item name="android:elevation">8dp</item>
     </style>
 

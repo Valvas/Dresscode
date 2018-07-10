@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -32,6 +36,8 @@ public class SignUpActivity extends AppCompatActivity
     EditText lastnameInput;
     EditText firstnameInput;
     EditText confirmationInput;
+    CheckBox termsOfUse;
+    TextView termsOfUseDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,12 +46,18 @@ public class SignUpActivity extends AppCompatActivity
         setContentView(R.layout.activity_sign_up);
 
         emailInput = findViewById(R.id.signUpEmailInput);
+        termsOfUse = findViewById(R.id.signUpTermsOfUse);
         passwordInput = findViewById(R.id.signUpPasswordInput);
         lastnameInput = findViewById(R.id.signUpLastnameInput);
         firstnameInput = findViewById(R.id.signUpFirstnameInput);
+        termsOfUseDetail = findViewById(R.id.signUpTermsOfUseDetail);
         confirmationInput = findViewById(R.id.signUpConfirmationInput);
 
         loadingSpinner = findViewById(R.id.loadingSpinner);
+
+        SpannableString content = new SpannableString(String.valueOf(termsOfUseDetail.getText()));
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        termsOfUseDetail.setText(content);
     }
 
     public void checkFormBeforeSending(View view)
@@ -98,6 +110,11 @@ public class SignUpActivity extends AppCompatActivity
         else if(confirmationInput.getText().toString().equals(passwordInput.getText().toString()) == false)
         {
             Toast.makeText(this, getResources().getString(R.string.sign_up_error_confirmation_mismatch), Toast.LENGTH_SHORT).show();
+        }
+
+        else if(termsOfUse.isChecked() == false)
+        {
+            Toast.makeText(this, getResources().getString(R.string.sign_up_error_terms_of_use), Toast.LENGTH_SHORT).show();
         }
 
         else
