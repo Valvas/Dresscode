@@ -142,7 +142,21 @@
     <string name="sync_done">Synchronisation terminée</string>
     <string name="sync_failed">Échec de synchronisation</string>
 
+    <string name="home_activity_sync_title">Synchronisation en cours</string>
+    <string name="home_activity_sync_pending">Synchronisation de :</string>
+    <string name="home_activity_sync_errors">Erreurs de synchronisation :</string>
+    <string name="home_activity_sync_over">Synchronisation terminée</string>
+    <string name="home_activity_sync_close">Fermer</string>
+
     <string name="wardrobe_list_activity_sync_pending">En attente de synchronisation : </string>
     <string name="wardrobe_list_activity_sync_success">Synchronisations réussies : </string>
     <string name="wardrobe_list_activity_sync_error">Erreurs de synchronisation : </string>
+
+    <string name="home_activity_wardrobe_elements_title">Éléments du dressing : </string>
+    <string name="home_activity_wardrobe_elements_synchronized">Synchronisés avec le serveur : </string>
+    <string name="home_activity_wardrobe_elements_non_synchronized">Non-Synchronisés : </string>
+
+    <string name="home_activity_wardrobe_outfits_title">Tenues du dressing : </string>
+    <string name="home_activity_wardrobe_outfits_synchronized">Synchronisées avec le serveur : </string>
+    <string name="home_activity_wardrobe_outfits_non_synchronized">Non-Synchronisées : </string>
 </resources>

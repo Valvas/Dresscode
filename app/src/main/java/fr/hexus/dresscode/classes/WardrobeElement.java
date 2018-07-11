@@ -166,7 +166,7 @@ public class WardrobeElement implements Serializable, IJobServiceObservable
     }
 
     /****************************************************************************************************/
-    // SAVE ELEMENT IN DATABASE
+    // UPDATE ELEMENT IN DATABASE
     /****************************************************************************************************/
 
     public boolean updateWardrobeElementInDatabase(Context context)
@@ -179,9 +179,9 @@ public class WardrobeElement implements Serializable, IJobServiceObservable
         values.put(Constants.WARDROBE_TABLE_COLUMNS_TYPE, this.type);
         values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, this.path);
         values.put(Constants.WARDROBE_TABLE_COLUMNS_UUID, this.uuid);
-        values.put(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API, this.storedOnApi);
+        values.put(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API, false);
 
-        long updatedRows = db.update(Constants.WARDROBE_TABLE_NAME, values, "id = ?", new String[]{ String.valueOf(this.id) });
+        long updatedRows = db.update(Constants.WARDROBE_TABLE_NAME, values, "uuid = ?", new String[]{ this.uuid });
 
         if(updatedRows > 0)
         {
@@ -321,13 +321,32 @@ public class WardrobeElement implements Serializable, IJobServiceObservable
 
     public void updateInApi(String token, Context context)
     {
+        File image = new File(String.valueOf(Environment.getExternalStorageDirectory() + this.path));
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] byteArrayImage = baos.toByteArray();
+
+        String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+
+        int[] colors = new int[this.colors.size()];
+
+        for(int i = 0; i < this.colors.size(); i++)
+        {
+            colors[i] = this.colors.get(i);
+        }
+
         Retrofit retrofit = RetrofitClient.getClient();
 
         DresscodeService service = retrofit.create(DresscodeService.class);
 
+        WardrobeElementForm wardrobeElementForm = new WardrobeElementForm(this.type, colors, this.uuid, encodedImage);
+
         // PREPARING REQUEST TO THE API
 
-        Call<Void> call = service.removeWardrobeElement(token, this.uuid);
+        Call<Void> call = service.updateWardrobeElement(token, wardrobeElementForm);
 
         // SENDING THE REQUEST
 

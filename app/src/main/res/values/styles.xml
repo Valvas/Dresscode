@@ -43,10 +43,13 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:gravity">center</item>
         <item name="android:fontFamily">@font/raleway_semi_bold</item>
-        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginStart">16dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:drawablePadding">10dp</item>
+        <item name="android:drawablePadding">6dp</item>
         <item name="android:textSize">14sp</item>
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
@@ -292,6 +295,55 @@
         <item name="android:paddingBottom">16dp</item>
         <item name="android:paddingTop">16dp</item>
         <item name="android:elevation">8dp</item>
+    </style>
+
+    <style name="HomeActivityBlock">
+        <item name="android:background">@drawable/home_activity_block</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:elevation">8dp</item>
+    </style>
+
+    <style name="HomeActivityBlockTitle">
+        <item name="android:background">@drawable/home_activity_block_title</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingStart">8dp</item>
+    </style>
+
+    <style name="HomeActivityBlockInfo">
+        <item name="android:fontFamily">@font/raleway_semi_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="HomeActivityBlockError">
+        <item name="android:fontFamily">@font/raleway_semi_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textColor">#D9534F</item>
+    </style>
+
+    <style name="HomeActivityBlockSynchronized">
+        <item name="android:textColor">#5CB85C</item>
+        <item name="android:fontFamily">@font/raleway_semi_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="HomeActivityBlockNonSynchronized">
+        <item name="android:textColor">#D9534F</item>
+        <item name="android:fontFamily">@font/raleway_semi_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">8dp</item>
     </style>
 
 </resources>

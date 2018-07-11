@@ -1,17 +1,19 @@
 package fr.hexus.dresscode.retrofit;
 
-import java.util.ArrayList;
-
 import fr.hexus.dresscode.classes.LogonForm;
 import fr.hexus.dresscode.classes.OutfitForm;
 import fr.hexus.dresscode.classes.SignUpForm;
 import fr.hexus.dresscode.classes.Token;
+import fr.hexus.dresscode.classes.UuidForm;
 import fr.hexus.dresscode.classes.WardrobeAllElementsForm;
 import fr.hexus.dresscode.classes.WardrobeElementForm;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -39,6 +41,7 @@ public interface DresscodeService
     @GET("/getAllElements")
     Call<WardrobeAllElementsForm> getAllWardrobeElements(@Header("Authorization") String token);
 
-    @DELETE("/deleteElement")
-    Call<Void> removeWardrobeElement(@Header("Authorization") String token, @Body String wardrobeElementUuid);
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "/deleteElement", hasBody = true)
+    Call<Void> removeWardrobeElement(@Header("Authorization") String token, @Field("uuid") String uuid);
 }

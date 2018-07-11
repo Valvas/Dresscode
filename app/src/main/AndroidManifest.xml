@@ -57,6 +57,22 @@
             </intent-filter>
         </service>
         <service
+            android:name="fr.hexus.dresscode.retrofit.WardrobeElementUpdateJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="fr.hexus.dresscode.retrofit.WardrobeElementRemoveJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+        <service
             android:name="fr.hexus.dresscode.retrofit.WardrobeOutfitCreateJobService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE">

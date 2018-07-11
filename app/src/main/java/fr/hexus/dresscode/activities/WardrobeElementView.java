@@ -163,6 +163,7 @@ public class WardrobeElementView extends AppCompatActivity
 
                 Bundle extras = new Bundle();
                 extras.putString("token", token);
+                extras.putString("uuid", wardrobeElement.getUuid());
 
                 Job job = dispatcher.newJobBuilder()
                         .setService(WardrobeElementRemoveJobService.class)
@@ -194,6 +195,8 @@ public class WardrobeElementView extends AppCompatActivity
         File pictureToRemove = new File(Environment.getExternalStorageDirectory() + String.valueOf(wardrobeElement.getPath()));
 
         pictureToRemove.delete();
+
+        database.close();
 
         return deletedRows == 1;
     }

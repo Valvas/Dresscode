@@ -10,16 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
 import fr.hexus.dresscode.classes.Constants;
-import fr.hexus.dresscode.classes.FinishListener;
 import fr.hexus.dresscode.classes.Token;
 import fr.hexus.dresscode.retrofit.DresscodeService;
 import fr.hexus.dresscode.retrofit.RetrofitClient;

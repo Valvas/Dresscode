@@ -4,20 +4,166 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:id="@+id/myDrawer"
     tools:openDrawer="start"
     android:layout_gravity="left"
     tools:context="fr.hexus.dresscode.activities.HomeActivity">
 
-    <FrameLayout
-        android:id="@+id/content_frame"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/toolbar" />
+        <include layout="@layout/toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/scrollView" />
 
-    </FrameLayout>
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/wardrobeSyncButton"
+                    android:drawableStart="@android:drawable/stat_notify_sync"
+                    android:text="@string/sync_with_api"
+                    android:onClick="syncWithApi"
+                    style="@style/SyncButton" />
+
+                <LinearLayout
+                    android:id="@+id/wardrobeSyncBlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    style="@style/HomeActivityBlock"
+                    android:visibility="gone" >
+
+                    <LinearLayout
+                        android:id="@+id/wardrobeSyncTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/HomeActivityBlockTitle" >
+
+                        <ProgressBar
+                            android:layout_width="32sp"
+                            android:layout_height="32sp"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="32sp"
+                            android:gravity="center|left"
+                            android:textSize="20sp"
+                            android:textColor="#000000"
+                            android:text="@string/home_activity_sync_title" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/wardrobeSyncBlockOver"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/HomeActivityBlockTitle"
+                        android:text="@string/home_activity_sync_over"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/wardrobeSyncBlockCurrent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_activity_sync_pending"
+                        style="@style/HomeActivityBlockInfo" />
+
+                    <TextView
+                        android:id="@+id/wardrobeSyncBlockErrors"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_activity_sync_errors"
+                        style="@style/HomeActivityBlockError" />
+
+                    <Button
+                        android:id="@+id/wardrobeSyncBlockClose"
+                        android:text="@string/home_activity_sync_close"
+                        style="@style/SyncButton"
+                        android:onClick="closeSyncBlock"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    style="@style/HomeActivityBlock" >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_activity_wardrobe_elements_title"
+                        style="@style/HomeActivityBlockTitle" />
+
+                    <TextView
+                        android:id="@+id/wardrobeElementsSynchronized"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_activity_wardrobe_elements_synchronized"
+                        style="@style/HomeActivityBlockSynchronized" />
+
+                    <TextView
+                        android:id="@+id/wardrobeElementsNonSynchronized"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_activity_wardrobe_elements_non_synchronized"
+                        style="@style/HomeActivityBlockNonSynchronized" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    style="@style/HomeActivityBlock" >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_activity_wardrobe_outfits_title"
+                        style="@style/HomeActivityBlockTitle" />
+
+                    <TextView
+                        android:id="@+id/wardrobeOutfitsSynchronized"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_activity_wardrobe_outfits_synchronized"
+                        style="@style/HomeActivityBlockSynchronized" />
+
+                    <TextView
+                        android:id="@+id/wardrobeOutfitsNonSynchronized"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_activity_wardrobe_outfits_non_synchronized"
+                        style="@style/HomeActivityBlockNonSynchronized" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </android.support.constraint.ConstraintLayout>
 
     <include layout="@layout/navigation_view" />
 

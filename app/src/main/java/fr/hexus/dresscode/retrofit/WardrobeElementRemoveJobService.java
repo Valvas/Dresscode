@@ -56,7 +56,7 @@ public class WardrobeElementRemoveJobService extends JobService
 
             currentElement.addObserver(this);
 
-            Log.println(Log.INFO, Constants.LOG_NETWORK_MANAGER_REMOVING_WARDROBE_ELEMENT, "SRemoving wardrobe element from the API (" + currentElement.getUuid() + ")");
+            Log.println(Log.INFO, Constants.LOG_NETWORK_MANAGER_REMOVING_WARDROBE_ELEMENT, "Removing wardrobe element from the API (" + currentElement.getUuid() + ")");
 
             currentElement.removeFromApi(token, getApplicationContext());
 
