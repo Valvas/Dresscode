@@ -1,6 +1,7 @@
 package fr.hexus.dresscode.retrofit;
 
 import fr.hexus.dresscode.classes.LogonForm;
+import fr.hexus.dresscode.classes.NewTokenForm;
 import fr.hexus.dresscode.classes.OutfitForm;
 import fr.hexus.dresscode.classes.SignUpForm;
 import fr.hexus.dresscode.classes.Token;
@@ -27,7 +28,7 @@ public interface DresscodeService
     Call<Token> signUp(@Body SignUpForm signUpForm);
 
     @PUT("/getNewToken")
-    Call<Token> getNewToken(@Body Token currentToken);
+    Call<Token> getNewToken(@Body NewTokenForm currentToken);
 
     @POST("/addElement")
     Call<Void> addWardrobeElement(@Header("Authorization") String token, @Body WardrobeElementForm wardrobeElementForm);

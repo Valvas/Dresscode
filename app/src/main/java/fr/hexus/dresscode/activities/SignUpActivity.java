@@ -169,6 +169,8 @@ public class SignUpActivity extends AppCompatActivity
                     final SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
 
                     sharedPreferences.edit().putString("token", newToken.getToken()).commit();
+                    sharedPreferences.edit().putString("email", emailInput.getText().toString()).commit();
+                    sharedPreferences.edit().putLong("expire", System.currentTimeMillis()).commit();
 
                     finish();
                     Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);

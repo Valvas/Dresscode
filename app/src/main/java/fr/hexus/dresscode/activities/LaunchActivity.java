@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.NewTokenForm;
 import fr.hexus.dresscode.classes.Token;
 import fr.hexus.dresscode.retrofit.DresscodeService;
 import fr.hexus.dresscode.retrofit.RetrofitClient;
@@ -128,7 +129,7 @@ public class LaunchActivity extends AppCompatActivity
 
             DresscodeService service = retrofit.create(DresscodeService.class);
 
-            Token currentToken = new Token(sharedPreferences.getString("token", null));
+            NewTokenForm currentToken = new NewTokenForm(sharedPreferences.getString("email", null), sharedPreferences.getString("token", null));
 
             Call<Token> call = service.getNewToken(currentToken);
 
