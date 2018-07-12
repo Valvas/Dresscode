@@ -7,6 +7,7 @@ import fr.hexus.dresscode.classes.SignUpForm;
 import fr.hexus.dresscode.classes.Token;
 import fr.hexus.dresscode.classes.UuidForm;
 import fr.hexus.dresscode.classes.WardrobeAllElementsForm;
+import fr.hexus.dresscode.classes.WardrobeAllOutfitsForm;
 import fr.hexus.dresscode.classes.WardrobeElementForm;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -41,6 +42,9 @@ public interface DresscodeService
 
     @GET("/getAllElements")
     Call<WardrobeAllElementsForm> getAllWardrobeElements(@Header("Authorization") String token);
+
+    @GET("/getAllOutfits")
+    Call<WardrobeAllOutfitsForm> getAllWardrobeOutfits(@Header("Authorization") String token);
 
     @FormUrlEncoded
     @HTTP(method = "DELETE", path = "/deleteElement", hasBody = true)

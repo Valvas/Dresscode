@@ -15,8 +15,8 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
     private Context applicationContext;
 
     private ArrayList<ISynchronizationObserver> observers;
-    private ArrayList<WardrobeElement> wardrobeElements;
-    private ArrayList<Outfit> wardrobeOutfits;
+    private ArrayList<WardrobeElement> wardrobeElementsOnDevice;
+    private ArrayList<Outfit> wardrobeOutfitsOnDevice;
 
     public SyncAgent(String token, Context applicationContext)
     {
@@ -28,22 +28,22 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
 
         this.applicationContext = applicationContext;
 
-        this.wardrobeElements = getNonSyncWardrobeElements(applicationContext);
-        this.wardrobeOutfits = getNonSyncWardrobeOutfits(applicationContext);
+        this.wardrobeElementsOnDevice = getNonSyncWardrobeElements(applicationContext);
+        this.wardrobeOutfitsOnDevice = getNonSyncWardrobeOutfits(applicationContext);
     }
 
     /******************************************************************************************/
 
-    public ArrayList<WardrobeElement> getWardrobeElements()
+    public ArrayList<WardrobeElement> getWardrobeElementsOnDevice()
     {
-        return this.wardrobeElements;
+        return this.wardrobeElementsOnDevice;
     }
 
     /******************************************************************************************/
 
-    public ArrayList<Outfit> getWardrobeOutfits()
+    public ArrayList<Outfit> getWardrobeOutfitsOnDevice()
     {
-        return this.wardrobeOutfits;
+        return this.wardrobeOutfitsOnDevice;
     }
 
     /******************************************************************************************/
@@ -64,24 +64,24 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
     {
         // EXECUTE REQUEST TO SEND NEXT WARDROBE ELEMENT
 
-        if(wardrobeElementsBrowserIndex < wardrobeElements.size())
+        if(wardrobeElementsBrowserIndex < wardrobeElementsOnDevice.size())
         {
             try{ notifyObservers(false, (rescheduleJob == false)); } catch(Exception e){ e.printStackTrace(); }
 
-            wardrobeElements.get(wardrobeElementsBrowserIndex).addObserver(this);
-            wardrobeElements.get(wardrobeElementsBrowserIndex).sendWardrobeElementToTheAPI(this.token, this.applicationContext);
+            wardrobeElementsOnDevice.get(wardrobeElementsBrowserIndex).addObserver(this);
+            wardrobeElementsOnDevice.get(wardrobeElementsBrowserIndex).sendWardrobeElementToTheAPI(this.token, this.applicationContext);
 
             wardrobeElementsBrowserIndex += 1;
         }
 
         // EXECUTE REQUEST TO SEND NEXT WARDROBE OUTFIT
 
-        else if(wardrobeOutfitsBrowserIndex < wardrobeOutfits.size())
+        else if(wardrobeOutfitsBrowserIndex < wardrobeOutfitsOnDevice.size())
         {
             try{ notifyObservers(false, (rescheduleJob == false)); } catch(Exception e){ e.printStackTrace(); }
 
-            wardrobeOutfits.get(wardrobeOutfitsBrowserIndex).addObserver(this);
-            wardrobeOutfits.get(wardrobeOutfitsBrowserIndex).sendOutfitToTheAPI(this.token, this.applicationContext);
+            wardrobeOutfitsOnDevice.get(wardrobeOutfitsBrowserIndex).addObserver(this);
+            wardrobeOutfitsOnDevice.get(wardrobeOutfitsBrowserIndex).sendOutfitToTheAPI(this.token, this.applicationContext);
 
             wardrobeOutfitsBrowserIndex += 1;
         }
@@ -107,6 +107,7 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
         // GET ALL WARDROBE ELEMENTS FROM DATABASE WHICH ARE NOT SYNCHRONIZED WITH THE API
 
         Cursor wardrobeElementsCursor = database.query(Constants.WARDROBE_TABLE_NAME, new String[]{ "*" }, Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API + " = ?", new String[]{ "0" }, null, null, null);
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! : " + wardrobeElementsCursor.getCount());
 
         wardrobeElementsCursor.moveToFirst();
 
@@ -175,7 +176,7 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
 
             ArrayList<WardrobeElement> currentOutfitElements = new ArrayList<>();
 
-            Cursor currentOutfitElementsCursor = database.query(Constants.OUTFIT_ELEMENTS_TABLE_NAME, new String[]{ Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_ID }, Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_UUID + " = ?", new String[]{ wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_UUID)) }, null, null, null);
+            Cursor currentOutfitElementsCursor = database.query(Constants.OUTFIT_ELEMENTS_TABLE_NAME, new String[]{ Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_UUID }, Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_UUID + " = ?", new String[]{ wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_UUID)) }, null, null, null);
 
             currentOutfitElementsCursor.moveToFirst();
 
@@ -219,6 +220,17 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
         database.close();
 
         return wardrobeOutfits;
+    }
+
+    /******************************************************************************************/
+    // GET ALL WARDROBE ELEMENTS FROM API
+    /******************************************************************************************/
+
+    private ArrayList<WardrobeElement> getWardrobeElementsFromApi()
+    {
+        ArrayList<WardrobeElement> wardrobeElements = new ArrayList<>();
+
+        return wardrobeElements;
     }
 
     /******************************************************************************************/

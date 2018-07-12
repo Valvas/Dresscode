@@ -4,22 +4,35 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
+import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.NewTokenForm;
 import fr.hexus.dresscode.classes.Token;
 import fr.hexus.dresscode.retrofit.DresscodeService;
+import fr.hexus.dresscode.retrofit.GetNewTokenJobService;
 import fr.hexus.dresscode.retrofit.RetrofitClient;
+import fr.hexus.dresscode.retrofit.WardrobeElementCreateJobService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,11 +42,31 @@ import static android.content.pm.PackageManager.PERMISSION_DENIED;
 
 public class LaunchActivity extends AppCompatActivity
 {
+    private FirebaseJobDispatcher dispatcher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
+
+        /***/
+
+        AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(this);
+
+        SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
+
+        Cursor wardrobeElementsCursor = database.query(Constants.WARDROBE_TABLE_NAME, new String[]{ "*" }, Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API + " = ?", new String[]{ String.valueOf(false) }, null, null, null);
+
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! : " + wardrobeElementsCursor.getCount());
+
+        wardrobeElementsCursor.close();
+
+        database.close();
+
+        /***/
+
+        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
 
         checkWritingStorageRight();
     }
@@ -161,6 +194,25 @@ public class LaunchActivity extends AppCompatActivity
                         Token newToken = response.body();
 
                         sharedPreferences.edit().putString("token", newToken.getToken()).commit();
+
+                        Bundle extras = new Bundle();
+
+                        extras.putString("email", sharedPreferences.getString("email", null));
+                        extras.putString("token", sharedPreferences.getString("token", null));
+
+                        Job job = dispatcher.newJobBuilder()
+                                .setService(GetNewTokenJobService.class)
+                                .setTag(Constants.GET_NEW_TOKEN_JOB_TAG)
+                                .setRecurring(true)
+                                .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                                .setTrigger(Trigger.executionWindow(Constants.NEW_TOKEN_RECURRING_TASK_MIN, Constants.NEW_TOKEN_RECURRING_TASK_MAX))
+                                .setReplaceCurrent(true)
+                                .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                                .setConstraints(Constraint.ON_ANY_NETWORK)
+                                .setExtras(extras)
+                                .build();
+
+                        dispatcher.mustSchedule(job);
 
                         finish();
                         startActivity(new Intent(getApplicationContext(), HomeActivity.class));

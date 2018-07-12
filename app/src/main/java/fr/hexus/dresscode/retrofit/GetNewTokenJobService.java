@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.IJobServiceObserver;
+import fr.hexus.dresscode.classes.NewTokenForm;
 import fr.hexus.dresscode.classes.WardrobeElement;
 
 public class GetNewTokenJobService extends JobService
@@ -26,14 +27,14 @@ public class GetNewTokenJobService extends JobService
     @Override
     public boolean onStopJob(JobParameters job)
     {
-        return false;
+        return true;
     }
 
     /****************************************************************************************************/
     // INTERN CLASS THAT WILL HANDLE ASYNC TASKS
     /****************************************************************************************************/
 
-    private class DresscodeAsyncTask extends AsyncTask<JobParameters, Void, JobParameters> implements IJobServiceObserver
+    private class DresscodeAsyncTask extends AsyncTask<JobParameters, Void, JobParameters>
     {
         private JobService jobService;
         private JobParameters jobParameters;
@@ -49,28 +50,12 @@ public class GetNewTokenJobService extends JobService
             this.jobParameters = job[0];
 
             final Bundle extras = job[0].getExtras();
-            final int type = extras.getInt("type");
-            final String uuid = extras.getString("uuid");
-            final String colors = extras.getString("colors");
-            final String picture = extras.getString("picture");
             final String token = extras.getString("token");
+            final String email = extras.getString("email");
 
-            ArrayList<Integer> elementColors = new ArrayList<>();
+            NewTokenForm newTokenForm = new NewTokenForm(email, token);
 
-            String[] splittedColors = colors.split(",");
-
-            for(int i = 0; i < splittedColors.length; i++)
-            {
-                elementColors.add(Integer.parseInt(splittedColors[i]));
-            }
-
-            WardrobeElement currentElement = new WardrobeElement(0, type, uuid, elementColors, picture, false);
-
-            currentElement.addObserver(this);
-
-            Log.println(Log.INFO, Constants.LOG_NETWORK_MANAGER_SENDING_NEW_WARDROBE_ELEMENT, "Sending new wardrobe element to the API (" + currentElement.getUuid() + ")");
-
-            currentElement.sendWardrobeElementToTheAPI(token, getApplicationContext());
+            newTokenForm.getNewTokenFromApi(getApplicationContext());
 
             return job[0];
         }
@@ -79,12 +64,6 @@ public class GetNewTokenJobService extends JobService
         protected void onPostExecute(JobParameters job)
         {
 
-        }
-
-        @Override
-        public void jobDone(boolean rescheduleJob) throws Exception
-        {
-            jobService.jobFinished(jobParameters, rescheduleJob);
         }
     }
 }

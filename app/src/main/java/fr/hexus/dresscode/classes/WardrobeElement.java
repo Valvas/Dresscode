@@ -197,7 +197,7 @@ public class WardrobeElement implements Serializable, IJobServiceObservable
 
                 if(insertedColorId < 0)
                 {
-                    appDatabaseCreation.close();
+                    db.close();
 
                     return false;
                 }
@@ -206,12 +206,12 @@ public class WardrobeElement implements Serializable, IJobServiceObservable
 
         else
         {
-            appDatabaseCreation.close();
+            db.close();
 
             return false;
         }
 
-        appDatabaseCreation.close();
+        db.close();
 
         return true;
     }

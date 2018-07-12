@@ -13,6 +13,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +30,7 @@ import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.SignUpForm;
 import fr.hexus.dresscode.classes.Token;
 import fr.hexus.dresscode.retrofit.DresscodeService;
+import fr.hexus.dresscode.retrofit.GetNewTokenJobService;
 import fr.hexus.dresscode.retrofit.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,20 +39,24 @@ import retrofit2.Retrofit;
 
 public class SignUpActivity extends AppCompatActivity
 {
-    ProgressBar loadingSpinner;
-    EditText emailInput;
-    EditText passwordInput;
-    EditText lastnameInput;
-    EditText firstnameInput;
-    EditText confirmationInput;
-    CheckBox termsOfUse;
-    TextView termsOfUseDetail;
+    private ProgressBar loadingSpinner;
+    private EditText emailInput;
+    private EditText passwordInput;
+    private EditText lastnameInput;
+    private EditText firstnameInput;
+    private EditText confirmationInput;
+    private CheckBox termsOfUse;
+    private TextView termsOfUseDetail;
+
+    private FirebaseJobDispatcher dispatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
 
         emailInput = findViewById(R.id.signUpEmailInput);
         termsOfUse = findViewById(R.id.signUpTermsOfUse);
@@ -170,7 +183,25 @@ public class SignUpActivity extends AppCompatActivity
 
                     sharedPreferences.edit().putString("token", newToken.getToken()).commit();
                     sharedPreferences.edit().putString("email", emailInput.getText().toString()).commit();
-                    sharedPreferences.edit().putLong("expire", System.currentTimeMillis()).commit();
+
+                    Bundle extras = new Bundle();
+
+                    extras.putString("email", sharedPreferences.getString("email", null));
+                    extras.putString("token", sharedPreferences.getString("token", null));
+
+                    Job job = dispatcher.newJobBuilder()
+                            .setService(GetNewTokenJobService.class)
+                            .setTag(Constants.GET_NEW_TOKEN_JOB_TAG)
+                            .setRecurring(true)
+                            .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                            .setTrigger(Trigger.executionWindow(Constants.NEW_TOKEN_RECURRING_TASK_MIN, Constants.NEW_TOKEN_RECURRING_TASK_MAX))
+                            .setReplaceCurrent(true)
+                            .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                            .setConstraints(Constraint.ON_ANY_NETWORK)
+                            .setExtras(extras)
+                            .build();
+
+                    dispatcher.mustSchedule(job);
 
                     finish();
                     Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);

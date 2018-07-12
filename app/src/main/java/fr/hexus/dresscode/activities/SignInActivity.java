@@ -19,6 +19,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,20 +36,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import fr.hexus.dresscode.classes.ApiDataGetter;
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.IGetDataFromApiObserver;
 import fr.hexus.dresscode.classes.LogonForm;
 import fr.hexus.dresscode.classes.Token;
 import fr.hexus.dresscode.classes.WardrobeAllElementsForm;
 import fr.hexus.dresscode.classes.WardrobeElement;
 import fr.hexus.dresscode.retrofit.DresscodeService;
+import fr.hexus.dresscode.retrofit.GetNewTokenJobService;
 import fr.hexus.dresscode.retrofit.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class SignInActivity extends AppCompatActivity
+public class SignInActivity extends AppCompatActivity implements IGetDataFromApiObserver
 {
     private ProgressBar loadingSpinner;
     private EditText emailInput;
@@ -51,11 +62,15 @@ public class SignInActivity extends AppCompatActivity
     private Button signInButton;
     private Button signUpButton;
 
+    private FirebaseJobDispatcher dispatcher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
 
         signInButton = findViewById(R.id.logonPageSendButton);
         signUpButton = findViewById(R.id.logonPageRegisterButton);
@@ -147,7 +162,25 @@ public class SignInActivity extends AppCompatActivity
 
                         sharedPreferences.edit().putString("token", newToken.getToken()).commit();
                         sharedPreferences.edit().putString("email", emailInput.getText().toString()).commit();
-                        sharedPreferences.edit().putLong("expire", System.currentTimeMillis()).commit();
+
+                        Bundle extras = new Bundle();
+
+                        extras.putString("email", sharedPreferences.getString("email", null));
+                        extras.putString("token", sharedPreferences.getString("token", null));
+
+                        Job job = dispatcher.newJobBuilder()
+                                .setService(GetNewTokenJobService.class)
+                                .setTag(Constants.GET_NEW_TOKEN_JOB_TAG)
+                                .setRecurring(true)
+                                .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                                .setTrigger(Trigger.executionWindow(Constants.NEW_TOKEN_RECURRING_TASK_MIN, Constants.NEW_TOKEN_RECURRING_TASK_MAX))
+                                .setReplaceCurrent(true)
+                                .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                                .setConstraints(Constraint.ON_ANY_NETWORK)
+                                .setExtras(extras)
+                                .build();
+
+                        dispatcher.mustSchedule(job);
 
                         getAccountDataFromAPI(newToken.getToken());
                     }
@@ -174,119 +207,30 @@ public class SignInActivity extends AppCompatActivity
 
     public void getAccountDataFromAPI(String token)
     {
-        AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(getApplicationContext());
+        ApiDataGetter apiDataGetter = new ApiDataGetter();
 
-        SQLiteDatabase db = appDatabaseCreation.getWritableDatabase();
+        apiDataGetter.addObserver(this);
 
-        Retrofit retrofit = RetrofitClient.getClient();
+        apiDataGetter.getDataFromApi(token, getApplicationContext());
+    }
 
-        DresscodeService service = retrofit.create(DresscodeService.class);
+    /****************************************************************************************************/
 
-        Call<WardrobeAllElementsForm> call = service.getAllWardrobeElements(token);
-
-        /****************************************************************************************************/
-        // CALL THE API TO GET ALL WARDROBE ELEMENTS
-        /****************************************************************************************************/
-
-        call.enqueue(new Callback<WardrobeAllElementsForm>()
+    @Override
+    public void taskDone(boolean isTaskSuccessful)
+    {
+        if(isTaskSuccessful)
         {
-            @Override
-            public void onResponse(Call<WardrobeAllElementsForm> call, Response<WardrobeAllElementsForm> response)
-            {
-                if(response.errorBody() != null )
-                {
-                    loadingSpinner.setVisibility(View.GONE);
-                    signInForm.setVisibility(View.VISIBLE);
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.sign_in_success), Toast.LENGTH_LONG).show();
+        }
 
-                    try
-                    {
-                        JSONObject object = new JSONObject(response.errorBody().string());
+        else
+        {
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.get_data_from_api_failed), Toast.LENGTH_LONG).show();
+        }
 
-                        Toast.makeText(getApplicationContext(), "Erreur : " + object.getString("message"), Toast.LENGTH_SHORT).show();
-
-                    } catch(JSONException e)
-                    {
-                        e.printStackTrace();
-
-                    } catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-
-                else
-                {
-                    WardrobeAllElementsForm wardrobeAllElementsForm = response.body();
-
-                    File dresscodeDirectory = new File(Environment.getExternalStorageDirectory() + "/Dresscode");
-
-                    if(!dresscodeDirectory.exists())
-                    {
-                        dresscodeDirectory.mkdirs();
-                    }
-
-                    for(int i = 0; i < wardrobeAllElementsForm.getElements().size(); i++)
-                    {
-                        /****************************************************************************************************/
-
-                        byte[] decode = Base64.decode(wardrobeAllElementsForm.getElements().get(i).getPicture(), Base64.DEFAULT);
-
-                        Bitmap bmp = BitmapFactory.decodeByteArray(decode, 0, decode.length);
-
-                        try
-                        {
-                            File f = new File(dresscodeDirectory, Calendar.getInstance().getTimeInMillis() + ".jpg");
-                            f.createNewFile();
-                            FileOutputStream fo = new FileOutputStream(f);
-                            fo.write(decode);
-                            fo.close();
-
-                            wardrobeAllElementsForm.getElements().get(i).setPicture(Constants.DRESSCODE_APP_FOLDER + "/" + f.getName());
-
-                        } catch(IOException e1)
-                        {
-                            e1.printStackTrace();
-                        }
-
-                        /****************************************************************************************************/
-
-                        ArrayList<Integer> currentElementColors = new ArrayList<>();
-
-                        for(int j = 0; j < wardrobeAllElementsForm.getElements().get(i).getColors().length; j++)
-                        {
-                            currentElementColors.add(wardrobeAllElementsForm.getElements().get(i).getColors()[j]);
-                        }
-
-                        WardrobeElement currentElement = new WardrobeElement(0, wardrobeAllElementsForm.getElements().get(i).getType(), wardrobeAllElementsForm.getElements().get(i).getUuid(), currentElementColors, wardrobeAllElementsForm.getElements().get(i).getPicture(), true);
-
-                        Cursor getElementCursor = db.query(Constants.WARDROBE_TABLE_NAME, new String[]{ "id" },  Constants.WARDROBE_TABLE_COLUMNS_UUID + " = ?", new String[]{ currentElement.getUuid() }, null, null, null);
-
-                        if(getElementCursor.getCount() == 0)
-                        {
-                            currentElement.saveWardrobeElementInDatabase(getApplicationContext());
-                        }
-
-                        getElementCursor.close();
-                    }
-
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.sign_in_success), Toast.LENGTH_LONG).show();
-
-                    finish();
-                    startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<WardrobeAllElementsForm> call, Throwable t)
-            {
-                System.out.println(token);
-                System.out.println(t.getMessage());
-                loadingSpinner.setVisibility(View.GONE);
-                signInForm.setVisibility(View.VISIBLE);
-
-                Toast.makeText(getApplicationContext(), "Erreur : " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        finish();
+        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
     }
 
     /****************************************************************************************************/

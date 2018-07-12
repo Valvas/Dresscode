@@ -190,7 +190,9 @@ public class WardrobeElementView extends AppCompatActivity
 
         SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
 
-        int deletedRows = database.delete(Constants.WARDROBE_TABLE_NAME, "id = ?", new String[] { String.valueOf(wardrobeElement.getId()) });
+        int deletedRows = database.delete(Constants.WARDROBE_TABLE_NAME, Constants.WARDROBE_TABLE_COLUMNS_UUID + " = ?", new String[] { wardrobeElement.getUuid() });
+
+        database.delete(Constants.OUTFIT_ELEMENTS_TABLE_NAME, Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_UUID + " = ?", new String[]{ wardrobeElement.getUuid() });
 
         File pictureToRemove = new File(Environment.getExternalStorageDirectory() + String.valueOf(wardrobeElement.getPath()));
 

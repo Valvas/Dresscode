@@ -81,18 +81,35 @@
                         android:visibility="gone" />
 
                     <TextView
+                        android:id="@+id/wardrobeSyncBlockRetrieving"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/HomeActivityBlockInfo"
+                        android:text="@string/home_activity_sync_retrieving" />
+
+                    <TextView
                         android:id="@+id/wardrobeSyncBlockCurrent"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/home_activity_sync_pending"
-                        style="@style/HomeActivityBlockInfo" />
+                        style="@style/HomeActivityBlockInfo"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/wardrobeSyncBlockErrors"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/home_activity_sync_errors"
-                        style="@style/HomeActivityBlockError" />
+                        style="@style/HomeActivityBlockError"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/wardrobeSyncBlockFail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_activity_sync_fail"
+                        style="@style/HomeActivityBlockError"
+                        android:visibility="gone" />
 
                     <Button
                         android:id="@+id/wardrobeSyncBlockClose"

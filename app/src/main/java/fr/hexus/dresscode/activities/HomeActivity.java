@@ -23,16 +23,17 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
+import fr.hexus.dresscode.classes.ApiDataGetter;
 import fr.hexus.dresscode.classes.AppDatabaseCreation;
 import fr.hexus.dresscode.classes.Constants;
 import fr.hexus.dresscode.classes.FinishListener;
+import fr.hexus.dresscode.classes.IGetDataFromApiObserver;
 import fr.hexus.dresscode.classes.ISynchronizationObserver;
 import fr.hexus.dresscode.classes.Logout;
-import fr.hexus.dresscode.classes.Outfit;
 import fr.hexus.dresscode.classes.SyncAgent;
 import fr.hexus.dresscode.classes.WardrobeElement;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FinishListener, ISynchronizationObserver
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FinishListener, ISynchronizationObserver, IGetDataFromApiObserver
 {
     private int synchronizationAmountOfElements;
     private int synchronizationCurrentElement;
@@ -51,11 +52,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private TextView wardrobeSyncBlockCurrent;
     private TextView wardrobeSyncBlockErrors;
     private TextView wardrobeSyncBlockOver;
+    private TextView wardrobeSyncBlockRetrieving;
+    private TextView wardrobeSyncBlockFail;
 
     private LinearLayout wardrobeSyncTitle;
     private LinearLayout wardrobeSyncBlock;
 
     private Button wardrobeSyncBlockClose;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,11 +74,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
+
         wardrobeSyncBlock = findViewById(R.id.wardrobeSyncBlock);
 
+        wardrobeSyncBlockRetrieving = findViewById(R.id.wardrobeSyncBlockRetrieving);
         wardrobeSyncBlockCurrent = findViewById(R.id.wardrobeSyncBlockCurrent);
         wardrobeSyncBlockErrors = findViewById(R.id.wardrobeSyncBlockErrors);
         wardrobeSyncBlockOver = findViewById(R.id.wardrobeSyncBlockOver);
+        wardrobeSyncBlockFail = findViewById(R.id.wardrobeSyncBlockFail);
 
         wardrobeSyncTitle = findViewById(R.id.wardrobeSyncTitle);
 
@@ -135,23 +144,51 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public void syncWithApi(View view)
     {
-        final SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
-
-        SyncAgent syncAgent = new SyncAgent(sharedPreferences.getString("token", null), getApplicationContext());
-
-        synchronizationAmountOfElements = syncAgent.getWardrobeElements().size() + syncAgent.getWardrobeOutfits().size();
-        synchronizationCurrentElement = 1;
-
-        syncAgent.addObserver(this);
-
         syncButton.setVisibility(View.GONE);
-
-        wardrobeSyncBlockCurrent.setText(String.valueOf(wardrobeSyncBlockCurrent.getText()).split(":")[0] + ": 0 / " + String.valueOf(synchronizationAmountOfElements));
-        wardrobeSyncBlockErrors.setText(String.valueOf(wardrobeSyncBlockErrors.getText()).split(":")[0] + ": 0");
 
         wardrobeSyncBlock.setVisibility(View.VISIBLE);
 
-        syncAgent.synchronizeDataWithApi();
+        ApiDataGetter apiDataGetter = new ApiDataGetter();
+
+        apiDataGetter.addObserver(this);
+
+        apiDataGetter.getDataFromApi(sharedPreferences.getString("token", null), getApplicationContext());
+    }
+
+    /****************************************************************************************************/
+    // DATA FROM API RETRIEVING END
+    /****************************************************************************************************/
+
+    @Override
+    public void taskDone(boolean isTaskSuccessful)
+    {
+        wardrobeSyncBlockRetrieving.setVisibility(View.GONE);
+
+        if(isTaskSuccessful)
+        {
+            SyncAgent syncAgent = new SyncAgent(sharedPreferences.getString("token", null), getApplicationContext());
+
+            synchronizationAmountOfElements = syncAgent.getWardrobeElementsOnDevice().size() + syncAgent.getWardrobeOutfitsOnDevice().size();
+            synchronizationCurrentElement = 0;
+
+            syncAgent.addObserver(this);
+
+            wardrobeSyncBlockCurrent.setText(String.valueOf(wardrobeSyncBlockCurrent.getText()).split(":")[0] + ": 0 / " + String.valueOf(synchronizationAmountOfElements));
+            wardrobeSyncBlockErrors.setText(String.valueOf(wardrobeSyncBlockErrors.getText()).split(":")[0] + ": 0");
+
+            wardrobeSyncBlockCurrent.setVisibility(View.VISIBLE);
+            wardrobeSyncBlockErrors.setVisibility(View.VISIBLE);
+
+            syncAgent.synchronizeDataWithApi();
+        }
+
+        else
+        {
+            wardrobeSyncTitle.setVisibility(View.GONE);
+            wardrobeSyncBlockOver.setVisibility(View.VISIBLE);
+            wardrobeSyncBlockFail.setVisibility(View.VISIBLE);
+            wardrobeSyncBlockClose.setVisibility(View.VISIBLE);
+        }
     }
 
     /****************************************************************************************************/
@@ -161,6 +198,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void closeSyncBlock(View view)
     {
         wardrobeSyncBlock.setVisibility(View.GONE);
+        wardrobeSyncTitle.setVisibility(View.VISIBLE);
+        wardrobeSyncBlockOver.setVisibility(View.GONE);
+        wardrobeSyncBlockRetrieving.setVisibility(View.VISIBLE);
+        wardrobeSyncBlockCurrent.setVisibility(View.GONE);
+        wardrobeSyncBlockErrors.setVisibility(View.GONE);
 
         syncButton.setVisibility(View.VISIBLE);
     }
@@ -172,7 +214,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void syncProgress(boolean lastTaskSucceeded)
     {
-        wardrobeSyncBlockCurrent.setText(String.valueOf(wardrobeSyncBlockCurrent.getText()).split(":")[0] + ": " + String.valueOf(synchronizationCurrentElement) + " / " + String.valueOf(synchronizationAmountOfElements));
+        wardrobeSyncBlockCurrent.setText(String.valueOf(wardrobeSyncBlockCurrent.getText()).split(":")[0] + ": " + String.valueOf(synchronizationCurrentElement += 1) + " / " + String.valueOf(synchronizationAmountOfElements));
 
         if(!lastTaskSucceeded)
         {

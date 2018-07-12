@@ -118,11 +118,11 @@ public class WardrobeOutfit extends AppCompatActivity implements NavigationView.
                     // GET THE DETAIL OF EACH ELEMENT
                     /****************************************************************************************************/
 
-                    Cursor wardrobeOutfitElementsCurrentCursor = database.query(Constants.WARDROBE_TABLE_NAME, null, "id = ?", new String[]{ wardrobeOutfitElementsCursor.getString(wardrobeOutfitElementsCursor.getColumnIndex(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_ID)) }, null, null, null);
+                    Cursor wardrobeOutfitElementsCurrentCursor = database.query(Constants.WARDROBE_TABLE_NAME, new String[]{ "*" }, Constants.WARDROBE_TABLE_COLUMNS_UUID + " = ?", new String[]{ wardrobeOutfitElementsCursor.getString(wardrobeOutfitElementsCursor.getColumnIndex(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_UUID)) }, null, null, null);
 
                     wardrobeOutfitElementsCurrentCursor.moveToFirst();
 
-                    Cursor wardrobeOutfitElementsCurrentColorsCursor = database.query(Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME, null, Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex("id")) }, null, null, null);
+                    Cursor wardrobeOutfitElementsCurrentColorsCursor = database.query(Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME, new String[]{ "*" }, Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ wardrobeOutfitElementsCurrentCursor.getString(wardrobeOutfitElementsCurrentCursor.getColumnIndex("id")) }, null, null, null);
 
                     wardrobeOutfitElementsCurrentColorsCursor.moveToFirst();
 

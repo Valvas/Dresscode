@@ -108,7 +108,7 @@ public class Outfit implements Serializable, IJobServiceObservable
             {
                 ContentValues outfitCurrentElementValues = new ContentValues();
                 outfitCurrentElementValues.put(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_UUID, this.uuid);
-                outfitCurrentElementValues.put(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_ID, this.elements.get(i).getId());
+                outfitCurrentElementValues.put(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_UUID, this.elements.get(i).getUuid());
 
                 long insertedElementId = db.insert(Constants.OUTFIT_ELEMENTS_TABLE_NAME, null, outfitCurrentElementValues);
 
@@ -189,7 +189,7 @@ public class Outfit implements Serializable, IJobServiceObservable
         // CREATE THE OUTFIT FORM
         /****************************************************************************************************/
 
-        OutfitForm outfitForm = new OutfitForm(this.name, wardrobeElementForms);
+        OutfitForm outfitForm = new OutfitForm(this.uuid, this.name, wardrobeElementForms);
 
         /****************************************************************************************************/
         // GET RETROFIT CLIENT AND PREPARE CALL

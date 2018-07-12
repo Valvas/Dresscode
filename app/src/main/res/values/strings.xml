@@ -127,7 +127,8 @@
 
     <string name="sign_in_email_empty">Veuillez entrer une adresse email</string>
     <string name="sign_in_password_empty">Veuillez entrer un mot de passe</string>
-    <string name="sign_in_success">Bon retour !</string>
+    <string name="sign_in_success">Bienvenue !</string>
+    <string name="get_data_from_api_failed">Connexion réussie. Cependant la récupération des données de votre compte a échoué</string>
 
     <string name="outfit_add_form_database_insert_error">Erreur : La nouvelle tenue n\'a pas pu être enregistrée</string>
     <string name="outfit_add_form_database_insert_success">La nouvelle tenue a été enregistrée avec succès</string>
@@ -147,8 +148,10 @@
     <string name="home_activity_sync_errors">Erreurs de synchronisation :</string>
     <string name="home_activity_sync_over">Synchronisation terminée</string>
     <string name="home_activity_sync_close">Fermer</string>
+    <string name="home_activity_sync_retrieving">Récupération de nouvelles données depuis le serveur...</string>
+    <string name="home_activity_sync_fail">Le serveur est actuellement injoignable, veuillez réessayer plus tard</string>
 
-    <string name="wardrobe_list_activity_sync_pending">En attente de synchronisation : </string>
+    <string name="wardrobe_list_activity_sync_pending">Envoi de l\'élément : </string>
     <string name="wardrobe_list_activity_sync_success">Synchronisations réussies : </string>
     <string name="wardrobe_list_activity_sync_error">Erreurs de synchronisation : </string>
 
