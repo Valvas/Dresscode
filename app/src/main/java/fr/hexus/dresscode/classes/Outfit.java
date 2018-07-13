@@ -80,6 +80,11 @@ public class Outfit implements Serializable, IJobServiceObservable
         this.storedOnApi = storedInApi;
     }
 
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
     public String toString()
     {
         return "\n[Outfit]\n- UUID : " + this.uuid + "\n- Name : " + this.name + "\n- Stored in API : " + this.storedOnApi + "\n- Elements : " + this.elements.size() + "\n";
@@ -137,7 +142,7 @@ public class Outfit implements Serializable, IJobServiceObservable
     // UPDATE OUTFIT IN THE LOCAL DATABASE
     /****************************************************************************************************/
 
-    public void updateOutfitInDatabase(Context context)
+    public boolean updateOutfitInDatabase(Context context)
     {
         AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(context);
 
@@ -146,9 +151,38 @@ public class Outfit implements Serializable, IJobServiceObservable
         ContentValues values = new ContentValues();
         values.put(Constants.OUTFIT_TABLE_COLUMNS_NAME, this.name);
         values.put(Constants.OUTFIT_TABLE_COLUMNS_UUID, this.uuid);
-        values.put(Constants.OUTFIT_TABLE_COLUMNS_NAME, this.storedOnApi);
+        values.put(Constants.OUTFIT_TABLE_COLUMNS_STORED_ON_API, this.storedOnApi);
 
-        long updatedRows = db.update(Constants.OUTFIT_TABLE_NAME, values, Constants.OUTFIT_TABLE_COLUMNS_UUID + " = ?", new String[]{ String.valueOf(this.uuid) });
+        long updatedRows = db.update(Constants.OUTFIT_TABLE_NAME, values, Constants.OUTFIT_TABLE_COLUMNS_UUID + " = ?", new String[]{ this.uuid });
+
+        if(updatedRows == 0)
+        {
+            db.close();
+
+            return false;
+        }
+
+        db.delete(Constants.OUTFIT_ELEMENTS_TABLE_NAME, Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_UUID + " = ?", new String[]{ this.uuid });
+
+        for(int i = 0; i < this.elements.size(); i++)
+        {
+            ContentValues outfitCurrentElementValues = new ContentValues();
+            outfitCurrentElementValues.put(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_UUID, this.uuid);
+            outfitCurrentElementValues.put(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_UUID, this.elements.get(i).getUuid());
+
+            long insertedId = db.insert(Constants.OUTFIT_ELEMENTS_TABLE_NAME, null, outfitCurrentElementValues);
+
+            if(insertedId < 0)
+            {
+                db.close();
+
+                return false;
+            }
+        }
+
+        db.close();
+
+        return true;
     }
 
     /****************************************************************************************************/
@@ -286,6 +320,80 @@ public class Outfit implements Serializable, IJobServiceObservable
                 {
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    /****************************************************************************************************/
+    // UPDATE OUTFIT IN THE API
+    /****************************************************************************************************/
+
+    public void updateOutfitInTheApi(String token, Context applicationContext)
+    {
+        WardrobeElementForm[] wardrobeElementForms = new WardrobeElementForm[this.elements.size()];
+
+        // CREATE A WARDROBE ELEMENT FORM FOR EACH ELEMENT IN THE OUTFIT
+
+        for(int i = 0; i < this.elements.size(); i++)
+        {
+            File image = new File(String.valueOf(Environment.getExternalStorageDirectory() + elements.get(i).getPath()));
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+            byte[] byteArrayImage = baos.toByteArray();
+
+            String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+
+            int[] colors = new int[elements.get(i).getColors().size()];
+
+            for(int j = 0; j < elements.get(i).getColors().size(); j++)
+            {
+                colors[j] = elements.get(i).getColors().get(j);
+            }
+
+            wardrobeElementForms[i] = new WardrobeElementForm(elements.get(i).getType(), colors, elements.get(i).getUuid(), encodedImage);
+        }
+
+        // CREATE THE OUTFIT FORM
+
+        OutfitForm outfitForm = new OutfitForm(this.uuid, this.name, wardrobeElementForms);
+
+        // GET RETROFIT CLIENT AND PREPARE CALL
+
+        Retrofit retrofit = RetrofitClient.getClient();
+
+        DresscodeService service = retrofit.create(DresscodeService.class);
+
+        Call<Void> call = service.updateWardrobeOutfit(token, outfitForm);
+
+        // EXECUTE THE CALL AND SEND DATA
+
+        call.enqueue(new Callback<Void>()
+        {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response)
+            {
+                if(response.errorBody() != null )
+                {
+                    try{ notifyObservers(true); } catch(Exception e){ e.printStackTrace(); }
+                }
+
+                else
+                {
+                    storedOnApi = true;
+
+                    updateOutfitInDatabase(applicationContext);
+
+                    try{ notifyObservers(false); } catch(Exception e){ e.printStackTrace(); }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t)
+            {
+                try{ notifyObservers(true); } catch(Exception e){ e.printStackTrace(); }
             }
         });
     }

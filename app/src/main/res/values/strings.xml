@@ -165,9 +165,17 @@
 
     <string name="outfit_detail_modify_name">Renommer</string>
     <string name="outfit_detail_delete">Supprimer</string>
+    <string name="outfit_detail_rename_title">Renommer cette tenue</string>
+    <string name="outfit_detail_rename_label">Nouveau nom</string>
+    <string name="outfit_detail_rename_confirm">Confirmer</string>
+    <string name="outfit_detail_rename_cancel">Annuler</string>
+    <string name="outfit_detail_elements_block_title">Éléments de cette tenue</string>
 
     <string name="outfit_remove_title">Supprimer cette tenue</string>
     <string name="outfit_remove_message">Êtes-vous sûr(e) de vouloir supprimer cette tenue ? (La suppression est définitive)</string>
 
     <string name="could_not_remove_outfit">Une erreur est survenue pendant la suppression, veuillez réessayer plus tard</string>
+    <string name="could_not_rename_outfit">Une erreur est survenue pendant le renommage, veuillez réessayer plus tard</string>
+
+    <string name="outfit_renamed">Le nom de la tenue a été mis à jour</string>
 </resources>

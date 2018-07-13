@@ -367,7 +367,7 @@ public class WardrobeOutfitAdd extends AppCompatActivity
 
             Job job = dispatcher.newJobBuilder()
                     .setService(WardrobeOutfitCreateJobService.class)
-                    .setTag(Constants.WARDROBE_OUTFIT_API_TAG_CREATE)
+                    .setTag(newOutfit.getUuid())
                     .setRecurring(false)
                     .setLifetime(Lifetime.FOREVER)
                     .setTrigger(Trigger.executionWindow(0, 60))

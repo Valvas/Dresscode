@@ -5,18 +5,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="fr.hexus.dresscode.activities.WardrobeElementView">
+    tools:context="fr.hexus.dresscode.activities.WardrobeOutfitView">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#F9F9F9" >
 
         <include layout="@layout/toolbar"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/outfitDetailBlock"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/outfitDetailSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/outfitDetailBlockRename"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/outfit_detail_rename_title" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/outfit_detail_rename_label" />
+
+            <EditText
+                android:id="@+id/outfitDetailBlockRenameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/outfit_detail_rename_confirm"
+                    android:onClick="confirmRenaming" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/outfit_detail_rename_cancel"
+                    android:onClick="cancelRenaming" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <ScrollView
             android:id="@+id/outfitDetailBlock"
@@ -29,9 +88,10 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <LinearLayout
+                android:id="@+id/outfitDetailBlockMain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -52,17 +112,41 @@
 
                         <Button
                             android:id="@+id/renameOutfit"
+                            style="@style/OutfitDetailRename"
                             android:layout_width="wrap_content"
                             android:drawableLeft="@drawable/pen"
                             android:text="@string/outfit_detail_modify_name"
-                            style="@style/OutfitDetailRename" />
+                            android:onClick="renameOutfit" />
 
                         <Button
                             android:id="@+id/removeOutfit"
                             android:layout_width="wrap_content"
                             android:drawableLeft="@drawable/bin"
                             android:text="@string/outfit_detail_delete"
+                            android:onClick="removeOutfit"
                             style="@style/OutfitDetailDelete" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    style="@style/OutfitBlock" >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/outfit_detail_elements_block_title"
+                        style="@style/OutfitBlockTitle" />
+
+                    <LinearLayout
+                        android:id="@+id/outfitDetailElementsBlockList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
 
                     </LinearLayout>
 

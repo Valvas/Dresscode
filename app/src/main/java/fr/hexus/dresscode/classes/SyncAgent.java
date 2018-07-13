@@ -107,7 +107,7 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
         // GET ALL WARDROBE ELEMENTS FROM DATABASE WHICH ARE NOT SYNCHRONIZED WITH THE API
 
         Cursor wardrobeElementsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_TABLE_NAME + " WHERE " + Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API + " = 0", null);
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! : " + wardrobeElementsCursor.getCount());
+
         wardrobeElementsCursor.moveToFirst();
 
         ArrayList<WardrobeElement> wardrobeElements = new ArrayList<>();
@@ -185,9 +185,15 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
             {
                 ArrayList<Integer> currentElementColors = new ArrayList<>();
 
+                // GET THE ELEMENT FROM THE DATABASE
+
+                Cursor currentElementCursor = database.query(Constants.WARDROBE_TABLE_NAME, new String[]{ "*" }, Constants.WARDROBE_TABLE_COLUMNS_UUID + " = ?", new String[]{ currentOutfitElementsCursor.getString(currentOutfitElementsCursor.getColumnIndex(Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_UUID)) }, null, null, null);
+
+                currentElementCursor.moveToFirst();
+
                 // GET COLORS FOR THE CURRENT ELEMENT
 
-                Cursor currentOutfitElementColorsCursor = database.query(Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME, new String[]{ Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_COLOR_ID }, Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ String.valueOf(currentOutfitElementsCursor.getInt(currentOutfitElementsCursor.getColumnIndex("id"))) }, null, null, null);
+                Cursor currentOutfitElementColorsCursor = database.query(Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME, new String[]{ Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_COLOR_ID }, Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ String.valueOf(currentElementCursor.getInt(currentElementCursor.getColumnIndex("id"))) }, null, null, null);
 
                 currentOutfitElementColorsCursor.moveToFirst();
 
@@ -202,9 +208,11 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
 
                 currentOutfitElementColorsCursor.close();
 
-                currentOutfitElements.add(new WardrobeElement(0, currentOutfitElementsCursor.getInt(currentOutfitElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_TYPE)), currentOutfitElementsCursor.getString(currentOutfitElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_UUID)), currentElementColors, currentOutfitElementsCursor.getString(currentOutfitElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_PATH)), false));
+                currentOutfitElements.add(new WardrobeElement(0, currentElementCursor.getInt(currentElementCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_TYPE)), currentElementCursor.getString(currentElementCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_UUID)), currentElementColors, currentElementCursor.getString(currentElementCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_PATH)), false));
 
                 currentOutfitElementsCursor.moveToNext();
+
+                currentElementCursor.close();
             }
 
             currentOutfitElementsCursor.close();
