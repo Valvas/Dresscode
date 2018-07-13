@@ -179,7 +179,7 @@ public class WardrobeElement implements Serializable, IJobServiceObservable
         values.put(Constants.WARDROBE_TABLE_COLUMNS_TYPE, this.type);
         values.put(Constants.WARDROBE_TABLE_COLUMNS_PATH, this.path);
         values.put(Constants.WARDROBE_TABLE_COLUMNS_UUID, this.uuid);
-        values.put(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API, false);
+        values.put(Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API, this.storedOnApi);
 
         long updatedRows = db.update(Constants.WARDROBE_TABLE_NAME, values, "uuid = ?", new String[]{ this.uuid });
 

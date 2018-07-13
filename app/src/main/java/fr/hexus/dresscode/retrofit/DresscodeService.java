@@ -40,6 +40,10 @@ public interface DresscodeService
     @POST("/addOutfit")
     Call<Void> addWardrobeOutfit(@Header("Authorization") String token, @Body OutfitForm outfitForm);
 
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "/deleteOutfit", hasBody = true)
+    Call<Void> removeWardrobeOutfit(@Header("Authorization") String token, @Field("uuid") String uuid);
+
     @GET("/getAllElements")
     Call<WardrobeAllElementsForm> getAllWardrobeElements(@Header("Authorization") String token);
 

@@ -106,9 +106,8 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
 
         // GET ALL WARDROBE ELEMENTS FROM DATABASE WHICH ARE NOT SYNCHRONIZED WITH THE API
 
-        Cursor wardrobeElementsCursor = database.query(Constants.WARDROBE_TABLE_NAME, new String[]{ "*" }, Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API + " = ?", new String[]{ "0" }, null, null, null);
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! : " + wardrobeElementsCursor.getCount());
-
+        Cursor wardrobeElementsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_TABLE_NAME + " WHERE " + Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API + " = 0", null);
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! : " + wardrobeElementsCursor.getCount());
         wardrobeElementsCursor.moveToFirst();
 
         ArrayList<WardrobeElement> wardrobeElements = new ArrayList<>();
@@ -162,7 +161,7 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
 
         // GET ALL OUTFITS FROM DATABASE WHICH ARE NOT SYNCHRONIZED WITH THE API
 
-        Cursor wardrobeOutfitsCursor = database.query(Constants.OUTFIT_TABLE_NAME, new String[]{ "*" }, Constants.OUTFIT_TABLE_COLUMNS_STORED_ON_API + " = ?", new String[]{ "0" }, null, null, null);
+        Cursor wardrobeOutfitsCursor = database.rawQuery("SELECT * FROM " + Constants.OUTFIT_TABLE_NAME + " WHERE " + Constants.OUTFIT_TABLE_COLUMNS_STORED_ON_API + " = 0", null);
 
         wardrobeOutfitsCursor.moveToFirst();
 
@@ -176,7 +175,7 @@ public class SyncAgent implements ISynchronizationObservable, IJobServiceObserve
 
             ArrayList<WardrobeElement> currentOutfitElements = new ArrayList<>();
 
-            Cursor currentOutfitElementsCursor = database.query(Constants.OUTFIT_ELEMENTS_TABLE_NAME, new String[]{ Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_ELEMENT_UUID }, Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_UUID + " = ?", new String[]{ wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_UUID)) }, null, null, null);
+            Cursor currentOutfitElementsCursor = database.query(Constants.OUTFIT_ELEMENTS_TABLE_NAME, new String[]{ "*" }, Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_UUID + " = ?", new String[]{ wardrobeOutfitsCursor.getString(wardrobeOutfitsCursor.getColumnIndex(Constants.OUTFIT_TABLE_COLUMNS_UUID)) }, null, null, null);
 
             currentOutfitElementsCursor.moveToFirst();
 

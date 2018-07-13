@@ -162,4 +162,12 @@
     <string name="home_activity_wardrobe_outfits_title">Tenues du dressing : </string>
     <string name="home_activity_wardrobe_outfits_synchronized">Synchronisées avec le serveur : </string>
     <string name="home_activity_wardrobe_outfits_non_synchronized">Non-Synchronisées : </string>
+
+    <string name="outfit_detail_modify_name">Renommer</string>
+    <string name="outfit_detail_delete">Supprimer</string>
+
+    <string name="outfit_remove_title">Supprimer cette tenue</string>
+    <string name="outfit_remove_message">Êtes-vous sûr(e) de vouloir supprimer cette tenue ? (La suppression est définitive)</string>
+
+    <string name="could_not_remove_outfit">Une erreur est survenue pendant la suppression, veuillez réessayer plus tard</string>
 </resources>

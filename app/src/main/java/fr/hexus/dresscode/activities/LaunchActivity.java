@@ -50,22 +50,6 @@ public class LaunchActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
 
-        /***/
-
-        AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(this);
-
-        SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
-
-        Cursor wardrobeElementsCursor = database.query(Constants.WARDROBE_TABLE_NAME, new String[]{ "*" }, Constants.WARDROBE_TABLE_COLUMNS_STORED_ON_API + " = ?", new String[]{ String.valueOf(false) }, null, null, null);
-
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! : " + wardrobeElementsCursor.getCount());
-
-        wardrobeElementsCursor.close();
-
-        database.close();
-
-        /***/
-
         dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
 
         checkWritingStorageRight();

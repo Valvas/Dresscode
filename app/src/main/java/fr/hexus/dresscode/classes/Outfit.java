@@ -152,6 +152,25 @@ public class Outfit implements Serializable, IJobServiceObservable
     }
 
     /****************************************************************************************************/
+    // REMOVE OUTFIT FROM THE DATABASE
+    /****************************************************************************************************/
+
+    public boolean removeOutfitFromTheDatabase(Context applicationContext)
+    {
+        AppDatabaseCreation appDatabaseCreation = new AppDatabaseCreation(applicationContext);
+
+        SQLiteDatabase db = appDatabaseCreation.getWritableDatabase();
+
+        db.delete(Constants.OUTFIT_ELEMENTS_TABLE_NAME, Constants.OUTFIT_ELEMENTS_TABLE_COLUMNS_OUTFIT_UUID + " = ?", new String[]{ this.uuid });
+
+        long deletedRows = db.delete(Constants.OUTFIT_TABLE_NAME, Constants.OUTFIT_TABLE_COLUMNS_UUID + " = ?", new String[]{ this.uuid });
+
+        db.close();
+
+        return deletedRows == 1;
+    }
+
+    /****************************************************************************************************/
     // SEND OUTFIT TO THE API
     /****************************************************************************************************/
 
@@ -267,6 +286,42 @@ public class Outfit implements Serializable, IJobServiceObservable
                 {
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    /****************************************************************************************************/
+    // REMOVE OUTFIT FROM THE API
+    /****************************************************************************************************/
+
+    public void removeOutfitFromTheApi(String token)
+    {
+        Retrofit retrofit = RetrofitClient.getClient();
+
+        DresscodeService service = retrofit.create(DresscodeService.class);
+
+        Call<Void> call = service.removeWardrobeOutfit(token, this.uuid);
+
+        call.enqueue(new Callback<Void>()
+        {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response)
+            {
+                if(response.errorBody() != null)
+                {
+                    try{ notifyObservers(true); } catch(Exception e){ e.printStackTrace(); }
+                }
+
+                else
+                {
+                    try{ notifyObservers(false); } catch(Exception e){ e.printStackTrace(); }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t)
+            {
+                try{ notifyObservers(true); } catch(Exception e){ e.printStackTrace(); }
             }
         });
     }

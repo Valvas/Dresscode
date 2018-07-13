@@ -21,7 +21,8 @@
         <ScrollView
             android:id="@+id/outfitDetailBlock"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -32,10 +33,40 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/outfitName"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    style="@style/OutfitBlock" >
+
+                    <TextView
+                        android:id="@+id/outfitName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/OutfitDetailTitle" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/renameOutfit"
+                            android:layout_width="wrap_content"
+                            android:drawableLeft="@drawable/pen"
+                            android:text="@string/outfit_detail_modify_name"
+                            style="@style/OutfitDetailRename" />
+
+                        <Button
+                            android:id="@+id/removeOutfit"
+                            android:layout_width="wrap_content"
+                            android:drawableLeft="@drawable/bin"
+                            android:text="@string/outfit_detail_delete"
+                            style="@style/OutfitDetailDelete" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 

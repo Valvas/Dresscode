@@ -167,7 +167,7 @@ public class ApiDataGetter implements IGetDataFromApiObservable
             @Override
             public void onResponse(Call<WardrobeAllOutfitsForm> call, Response<WardrobeAllOutfitsForm> response)
             {
-                if (response.errorBody() != null)
+                if(response.errorBody() != null)
                 {
                     db.close();
 
