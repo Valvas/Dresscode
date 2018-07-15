@@ -60,6 +60,11 @@ public class Outfit implements Serializable, IJobServiceObservable
         this.elements.add(element);
     }
 
+    public void removeElementFromOutfit(WardrobeElement element)
+    {
+        this.elements.remove(element);
+    }
+
     public String getName()
     {
         return this.name;

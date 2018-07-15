@@ -142,10 +142,22 @@
                         android:text="@string/outfit_detail_elements_block_title"
                         style="@style/OutfitBlockTitle" />
 
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/outfitDetailBlockElementsAdd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#428BCA"
+                        app:borderWidth="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:src="@drawable/ic_round_add"
+                        android:layout_margin="4dp" />
+
                     <LinearLayout
                         android:id="@+id/outfitDetailElementsBlockList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
                         android:orientation="vertical" >
 
                     </LinearLayout>

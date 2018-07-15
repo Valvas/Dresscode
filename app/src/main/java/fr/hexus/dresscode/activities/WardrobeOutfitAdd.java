@@ -104,15 +104,15 @@ public class WardrobeOutfitAdd extends AppCompatActivity
 
         outfitElementsAdd.setOnClickListener(view ->
         {
-            int[] ids = new int[wardrobeElements.size()];
+            String[] uuids = new String[wardrobeElements.size()];
 
             for(int i = 0; i < wardrobeElements.size(); i++)
             {
-                ids[i] = wardrobeElements.get(i).getId();
+                uuids[i] = wardrobeElements.get(i).getUuid();
             }
 
             Intent getItemIntent = new Intent(getApplicationContext(), ChooseWardrobeElement.class);
-            getItemIntent.putExtra("selectedItems", ids);
+            getItemIntent.putExtra("selectedItems", uuids);
             startActivityForResult(getItemIntent, PICK_WARDROBE_ELEMENT_REQUEST);
         });
     }

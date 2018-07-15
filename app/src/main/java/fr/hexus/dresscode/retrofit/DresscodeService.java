@@ -44,7 +44,7 @@ public interface DresscodeService
     Call<Void> updateWardrobeOutfit(@Header("Authorization") String token, @Body OutfitForm outfitForm);
 
     @FormUrlEncoded
-    @HTTP(method = "DELETE", path = "/deleteOutfit", hasBody = true)
+    @HTTP(method = "POST", path = "/deleteOutfit", hasBody = true)
     Call<Void> removeWardrobeOutfit(@Header("Authorization") String token, @Field("uuid") String uuid);
 
     @GET("/getAllElements")
@@ -54,6 +54,6 @@ public interface DresscodeService
     Call<WardrobeAllOutfitsForm> getAllWardrobeOutfits(@Header("Authorization") String token);
 
     @FormUrlEncoded
-    @HTTP(method = "DELETE", path = "/deleteElement", hasBody = true)
+    @HTTP(method = "POST", path = "/deleteElement", hasBody = true)
     Call<Void> removeWardrobeElement(@Header("Authorization") String token, @Field("uuid") String uuid);
 }

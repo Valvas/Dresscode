@@ -52,7 +52,7 @@ public class ChooseWardrobeElement extends AppCompatActivity
 
         SQLiteDatabase database = appDatabaseCreation.getReadableDatabase();
 
-        Integer[] selectedItems = Arrays.stream(getIntent().getIntArrayExtra("selectedItems")).boxed().toArray( Integer[]::new );
+        String[] selectedItems = Arrays.stream(getIntent().getStringArrayExtra("selectedItems")).toArray( String[]::new );
 
         Cursor wardrobeElementsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_TABLE_NAME, null);
 
@@ -75,7 +75,7 @@ public class ChooseWardrobeElement extends AppCompatActivity
 
             for(int i = 0; i < wardrobeElementsCursor.getCount(); i++)
             {
-                if(!Arrays.asList(selectedItems).contains(wardrobeElementsCursor.getInt(wardrobeElementsCursor.getColumnIndex("id"))))
+                if(!Arrays.asList(selectedItems).contains(wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex(Constants.WARDROBE_TABLE_COLUMNS_UUID))))
                 {
                     Cursor wardrobeElementColorsCursor = database.rawQuery("SELECT * FROM " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_NAME + " WHERE " + Constants.WARDROBE_ELEMENT_COLORS_TABLE_COLUMNS_ELEMENT_ID + " = ?", new String[]{ wardrobeElementsCursor.getString(wardrobeElementsCursor.getColumnIndex("id")) });
 

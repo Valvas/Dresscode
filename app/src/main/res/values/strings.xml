@@ -27,6 +27,12 @@
     <string name="could_not_save_wardrobe_element">Le nouvel élément n\a pas pu être enregistré</string>
     <string name="new_wardrobe_element_saved">Ajouté au dressing</string>
 
+    <string name="wardrobe_search_button">Rechercher des éléments</string>
+    <string name="wardrobe_search_cancel">Fermer la recherche</string>
+    <string name="wardrobe_search_panel_title">Rechercher des éléments : </string>
+    <string name="wardrobe_search_launch">Rechercher</string>
+    <string name="pick_at_list_a_color_and_a_type">Veuillez sélectionner au moins un type et une couleur</string>
+
     <string name="logon_page_email_label">Adresse Email : </string>
     <string name="logon_page_email_hint">Adresse Email</string>
     <string name="logon_page_password_label">Mot De Passe : </string>
@@ -165,6 +171,7 @@
 
     <string name="outfit_detail_modify_name">Renommer</string>
     <string name="outfit_detail_delete">Supprimer</string>
+    <string name="outfit_detail_remove_element">Retirer de cette tenue</string>
     <string name="outfit_detail_rename_title">Renommer cette tenue</string>
     <string name="outfit_detail_rename_label">Nouveau nom</string>
     <string name="outfit_detail_rename_confirm">Confirmer</string>
@@ -176,6 +183,10 @@
 
     <string name="could_not_remove_outfit">Une erreur est survenue pendant la suppression, veuillez réessayer plus tard</string>
     <string name="could_not_rename_outfit">Une erreur est survenue pendant le renommage, veuillez réessayer plus tard</string>
+    <string name="could_not_remove_element_from_outfit">Une erreur est survenue pendant la suppression de cet élément, veuillez réessayer plus tard</string>
+    <string name="outfit_must_have_at_list_two_elements">Une tenue doit être composée d\au moins deux éléments</string>
 
     <string name="outfit_renamed">Le nom de la tenue a été mis à jour</string>
+    <string name="outfit_successfully_removed">La tenue a bien été supprimée</string>
+    <string name="element_successfully_removed_from_outfit">L\'élément a bien été retiré de la tenue</string>
 </resources>

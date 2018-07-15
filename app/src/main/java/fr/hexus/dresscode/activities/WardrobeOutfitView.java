@@ -1,7 +1,10 @@
 package fr.hexus.dresscode.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Environment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +12,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -25,10 +30,15 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 
+import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import fr.hexus.dresscode.classes.Constants;
+import fr.hexus.dresscode.classes.GlideApp;
 import fr.hexus.dresscode.classes.Outfit;
-import fr.hexus.dresscode.retrofit.WardrobeElementRemoveJobService;
-import fr.hexus.dresscode.retrofit.WardrobeOutfitCreateJobService;
+import fr.hexus.dresscode.classes.WardrobeElement;
+import fr.hexus.dresscode.enums.Colors;
+import fr.hexus.dresscode.enums.Types;
 import fr.hexus.dresscode.retrofit.WardrobeOutfitRemoveJobService;
 import fr.hexus.dresscode.retrofit.WardrobeOutfitUpdateJobService;
 
@@ -49,6 +59,10 @@ public class WardrobeOutfitView extends AppCompatActivity
     private EditText outfitDetailBlockRenameInput;
 
     private ProgressBar outfitDetailSpinner;
+
+    private FloatingActionButton outfitDetailBlockElementsAdd;
+
+    private static final int PICK_WARDROBE_ELEMENT_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -71,6 +85,10 @@ public class WardrobeOutfitView extends AppCompatActivity
 
         outfitDetailSpinner = findViewById(R.id.outfitDetailSpinner);
 
+        outfitDetailBlockElementsAdd = findViewById(R.id.outfitDetailBlockElementsAdd);
+
+        outfitDetailBlockElementsAdd.setOnClickListener(v -> addElementToOutfit() );
+
         // CREATE THE TOOLBAR
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -89,6 +107,186 @@ public class WardrobeOutfitView extends AppCompatActivity
         // COMPLETE EACH LAYOUT ELEMENT
 
         outfitName.setText(currentOutfit.getName());
+
+        // GET ELEMENTS FROM OUTFIT
+
+        displayElements();
+    }
+
+    /****************************************************************************************************/
+    // GET ELEMENTS FROM OUTFIT
+    /****************************************************************************************************/
+
+    private void displayElements()
+    {
+        for(int i = 0; i < currentOutfit.getElements().size(); i++)
+        {
+            LinearLayout currentElement = (LinearLayout) getLayoutInflater().inflate(R.layout.outfit_detail_elements_list, null);
+
+            // LOADING THE PICTURE ON THE LEFT SIDE
+
+            CircleImageView currentElementPicture = (CircleImageView) currentElement.getChildAt(0);
+
+            GlideApp.with(currentElement)
+                    .load(Environment.getExternalStorageDirectory() + String.valueOf(currentOutfit.getElements().get(i).getPath()))
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .into(currentElementPicture);
+
+            // SET THE TYPE OF THE ELEMENT
+
+            LinearLayout currentElementDescription = (LinearLayout) currentElement.getChildAt(1);
+
+            TextView currentElementType = (TextView) currentElementDescription.getChildAt(0);
+            TextView currentElementColors = (TextView) currentElementDescription.getChildAt(1);
+
+            Button currentElementRemove = (Button) currentElementDescription.getChildAt(2);
+
+            int currentElementIndex = i;
+
+            currentElementRemove.setOnClickListener(v -> removeElementFromOutfit(currentOutfit.getElements().get(currentElementIndex), currentElement));
+
+            // SET THE COLORS OF THE ELEMENT
+
+            StringBuilder elementColors = new StringBuilder();
+
+            for(int j = 0; j < currentOutfit.getElements().get(i).getColors().size(); j++)
+            {
+                if((j + 1) == currentOutfit.getElements().get(i).getColors().size())
+                {
+                    elementColors.append(getResources().getString(getResources().getIdentifier(Colors.getKey(currentOutfit.getElements().get(i).getColors().get(j)), "string", getPackageName())));
+                }
+
+                else
+                {
+                    elementColors.append(getResources().getString(getResources().getIdentifier(Colors.getKey(currentOutfit.getElements().get(i).getColors().get(j)), "string", getPackageName())));
+                    elementColors.append(", ");
+                }
+            }
+
+            currentElementType.setText(getResources().getString(getResources().getIdentifier(Types.getKey(currentOutfit.getElements().get(i).getType()), "string", getPackageName())));
+            currentElementColors.setText(String.valueOf(elementColors));
+
+            outfitDetailElementsBlockList.addView(currentElement);
+        }
+    }
+
+    /****************************************************************************************************/
+    // ADD ELEMENT FROM OUTFIT
+    /****************************************************************************************************/
+
+    private void addElementToOutfit()
+    {
+        String[] uuids = new String[currentOutfit.getElements().size()];
+
+        for(int i = 0; i < currentOutfit.getElements().size(); i++)
+        {
+            uuids[i] = currentOutfit.getElements().get(i).getUuid();
+        }
+
+        Intent getItemIntent = new Intent(getApplicationContext(), ChooseWardrobeElement.class);
+        getItemIntent.putExtra("selectedItems", uuids);
+        startActivityForResult(getItemIntent, PICK_WARDROBE_ELEMENT_REQUEST);
+    }
+
+    /******************************************************************************************/
+    // GET THE WARDROBE ELEMENT SELECTED
+    /******************************************************************************************/
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(data != null)
+        {
+            if(data.getSerializableExtra("wardrobeElement") != null)
+            {
+                WardrobeElement newWardrobeElement = (WardrobeElement) data.getSerializableExtra("wardrobeElement");
+
+                LinearLayout currentElement = (LinearLayout) getLayoutInflater().inflate(R.layout.outfit_detail_elements_list, null);
+
+                // LOADING THE PICTURE ON THE LEFT SIDE
+
+                CircleImageView currentElementPicture = (CircleImageView) currentElement.getChildAt(0);
+
+                GlideApp.with(currentElement)
+                        .load(Environment.getExternalStorageDirectory() + String.valueOf(newWardrobeElement.getPath()))
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .into(currentElementPicture);
+
+                // SET THE TYPE OF THE ELEMENT
+
+                LinearLayout currentElementDescription = (LinearLayout) currentElement.getChildAt(1);
+
+                TextView currentElementType = (TextView) currentElementDescription.getChildAt(0);
+                TextView currentElementColors = (TextView) currentElementDescription.getChildAt(1);
+
+                Button currentElementRemove = (Button) currentElementDescription.getChildAt(2);
+
+                currentElementRemove.setOnClickListener(v -> removeElementFromOutfit(newWardrobeElement, currentElement));
+
+                // SET THE COLORS OF THE ELEMENT
+
+                StringBuilder elementColors = new StringBuilder();
+
+                for(int j = 0; j < newWardrobeElement.getColors().size(); j++)
+                {
+                    if((j + 1) == newWardrobeElement.getColors().size())
+                    {
+                        elementColors.append(getResources().getString(getResources().getIdentifier(Colors.getKey(newWardrobeElement.getColors().get(j)), "string", getPackageName())));
+                    }
+
+                    else
+                    {
+                        elementColors.append(getResources().getString(getResources().getIdentifier(Colors.getKey(newWardrobeElement.getColors().get(j)), "string", getPackageName())));
+                        elementColors.append(", ");
+                    }
+                }
+
+                currentElementType.setText(getResources().getString(getResources().getIdentifier(Types.getKey(newWardrobeElement.getType()), "string", getPackageName())));
+                currentElementColors.setText(String.valueOf(elementColors));
+
+                outfitDetailElementsBlockList.addView(currentElement);
+
+                currentOutfit.addElementToOutfit(newWardrobeElement);
+
+                currentOutfit.updateOutfitInDatabase(this);
+
+                createUpdateTask();
+            }
+        }
+    }
+
+    /****************************************************************************************************/
+    // REMOVE ELEMENT FROM OUTFIT
+    /****************************************************************************************************/
+
+    private void removeElementFromOutfit(WardrobeElement elementToRemove, LinearLayout elementBlock)
+    {
+        if(currentOutfit.getElements().size() == 2)
+        {
+            Toast.makeText(this, getResources().getString(R.string.outfit_must_have_at_list_two_elements), Toast.LENGTH_SHORT).show();
+        }
+
+        else
+        {
+            currentOutfit.removeElementFromOutfit(elementToRemove);
+
+            if(currentOutfit.updateOutfitInDatabase(this))
+            {
+                createUpdateTask();
+
+                outfitDetailElementsBlockList.removeView(elementBlock);
+
+                Toast.makeText(this, getResources().getString(R.string.element_successfully_removed_from_outfit), Toast.LENGTH_SHORT).show();
+            }
+
+            else
+            {
+                currentOutfit.addElementToOutfit(elementToRemove);
+
+                Toast.makeText(this, getResources().getString(R.string.could_not_remove_element_from_outfit), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /****************************************************************************************************/
@@ -310,7 +508,7 @@ public class WardrobeOutfitView extends AppCompatActivity
         Bundle extras = new Bundle();
 
         extras.putString("token", sharedPreferences.getString("token", null));
-        extras.putString("uuid", currentOutfit.getUuid());
+        extras.putString("outfitUuid", currentOutfit.getUuid());
 
         Job job = dispatcher.newJobBuilder()
                 .setService(WardrobeOutfitRemoveJobService.class)
@@ -325,5 +523,8 @@ public class WardrobeOutfitView extends AppCompatActivity
                 .build();
 
         dispatcher.mustSchedule(job);
+
+        Toast.makeText(this, getResources().getString(R.string.outfit_successfully_removed), Toast.LENGTH_SHORT).show();
+        finish();
     }
 }
